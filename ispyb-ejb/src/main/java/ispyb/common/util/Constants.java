@@ -810,15 +810,13 @@ public final class Constants {
 	
 	public static final String[] BEAMLINE_LOCATION_DLS = { "i02", "i03", "i04", "i04-1", "i24" };
 
-	public static final String[] BEAMLINE_LOCATION_DESY = { "P11" };
-
-	public static final String[] BEAMLINE_LOCATION_DEFAULT = { "Not", "yet", "defined", "for", "this", "site" };
+	public static final String BEAMLINE_LOCATION_DESY = "P11";
 
 	public static String getSAXSBeamline() {
 		return "UNKNOWN";
 	}
 
-	public static final String[] BEAMLINE_LOCATION = BEAMLINE_LOCATION_DEFAULT;
+	public static final String[] BEAMLINE_LOCATIONS = { BEAMLINE_LOCATION_DESY };
 
 	public static final int LOCATIONS_IN_SC = Integer.parseInt(getProperty("samplechanger.locations", "5"));
 

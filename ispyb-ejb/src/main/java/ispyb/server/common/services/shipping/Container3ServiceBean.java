@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import ispyb.common.util.Constants;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import jakarta.ejb.*;
 import jakarta.persistence.EntityManager;
@@ -318,7 +319,7 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 		containerDB.setCapacity(container.getCapacity());
 		containerDB.setCode(container.getCode());
 		containerDB.setContainerType(container.getContainerType());
-		containerDB.setBeamlineLocation(container.getBeamlineLocation());
+		containerDB.setBeamlineLocation(Constants.BEAMLINE_LOCATION_DESY);
 		containerDB.setBarcode(container.getBarcode());
 		
 		Set<String> locations = new HashSet<String>();
