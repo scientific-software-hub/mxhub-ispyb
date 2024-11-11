@@ -46,6 +46,7 @@ public class DataCollectionRestWsServiceBean extends WsServiceBean implements Da
 	public Collection<? extends Map<String, Object>> getViewDataCollectionsByWorkflowId(int proposalId, Integer workflowId) {
 		String mySQLQuery = this.getViewTableQuery()
 				+ " where proposalId = ?1 and workflowId = ?2  group by v_datacollection.dataCollectionId";
+		//TODO "this.entityManager.createNativeQuery" returns list with column number and value but usually we expect list with column name and value instead. This might be an issue.
 		Query query = this.entityManager.createNativeQuery(mySQLQuery)
 				.setParameter(1, proposalId)
 				.setParameter(2, workflowId);

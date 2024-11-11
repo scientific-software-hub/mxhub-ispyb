@@ -291,12 +291,12 @@ public class Protein3ServiceBean extends WsServiceBean implements Protein3Servic
 
 	
 	@Override
-	public List<Map<String, Object>>  getStatsByProposal(int proposalId) {
+	public List<Protein3VO>  getStatsByProposal(int proposalId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where proposalId = ?1";
-		Query query = this.entityManager.createNativeQuery(mySQLQuery)
+		Query query = this.entityManager.createNativeQuery(mySQLQuery, Protein3VO.class)
 				.setParameter(1, proposalId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        return (List<Protein3VO>) ((Query) query).getResultList();
     }
 	
 }

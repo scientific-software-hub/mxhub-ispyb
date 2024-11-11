@@ -105,6 +105,6 @@ public interface Protein3Service {
 	 */
 	public Integer updateProposalId(final Integer newProposalId, final Integer oldProposalId) throws Exception;
 
-	public List<Map<String, Object>> getStatsByProposal(int proposalId);
+	public List<Protein3VO> getStatsByProposal(int proposalId);
 
 }
