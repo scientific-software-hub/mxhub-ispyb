@@ -32,7 +32,7 @@
         timeBetweenEvictionRunsMillis = 60
         initialSize = 2
         minIdle = 2
-        validationQuery = "select 1"
+        validationQuery = 'SELECT 1'
     </Resource>
     <Resource id="ispyb_config" type="DataSource">
         JdbcDriver org.mariadb.jdbc.Driver
@@ -46,6 +46,6 @@
         timeBetweenEvictionRunsMillis = 60
         initialSize = 2
         minIdle = 2
-        validationQuery = "select 1"
+        validationQuery = 'SELECT 1'
     </Resource>
 </tomee>

@@ -17,6 +17,11 @@ public class Protein3ServiceBeanTest extends TestBase {
         var result = service.findByPk(376497, true);
         assertNotNull(result);
     }
+    @Test
+    public void findByPkNoCrystals() throws Exception {
+        var result = service.findByPk(7, false);
+        assertNotNull(result);
+    }
 
     @Test
     public void findAll() throws Exception {
