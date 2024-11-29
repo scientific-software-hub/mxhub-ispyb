@@ -66,7 +66,7 @@ public class Container3VO extends ISPyBValueObject implements Cloneable {
 	@Column(name = "beamlineLocation")
 	protected String beamlineLocation;
 
-	@Column(name = "sampleChangerLocation")
+	@Column(name = "sampleChangerLocation", nullable = true)
 	protected String sampleChangerLocation;
 
 	@Column(name = "containerStatus")
