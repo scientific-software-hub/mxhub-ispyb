@@ -1,3 +1,13 @@
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)
+
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)
+
+[![Technical Debt](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=sqale_index)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=bugs)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)
+
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=waltz-controls_mxhub-ispyb&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)
+
+
+
 # ISPyB Project
 
 1. [Installing](#installing)
@@ -188,3 +198,4 @@ For local development/testing use Dockerfile: `docker build .` [Optionaly provid
 - JDBC Driver: Verify that the JDBC driver for MariaDB/MySQL is correctly placed in the lib folder of your TomEE installation.
 - For further assistance, consult the TomEE documentation or reach out to the community forums.
 
+[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-orange.svg)](https://sonarcloud.io/summary/new_code?id=waltz-controls_mxhub-ispyb)
