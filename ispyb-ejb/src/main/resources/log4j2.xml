@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="DEBUG">
+    <Appenders>
+        <Console name="LogToConsole" target="SYSTEM_OUT">
+            <EcsLayout serviceName="ispyb-service" serviceEnvironment="experimental">
+                <KeyValuePair key="trace.id" value="$${ctx:trace.id}"/>
+                <KeyValuePair key="transaction.id" value="$${ctx:transaction.id}"/>
+            </EcsLayout>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="LogToConsole"/>
+        </Root>
+    </Loggers>
+</Configuration>

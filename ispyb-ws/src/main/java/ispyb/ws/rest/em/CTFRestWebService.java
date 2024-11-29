@@ -18,14 +18,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.cxf.annotations.GZIP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 @Path("/")
 @GZIP(threshold = 1024)
 public class CTFRestWebService extends RestWebService {
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = Logger.getLogger(ToolsForEMDataCollection.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
@@ -43,14 +42,14 @@ public class CTFRestWebService extends RestWebService {
 			@PathParam("dataCollectionId") int dataCollectionId,
 			@PathParam("movieId") int movieId) throws Exception {
 
-		log.info("getSpectraThumbnailByMovieId. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getSpectraThumbnailByMovieId. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		CTF ctf = getEMService().getCTFByMovieId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (ctf != null){
 			if (new File(ctf.getSpectraImageThumbnailFullPath()).exists()){
 				return this.sendImage(ctf.getSpectraImageThumbnailFullPath());
 			}
 			else{
-				log.error("getSpectraThumbnailByMovieId Path {} does not exist. technique=EM ", ctf.getSpectraImageThumbnailFullPath());
+				log.error(String.format("getSpectraThumbnailByMovieId Path %s does not exist. technique=EM ", ctf.getSpectraImageThumbnailFullPath()));
 			}
 		}
 		return null;
