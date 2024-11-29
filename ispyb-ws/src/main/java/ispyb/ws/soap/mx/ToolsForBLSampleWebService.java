@@ -309,7 +309,7 @@ public class ToolsForBLSampleWebService {
 		try {
 			LOG.debug("findSampleInfoLightForProposal");
 			long startTime = System.currentTimeMillis();
-
+    		//region doStuff
 			Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 			BLSample3Service blSampleService = (BLSample3Service) ejb3ServiceLocator.getLocalService(BLSample3Service.class);
 
@@ -323,6 +323,7 @@ public class ToolsForBLSampleWebService {
 			}
 			// if (bl != null)
 			// beamlineLoc = bl.getBeamlineName();
+			//endregion
 			sampleInfos = blSampleService.findForWSSampleInfoLight(proposalId, null, beamlineLoc, status);
 			long endTime = System.currentTimeMillis();
 			long duration = endTime - startTime;

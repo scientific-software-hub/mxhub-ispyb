@@ -17,14 +17,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.cxf.annotations.GZIP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 @Path("/")
 @GZIP(threshold = 1024)
 public class MotionCorrectionRestWebService extends RestWebService {
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = Logger.getLogger(ToolsForEMDataCollection.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
@@ -41,14 +40,14 @@ public class MotionCorrectionRestWebService extends RestWebService {
 			@PathParam("dataCollectionId") int dataCollectionId,
 			@PathParam("movieId") int movieId) throws Exception {
 
-		log.info("getMotionCorrectionThumbnailByMovieId. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getMotionCorrectionThumbnailByMovieId. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		MotionCorrection motion = getEMService().getMotionCorrectionByMovieId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (motion != null){
 			if (new File(motion.getMicrographSnapshotFullPath()).exists()){
 				return this.sendImage(motion.getMicrographSnapshotFullPath());
 			}
 			else{
-				log.error("getMotionCorrectionThumbnailByMovieId Path {} does not exist. technique=EM ", motion.getMicrographSnapshotFullPath());
+				log.error(String.format("getMotionCorrectionThumbnailByMovieId Path %s does not exist. technique=EM ", motion.getMicrographSnapshotFullPath()));
 			}
 		}
 		return null;
@@ -63,14 +62,14 @@ public class MotionCorrectionRestWebService extends RestWebService {
 			@PathParam("dataCollectionId") int dataCollectionId,
 			@PathParam("movieId") int movieId) throws Exception {
 
-		log.info("getMotionCorrectionDriftByMovieId. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getMotionCorrectionDriftByMovieId. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		MotionCorrection motion = getEMService().getMotionCorrectionByMovieId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (motion != null){
 			if (new File(motion.getDriftPlotFullPath()).exists()){
 				return this.sendImage(motion.getDriftPlotFullPath());
 			}
 			else{
-				log.error("getMotionCorrectionDriftByMovieId Path {} does not exist. technique=EM ", motion.getDriftPlotFullPath());
+				log.error(String.format("getMotionCorrectionDriftByMovieId Path %s does not exist. technique=EM ", motion.getDriftPlotFullPath()));
 			}
 		}
 		return null;

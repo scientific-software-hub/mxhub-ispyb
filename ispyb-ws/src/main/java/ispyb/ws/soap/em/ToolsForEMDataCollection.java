@@ -40,8 +40,7 @@ import jakarta.jws.WebService;
 import jakarta.jws.soap.SOAPBinding;
 import jakarta.jws.soap.SOAPBinding.Style;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 	
 
 @WebService(name = "ToolsForEMWebService", serviceName = "ispybWS", targetNamespace = "http://ispyb.ejb3.webservices.em")
@@ -52,7 +51,7 @@ import org.slf4j.LoggerFactory;
 //@WebContext(authMethod = "BASIC", secureWSDLAccess = false, transportGuarantee = "NONE")
 public class ToolsForEMDataCollection{
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = Logger.getLogger(ToolsForEMDataCollection.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
@@ -114,12 +113,12 @@ public class ToolsForEMDataCollection{
 			/** No action to be done **/
 		}
 		try {
-			log.info("addMovie. technique=EM proposal={} proteinAcronym={} sampleAcronym={} movieDirectory={} moviePath={} movieNumber={} micrographPath={} thumbnailMicrographPath={} xmlMetaDataPath={} voltage={} sphericalAberration={} magnification={} scannedPixelSize={} imagesCount={} dosePerImage={} positionX={} positionY={} beamLineName={} startTime={} gridSquareSnapshotFullPath={}", proposal, proteinAcronym, sampleAcronym, movieDirectory, movieFullPath, movieNumber, micrographFullPath, micrographSnapshotFullPath, xmlMetaDataFullPath, voltage,sphericalAberration,magnification,scannedPixelSize,imagesCount,dosePerImage,positionX, positionY,beamlineName, startTime, gridSquareSnapshotFullPath);
+			log.info(String.format("addMovie. technique=EM proposal=%s proteinAcronym=%s sampleAcronym=%s movieDirectory=%s moviePath=%s movieNumber=%s micrographPath=%s thumbnailMicrographPath=%s xmlMetaDataPath=%s voltage=%s sphericalAberration=%s magnification=%s scannedPixelSize=%s imagesCount=%s dosePerImage=%s positionX=%s positionY=%s beamLineName=%s startTime=%s gridSquareSnapshotFullPath=%s", proposal, proteinAcronym, sampleAcronym, movieDirectory, movieFullPath, movieNumber, micrographFullPath, micrographSnapshotFullPath, xmlMetaDataFullPath, voltage,sphericalAberration,magnification,scannedPixelSize,imagesCount,dosePerImage,positionX, positionY,beamlineName, startTime, gridSquareSnapshotFullPath));
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addMovie(proposal, proteinAcronym, sampleAcronym, movieDirectory, movieFullPath, movieNumber, micrographFullPath, micrographSnapshotFullPath, xmlMetaDataFullPath, voltage, sphericalAberration, amplitudeContrast, magnification, scannedPixelSize, imagesCount, dosePerImage, positionX, positionY, beamlineName.toUpperCase(),startTime, gridSquareSnapshotFullPath);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.error("Error addMovie: {}. technique=EM proposal={} proteinAcronym={}  sampleAcronym={} movieDirectory={} moviePath={} movieNumber={} micrographPath={} thumbnailMicrographPath={} xmlMetaDataPath={} voltage={} sphericalAberration={} magnification={} scannedPixelSize={} imagesCount={} dosePerImage={} positionX={} positionY={} beamLineName={} startTime={} gridSquareSnapshotFullPath={} cause={}",exp.getMessage(),  proposal, proteinAcronym, sampleAcronym, movieDirectory, movieFullPath, movieNumber, micrographFullPath, micrographSnapshotFullPath, xmlMetaDataFullPath, voltage,sphericalAberration,magnification,scannedPixelSize,imagesCount,dosePerImage,positionX, positionY,beamlineName, startTime, gridSquareSnapshotFullPath, exp.getCause());
+			log.error(String.format("Error addMovie: %s. technique=EM proposal=%s proteinAcronym=%s  sampleAcronym=%s movieDirectory=%s moviePath=%s movieNumber=%s micrographPath=%s thumbnailMicrographPath=%s xmlMetaDataPath=%s voltage=%s sphericalAberration=%s magnification=%s scannedPixelSize=%s imagesCount=%s dosePerImage=%s positionX=%s positionY=%s beamLineName=%s startTime=%s gridSquareSnapshotFullPath=%s cause=%s",exp.getMessage(),  proposal, proteinAcronym, sampleAcronym, movieDirectory, movieFullPath, movieNumber, micrographFullPath, micrographSnapshotFullPath, xmlMetaDataFullPath, voltage,sphericalAberration,magnification,scannedPixelSize,imagesCount,dosePerImage,positionX, positionY,beamlineName, startTime, gridSquareSnapshotFullPath, exp.getCause()));
 		}
 		return null;
 	}
@@ -144,19 +143,21 @@ public class ToolsForEMDataCollection{
 			)	
 	{
 		try {
-			log.info("addMotionCorrection. technique=EM "
-					+ "proposal={} movieFullPath={} firstFrame={} lastFrame={} dosePerFrame={} doseWeight={} totalMotion={} averageMotionPerFrame={}  driftPlotFullPath={} micrographFullPath={} micrographSnapshotFullPath={} correctedDoseMicrographFullPath={} logFileFullPath={}", 
-					proposal, movieFullPath, firstFrame, lastFrame, dosePerFrame, doseWeight, totalMotion, averageMotionPerFrame, driftPlotFullPath, micrographFullPath,
-					micrographSnapshotFullPath, correctedDoseMicrographFullPath, logFileFullPath);
+			log.info(String.format(
+					"addMotionCorrection. technique=EM proposal=%s movieFullPath=%s firstFrame=%s lastFrame=%s dosePerFrame=%s doseWeight=%s totalMotion=%s averageMotionPerFrame=%s driftPlotFullPath=%s micrographFullPath=%s micrographSnapshotFullPath=%s correctedDoseMicrographFullPath=%s logFileFullPath=%s",
+					proposal, movieFullPath, firstFrame, lastFrame, dosePerFrame, doseWeight, totalMotion, averageMotionPerFrame, driftPlotFullPath,
+					micrographFullPath, micrographSnapshotFullPath, correctedDoseMicrographFullPath, logFileFullPath));
+
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addMotionCorrection(proposal, movieFullPath, firstFrame, lastFrame, dosePerFrame, doseWeight, totalMotion, averageMotionPerFrame, driftPlotFullPath, micrographFullPath,
 					micrographSnapshotFullPath, correctedDoseMicrographFullPath, logFileFullPath);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.info("addMotionCorrection. technique=EM "
-					+ "proposal={} movieFullPath={} firstFrame={} lastFrame={} dosePerFrame={} doseWeight={} totalMotion={} averageMotionPerFrame={}  driftPlotFullPath={} micrographFullPath={} micrographSnapshotFullPath={} correctedDoseMicrographFullPath={} logFileFullPath={} cause={}", 
-					proposal, movieFullPath, firstFrame, lastFrame, dosePerFrame, doseWeight, totalMotion, averageMotionPerFrame, driftPlotFullPath, micrographFullPath,
-					micrographSnapshotFullPath, correctedDoseMicrographFullPath, logFileFullPath, exp.getCause());
+				log.warn(String.format(
+						"addMotionCorrection. technique=EM proposal=%s movieFullPath=%s firstFrame=%s lastFrame=%s dosePerFrame=%s doseWeight=%s totalMotion=%s averageMotionPerFrame=%s driftPlotFullPath=%s micrographFullPath=%s micrographSnapshotFullPath=%s correctedDoseMicrographFullPath=%s logFileFullPath=%s cause=%s",
+						proposal, movieFullPath, firstFrame, lastFrame, dosePerFrame, doseWeight, totalMotion, averageMotionPerFrame, driftPlotFullPath,
+						micrographFullPath, micrographSnapshotFullPath, correctedDoseMicrographFullPath, logFileFullPath, exp.getCause()));
+
 		}
 		return null;
 	}
@@ -176,15 +177,17 @@ public class ToolsForEMDataCollection{
 			@WebParam(name = "logFilePath") String logFilePath	
 			)	
 	{
+		String message = String.format(
+				"addCTF. technique=EM proposal=%s movieFullPath=%s spectraImageSnapshotFullPath=%s defocusU=%s defocusV=%s angle=%s crossCorrelationCoefficient=%s resolutionLimit=%s estimatedBfactor=%s logFilePath=%s",
+				proposal, movieFullPath, spectraImageSnapshotFullPath, defocusU, defocusV, angle, crossCorrelationCoefficient, resolutionLimit, estimatedBfactor, logFilePath);
 		try {
-			log.info("addCTF. technique=EM proposal={} movieFullPath={} spectraImageSnapshotFullPath={} spectraImageFullPath={} defocusU={} defocusV={} angle={} crossCorrelationCoefficient={} resolutionLimit={} estimatedBfactor={} logFilePath={}", proposal, movieFullPath, spectraImageSnapshotFullPath, 
-					defocusU, defocusV, angle, crossCorrelationCoefficient, resolutionLimit, estimatedBfactor, logFilePath);
+			log.info(message);
+
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addCTF(proposal, movieFullPath, spectraImageSnapshotFullPath, spectraImageFullPath, defocusU, defocusV, angle, crossCorrelationCoefficient, resolutionLimit, estimatedBfactor, logFilePath);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.info("addCTF. technique=EM proposal={} movieFullPath={} spectraImageSnapshotFullPath={} spectraImageFullPath={} defocusU={} defocusV={} angle={} crossCorrelationCoefficient={} resolutionLimit={} estimatedBfactor={} logFilePath={} cause={}", proposal, movieFullPath, spectraImageSnapshotFullPath, 
-					defocusU, defocusV, angle, crossCorrelationCoefficient, resolutionLimit, estimatedBfactor, logFilePath, exp.getCause());
+			log.error(message, exp);
 		}
 		return null;
 	}
@@ -201,15 +204,17 @@ public class ToolsForEMDataCollection{
 			@WebParam(name = "fullPathToParticleFile") String fullPathToParticleFile
 			)	
 	{
+		String message = String.format(
+				"addParticlePicker. technique=EM proposal=%s firstMovieFullPath=%s lastMovieFullPath=%s pickingProgram=%s particlePickingTemplate=%s particleDiameter=%s numberOfParticles=%s fullPathToParticleFile=%s",
+				proposal, firstMovieFullPath, lastMovieFullPath, pickingProgram, particlePickingTemplate, particleDiameter, numberOfParticles, fullPathToParticleFile);
 		try {
-			log.info("addParticlePicker. technique=EM proposal={} firstMovieFullPath={} lastMovieFullPath={} pickingProgram={} particlePickingTemplate={} particleDiameter={} numberOfParticles={} fullPathToParticleFile={}", 
-					proposal, firstMovieFullPath, lastMovieFullPath, pickingProgram, particlePickingTemplate, particleDiameter, numberOfParticles,fullPathToParticleFile);
+			log.info(message);
+
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addParticlePicker(proposal, firstMovieFullPath, lastMovieFullPath, pickingProgram, particlePickingTemplate, particleDiameter, numberOfParticles, fullPathToParticleFile);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.info("addParticlePicker. technique=EM proposal={} firstMovieFullPath={} lastMovieFullPath={} pickingProgram={} particlePickingTemplate={} particleDiameter={} numberOfParticles={} fullPathToParticleFile={} cause={}", 
-					proposal, firstMovieFullPath, lastMovieFullPath, pickingProgram, particlePickingTemplate, particleDiameter, numberOfParticles, fullPathToParticleFile, exp.getCause());
+			log.error(message, exp);
 		}
 		return null;
 	}
@@ -225,22 +230,20 @@ public class ToolsForEMDataCollection{
 			@WebParam(name = "classificationProgram") String classificationProgram
 			)	
 	{
+		String message = String.format(
+				"addParticleClassificationGroup. technique=EM particlePickerId=%s type=%s batchNumber=%s " +
+						"numberOfParticlesPerBatch=%s numberOfClassesPerBatch=%s symmetry=%s classificationProgram=%s",
+				particlePickerId, type, batchNumber, numberOfParticlesPerBatch, numberOfClassesPerBatch,
+				symmetry, classificationProgram);
 		try {
-			log.info("addParticleClassificationGroup. technique=EM particlePickerId={} type={} batchNumber={} " + 
-					 "numberOfParticlesPerBatch={} numberOfClassesPerBatch={} symmetry={} " +
-					 "classificationProgram={}", 
-					 particlePickerId, type, batchNumber, numberOfParticlesPerBatch, numberOfClassesPerBatch, 
-					 symmetry, classificationProgram);
+			log.info(message);
+
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addParticleClassificationGroup(particlePickerId, type, batchNumber, numberOfParticlesPerBatch, numberOfClassesPerBatch, 
 					 symmetry, classificationProgram);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.info("addParticleClassificationGroup. technique=EM particlePickerId={} type={} batchNumber={} " + 
-					 "numberOfParticlesPerBatch={} numberOfClassesPerBatch={} symmetry={} " +
-					 "classificationProgram={} cause={}", 
-					 particlePickerId, type, batchNumber, numberOfParticlesPerBatch, numberOfClassesPerBatch, 
-					 symmetry, classificationProgram, exp.getCause());
+			log.info(message, exp);
 		}
 		return null;
 	}
@@ -257,22 +260,20 @@ public class ToolsForEMDataCollection{
 			@WebParam(name = "overallFourierCompleteness") String overallFourierCompleteness
 			)	
 	{
+		String message = String.format(
+				"addParticleClassification. technique=EM particleClassificationGroupId=%s classNumber=%s " +
+						"classImageFullPath=%s particlesPerClass=%s classDistribution=%s rotationAccuracy=%s translationAccuracy=%s estimatedResolution=%s " +
+						"overallFourierCompleteness=%s",
+				particleClassificationGroupId, classNumber, classImageFullPath, particlesPerClass, classDistribution, rotationAccuracy,
+				translationAccuracy, estimatedResolution, overallFourierCompleteness);
 		try {
-			log.info("addParticleClassification. technique=EM particleClassificationGroupId={} classNumber={} " + 
-					 "classImageFullPath={} particlesPerClass={} classDistribution={} rotationAccuracy={} translationAccuracy={} estimatedResolution={} " + 
-					 "overallFourierCompleteness={}", 
-					 particleClassificationGroupId, classNumber, classImageFullPath, particlesPerClass, classDistribution, rotationAccuracy, 
-					 translationAccuracy, estimatedResolution, overallFourierCompleteness);
+			log.info(message);
 			EM3Service service = (EM3Service) ejb3ServiceLocator.getLocalService(EM3Service.class);
 			return service.addParticleClassification(particleClassificationGroupId, classNumber, classImageFullPath,
 					 particlesPerClass, classDistribution, classDistribution=rotationAccuracy, translationAccuracy, estimatedResolution, overallFourierCompleteness);
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.info("addParticleClassification. technique=EM particleClassificationGroupId={} classNumber={} " + 
-					 "classImageFullPath={} particlesPerClass={} classDistribution={} rotationAccuracy={} translationAccuracy={} estimatedResolution={} " + 
-					 "overallFourierCompleteness={} cause={}", 
-					 particleClassificationGroupId, classNumber, classImageFullPath, particlesPerClass, classDistribution, rotationAccuracy, 
-					 translationAccuracy, estimatedResolution, overallFourierCompleteness, exp.getCause());
+			log.error(message, exp);
 		}
 		return null;
 	}
@@ -287,7 +288,7 @@ public class ToolsForEMDataCollection{
 			throw new Exception("Not implemented yet");
 		} catch (Exception exp) {
 			exp.printStackTrace();
-			log.error("getDataCollectionsByWorkingFolder. technique=EM proposal={} workingFolder={} ", proposal, workingFolder);
+			log.error(String.format("getDataCollectionsByWorkingFolder. technique=EM proposal=%s workingFolder=%s ", proposal, workingFolder) ,exp);
 		}
 		return null;
 	}
