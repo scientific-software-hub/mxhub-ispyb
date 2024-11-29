@@ -29,6 +29,9 @@ COPY ispyb-ejb/pdf/ParcelLabelsTemplate-WithWorldCourierCL.pdf /etc/ispyb/pdf/
 COPY configuration/tomee/tomee.xml $CATALINA_HOME/conf/
 COPY configuration/tomee/server.xml $CATALINA_HOME/conf/
 
+# disbale file based log appenders
+COPY configuration/tomee/logging.properties $CATALINA_HOME/conf/
+
 # Copy JDBC driver to the Tomcat lib directory
 COPY configuration/mariadb/mariadb-java-client-3.3.3.jar $CATALINA_HOME/lib/
 

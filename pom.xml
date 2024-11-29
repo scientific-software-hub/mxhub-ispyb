@@ -63,12 +63,6 @@
 	<dependencies>
 		<dependency>
 			<groupId>co.elastic.logging</groupId>
-			<artifactId>jul-ecs-formatter</artifactId>
-			<version>1.6.0</version>
-		</dependency>
-
-		<dependency>
-			<groupId>co.elastic.logging</groupId>
 			<artifactId>ecs-logging-core</artifactId>
 			<version>1.6.0</version>
 		</dependency>
@@ -82,15 +76,11 @@
 		<dependency>
 			<groupId>com.fasterxml.jackson.datatype</groupId>
 			<artifactId>jackson-datatype-joda</artifactId>
+			<!-- THIS MUST MATCH TOMCAT LIBS VERSION -->
+			<!-- in my case 2.17.2 -->
 			<version>${jackson-datatype-joda.version}</version>
 		</dependency>
 
-		<!--<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>${slf4j.version}</version>
-			<scope>provided</scope>
-		</dependency>-->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>
 			<artifactId>log4j-api</artifactId>
