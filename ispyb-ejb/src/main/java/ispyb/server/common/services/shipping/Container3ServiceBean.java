@@ -348,7 +348,10 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 			Crystal3VO crystal = sample.getCrystalVO();
 			LOG.info(String.format("Crystal for sample %s is %s %s %s %s %s %s %s", sample.getName(), sample.getCrystalVO().getSpaceGroup(), sample.getCrystalVO().getCellA(),
 					sample.getCrystalVO().getCellB(), sample.getCrystalVO().getCellC(), sample.getCrystalVO().getCellAlpha(), sample.getCrystalVO().getCellBeta(), sample.getCrystalVO().getCellGamma()));
-			Crystal3VO searchCrystal = crystal3Service.findByAcronymAndCellParam(sample.getCrystalVO().getProteinVO().getAcronym(), crystal, proposalId); 
+			if (sample.getCrystalVO().getProteinVO() == null) {
+				throw new Exception ("There is no such protein. Please, add protein first.");
+			}
+			Crystal3VO searchCrystal = crystal3Service.findByAcronymAndCellParam(sample.getCrystalVO().getProteinVO().getAcronym(), crystal, proposalId);
 			
 			if (searchCrystal != null ){
 				LOG.info(String.format("Crystal found %s", searchCrystal.getCrystalId()));
