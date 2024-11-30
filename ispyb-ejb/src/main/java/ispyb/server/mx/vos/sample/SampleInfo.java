@@ -29,38 +29,40 @@ public class SampleInfo implements Serializable, Cloneable{
 
 	private static final long serialVersionUID = -3203393739645665888L;
 	
-	// sample info
-	protected Integer sampleId;
-	protected String sampleName;
-	protected String code;
-	protected Double holderLength;
-	protected String sampleLocation;
-	protected String smiles;
-	
+	// sample info, BLSample table
+	public Integer sampleId;  //column blSampleId
+	public String sampleName; //column name
+	public String code;
+	public Double holderLength;
+	public String sampleLocation; //column location
+	public String smiles; //column SMILES
+	public Integer blDiffractionPlanId;
+
 	// protein
-	protected String proteinAcronym;
+	public String proteinAcronym; // column acronym
 	
 	// crystal
-	protected Integer crystalId;
-	protected String crystalSpaceGroup;
-	protected Double cellA;
-	protected Double cellB;
-	protected Double cellC;
-	protected Double cellAlpha;
-	protected Double cellBeta;
-	protected Double cellGamma;
+	public Integer crystalId;
+	public String crystalSpaceGroup; //column spaceGroup
+	public Double cellA; //column cell_a
+	public Double cellB; //column cell_b
+	public Double cellC; //column cell_c
+	public Double cellAlpha; //column cell_alpha
+	public Double cellBeta; //column cell_beta
+	public Double cellGamma; //column cell_gamma
+	public Integer crystalDiffractionPlanId;
 	
 	// diffractionPlan
-	protected Double minimalResolution;
-	protected String experimentType;
-	protected DiffractionPlanWS3VO diffractionPlan;
+	public Double minimalResolution;
+	public String experimentType; //column experimentKind
+	public DiffractionPlanWS3VO diffractionPlan;// TODO check fields
 	
 	// container
-	protected String containerSampleChangerLocation;
-	protected String containerCode;
+	public String containerSampleChangerLocation; //sampleChangerLocation
+	public String containerCode;
 	
 	// imagepath
-	protected String blsampleImagePath;
+	public String blsampleImagePath;
 	
 	public SampleInfo() {
 		super();
@@ -94,174 +96,4 @@ public class SampleInfo implements Serializable, Cloneable{
 		this.containerSampleChangerLocation = containerSampleChangerLocation;
 		this.blsampleImagePath = blsampleImagePath;
 	}
-	
-	public Integer getSampleId() {
-		return sampleId;
-	}
-
-	public void setSampleId(Integer sampleId) {
-		this.sampleId = sampleId;
-	}
-
-	public String getSampleName() {
-		return sampleName;
-	}
-
-	public void setSampleName(String sampleName) {
-		this.sampleName = sampleName;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
-	}
-
-	public Double getHolderLength() {
-		return holderLength;
-	}
-
-	public void setHolderLength(Double holderLength) {
-		this.holderLength = holderLength;
-	}
-
-	public String getSampleLocation() {
-		return sampleLocation;
-	}
-
-	public void setSampleLocation(String sampleLocation) {
-		this.sampleLocation = sampleLocation;
-	}
-
-	public String getSmiles() {
-		return smiles;
-	}
-
-	public void setSmiles(String smiles) {
-		this.smiles = smiles;
-	}
-
-	public String getProteinAcronym() {
-		return proteinAcronym;
-	}
-
-	public void setProteinAcronym(String proteinAcronym) {
-		this.proteinAcronym = proteinAcronym;
-	}
-
-	public Integer getCrystalId() {
-		return crystalId;
-	}
-
-	public void setCrystalId(Integer crystalId) {
-		this.crystalId = crystalId;
-	}
-
-	public String getCrystalSpaceGroup() {
-		return crystalSpaceGroup;
-	}
-
-	public void setCrystalSpaceGroup(String crystalSpaceGroup) {
-		this.crystalSpaceGroup = crystalSpaceGroup;
-	}
-
-	public Double getCellA() {
-		return cellA;
-	}
-
-	public void setCellA(Double cellA) {
-		this.cellA = cellA;
-	}
-
-	public Double getCellB() {
-		return cellB;
-	}
-
-	public void setCellB(Double cellB) {
-		this.cellB = cellB;
-	}
-
-	public Double getCellC() {
-		return cellC;
-	}
-
-	public void setCellC(Double cellC) {
-		this.cellC = cellC;
-	}
-
-	public Double getCellAlpha() {
-		return cellAlpha;
-	}
-
-	public void setCellAlpha(Double cellAlpha) {
-		this.cellAlpha = cellAlpha;
-	}
-
-	public Double getCellBeta() {
-		return cellBeta;
-	}
-
-	public void setCellBeta(Double cellBeta) {
-		this.cellBeta = cellBeta;
-	}
-
-	public Double getCellGamma() {
-		return cellGamma;
-	}
-
-	public void setCellGamma(Double cellGamma) {
-		this.cellGamma = cellGamma;
-	}
-
-	public Double getMinimalResolution() {
-		return minimalResolution;
-	}
-
-	public void setMinimalResolution(Double minimalResolution) {
-		this.minimalResolution = minimalResolution;
-	}
-
-	public String getExperimentType() {
-		return experimentType;
-	}
-
-	public void setExperimentType(String experimentType) {
-		this.experimentType = experimentType;
-	}
-
-	public String getContainerSampleChangerLocation() {
-		return containerSampleChangerLocation;
-	}
-
-	public void setContainerSampleChangerLocation(
-			String containerSampleChangerLocation) {
-		this.containerSampleChangerLocation = containerSampleChangerLocation;
-	}
-
-	public String getContainerCode() {
-		return containerCode;
-	}
-
-	public void setContainerCode(String containerCode) {
-		this.containerCode = containerCode;
-	}
-
-	public DiffractionPlanWS3VO getDiffractionPlan() {
-		return diffractionPlan;
-	}
-
-	public void setDiffractionPlan(DiffractionPlanWS3VO diffractionPlan) {
-		this.diffractionPlan = diffractionPlan;
-	}
-
-	public String getBlsampleImagePath() {
-		return blsampleImagePath;
-	}
-
-	public void setBlsampleImagePath(String blsampleImagePath) {
-		this.blsampleImagePath = blsampleImagePath;
-	}	
-
 }

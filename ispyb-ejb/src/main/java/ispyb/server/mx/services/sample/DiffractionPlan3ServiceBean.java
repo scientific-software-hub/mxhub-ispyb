@@ -42,19 +42,6 @@ public class DiffractionPlan3ServiceBean implements DiffractionPlan3Service, Dif
 
 	private final static Logger LOG = Logger.getLogger(DiffractionPlan3ServiceBean.class);
 
-	// Generic HQL request to find instances of DiffractionPlan3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK(boolean fetchLink1, boolean fetchLink2) {
-		return "from DiffractionPlan3VO vo " + (fetchLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (fetchLink2 ? "<inner|left> join fetch vo.link2 " : "") + "where vo.diffractionPlanId = :pk";
-	}
-
-	// Generic HQL request to find all instances of DiffractionPlan3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL(boolean fetchLink1, boolean fetchLink2) {
-		return "from DiffractionPlan3VO vo " + (fetchLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (fetchLink2 ? "<inner|left> join fetch vo.link2 " : "");
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -139,8 +126,12 @@ public class DiffractionPlan3ServiceBean implements DiffractionPlan3Service, Dif
 		checkCreateChangeRemoveAccess();
 		// TODO Edit this business code
 		try{
-			return (DiffractionPlan3VO) entityManager.createQuery(FIND_BY_PK(withLink1, withLink2))
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.createQuery("SELECT vo FROM DiffractionPlan3VO vo "
+							+ (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
+							+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "")
+							+ "where vo.diffractionPlanId = :pk", DiffractionPlan3VO.class)
+					.setParameter("pk", pk)
+					.getSingleResult();
 			}catch(NoResultException e){
 				return null;
 			}
@@ -155,8 +146,11 @@ public class DiffractionPlan3ServiceBean implements DiffractionPlan3Service, Dif
 	 */
 	@SuppressWarnings("unchecked")
 	public List<DiffractionPlan3VO> findAll(final boolean withLink1, final boolean withLink2) throws Exception {
-		
-		List<DiffractionPlan3VO> foundEntities = entityManager.createQuery(FIND_ALL(withLink1, withLink2)).getResultList();
+
+		List<DiffractionPlan3VO> foundEntities = entityManager.createQuery("SELECT vo FROM DiffractionPlan3VO vo "
+				+ (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
+				+ (withLink2 ? "<inner|left> join fetch vo.link2 " : ""), DiffractionPlan3VO.class)
+				.getResultList();
 		return foundEntities;
 	}
 

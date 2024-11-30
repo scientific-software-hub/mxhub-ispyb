@@ -467,48 +467,44 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 			final String status) throws Exception {
 		
 		EJBAccessTemplate template = new EJBAccessTemplate(LOG, context, this);
-		List orders = (List) template.execute(new EJBAccessCallback() {
-			public Object doInEJBAccess(Object parent) throws Exception {
-				List listInfo= new ArrayList<>();
+		List<SampleInfo> orders = (List<SampleInfo>)template.execute(new EJBAccessCallback() {
+			public List<SampleInfo> doInEJBAccess(Object parent) throws Exception {
 				if (beamlineLocation == null && status == null && crystalFormId == null){
-					List o = entityManager.createNativeQuery(" SELECT BLSample.blSampleId, BLSample.name, BLSample.code,  "
-							+ "BLSample.holderLength, BLSample.location, BLSample.SMILES, BLSample.diffractionPlanId as BLSampleDiffractionPlanId, Protein.acronym, "
-							+ "Crystal.crystalId, Crystal.spaceGroup, Crystal.cell_a, Crystal.cell_b, Crystal.cell_c, "
-							+ "Crystal.cell_alpha, Crystal.cell_beta, Crystal.cell_gamma, "
-							+ "Crystal.diffractionPlanId as CrystalDiffractionPlanId, "
-							+ "Container.sampleChangerLocation, Container.code as containerCode "
+					Query q =  entityManager.createNativeQuery(" SELECT BLSample.blSampleId as sampleId, BLSample.name as sampleName, BLSample.code,  "
+							+ "BLSample.holderLength, BLSample.location as sampleLocation, BLSample.SMILES as smiles, BLSample.diffractionPlanId as blDiffractionPlanId, Protein.acronym as proteinAcronym, "
+							+ "Crystal.crystalId, Crystal.spaceGroup as crystalSpaceGroup, Crystal.cell_a as cellA, Crystal.cell_b as cellB, Crystal.cell_c as cellC, "
+							+ "Crystal.cell_alpha as cellAlpha, Crystal.cell_beta as cellBeta, Crystal.cell_gamma as cellGamma, "
+							+ "Crystal.diffractionPlanId as crystalDiffractionPlanId, "
+							+ "Container.sampleChangerLocation as containerSampleChangerLocation, Container.code as containerCode "
 							+ "FROM BLSample, Crystal, Protein,Container "
 							+ "WHERE BLSample.crystalId=Crystal.crystalId AND "
 							+ "Crystal.proteinId=Protein.proteinId AND "
 							+ "BLSample.containerId=Container.containerId "
-							+ " AND Protein.proposalId = " + proposalId).getResultList();
-					listInfo = o;
+							+ " AND Protein.proposalId = " + proposalId, SampleInfo.class);
+					return		q.getResultList();
 				}
 				else if (crystalFormId != null){
 					Query q = entityManager
-							.createNativeQuery(" SELECT BLSample.blSampleId, BLSample.name, BLSample.code,  "
-									+ "BLSample.holderLength, BLSample.location, BLSample.SMILES, BLSample.diffractionPlanId as BLSampleDiffractionPlanId, Protein.acronym, "
-									+ "Crystal.crystalId, Crystal.spaceGroup, Crystal.cell_a, Crystal.cell_b, Crystal.cell_c, "
-									+ "Crystal.cell_alpha, Crystal.cell_beta, Crystal.cell_gamma, "
-									+ "Crystal.diffractionPlanId as CrystalDiffractionPlanId, "
-									+ "Container.sampleChangerLocation, Container.code as containerCode "
+							.createNativeQuery(" SELECT BLSample.blSampleId as sampleId, BLSample.name as sampleName, BLSample.code,  "
+									+ "BLSample.holderLength, BLSample.location as sampleLocation, BLSample.SMILES as smiles, BLSample.diffractionPlanId as blDiffractionPlanId, Protein.acronym as proteinAcronym, "
+									+ "Crystal.crystalId, Crystal.spaceGroup as crystalSpaceGroup, Crystal.cell_a as cellA, Crystal.cell_b as cellB, Crystal.cell_c as cellC, "
+									+ "Crystal.cell_alpha as cellAlpha, Crystal.cell_beta as cellBeta, Crystal.cell_gamma as cellGamma, "
+									+ "Crystal.diffractionPlanId as crystalDiffractionPlanId, "
+									+ "Container.sampleChangerLocation as containerSampleChangerLocation, Container.code as containerCode "
 									+ "FROM BLSample, Crystal, Protein,Container "
 									+ "WHERE BLSample.crystalId=Crystal.crystalId AND "
 									+ "Crystal.proteinId=Protein.proteinId AND "
 									+ "BLSample.containerId=Container.containerId "
-									+ " AND Crystal.crystalId = " + crystalFormId );
-					List o = q.getResultList();
-					listInfo = o;
+									+ " AND Crystal.crystalId = " + crystalFormId, SampleInfo.class);
+					return q.getResultList();
 				}
-		
-				else {
 					Query q = entityManager
-					.createNativeQuery(" SELECT BLSample.blSampleId, BLSample.name, BLSample.code,  "
-							+ "BLSample.holderLength, BLSample.location, BLSample.SMILES, BLSample.diffractionPlanId as BLSampleDiffractionPlanId, Protein.acronym, "
-							+ "Crystal.crystalId, Crystal.spaceGroup, Crystal.cell_a, Crystal.cell_b, Crystal.cell_c, "
-							+ "Crystal.cell_alpha, Crystal.cell_beta, Crystal.cell_gamma, "
-							+ "Crystal.diffractionPlanId as CrystalDiffractionPlanId, "
-							+ "Container.sampleChangerLocation, Container.code as containerCode "
+					.createNativeQuery(" SELECT BLSample.blSampleId as sampleId, BLSample.name as sampleName, BLSample.code,  "
+							+ "BLSample.holderLength, BLSample.location as sampleLocation, BLSample.SMILES as smiles, BLSample.diffractionPlanId as blDiffractionPlanId, Protein.acronym as proteinAcronym, "
+							+ "Crystal.crystalId, Crystal.spaceGroup as crystalSpaceGroup, Crystal.cell_a as cellA, Crystal.cell_b as cellB, Crystal.cell_c as cellC, "
+							+ "Crystal.cell_alpha as cellAlpha, Crystal.cell_beta as cellBeta, Crystal.cell_gamma as cellGamma, "
+							+ "Crystal.diffractionPlanId as crystalDiffractionPlanId, "
+							+ "Container.sampleChangerLocation as containerSampleChangerLocation, Container.code as containerCode "
 							+ "FROM BLSample, Crystal, Protein,Container "
 							+ "WHERE BLSample.crystalId=Crystal.crystalId AND "
 							+ "Crystal.proteinId=Protein.proteinId AND "
@@ -516,81 +512,42 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 							+ " AND " + "(Container.containerStatus LIKE '" + status
 							+ "' OR BLSample.blSampleStatus LIKE '" + status + "') AND "
 							+ "(Container.beamlineLocation like '" + beamlineLocation
-							+ "' OR (Container.beamlineLocation IS NULL OR Container.beamlineLocation like ''))");
+							+ "' OR (Container.beamlineLocation IS NULL OR Container.beamlineLocation like ''))", SampleInfo.class);
 
-                                        System.out.println(" SELECT BLSample.blSampleId, BLSample.name, BLSample.code,  "
-												+ "BLSample.holderLength, BLSample.location, BLSample.SMILES, BLSample.diffractionPlanId as BLSampleDiffractionPlanId, Protein.acronym, "
-												+ "Crystal.crystalId, Crystal.spaceGroup, Crystal.cell_a, Crystal.cell_b, Crystal.cell_c, "
-												+ "Crystal.cell_alpha, Crystal.cell_beta, Crystal.cell_gamma, "
-												+ "Crystal.diffractionPlanId as CrystalDiffractionPlanId, "
-												+ "Container.sampleChangerLocation, Container.code as containerCode "
-												+ "FROM BLSample, Crystal, Protein,Container "
-												+ "WHERE BLSample.crystalId=Crystal.crystalId AND "
-												+ "Crystal.proteinId=Protein.proteinId AND "
-												+ "BLSample.containerId=Container.containerId " + " AND Protein.proposalId = " + proposalId
-                                                        + " AND " + "(Container.containerStatus LIKE '" + status
-                                                        + "' OR BLSample.blSampleStatus LIKE '" + status + "') AND "
-                                                        + "(Container.beamlineLocation like '" + beamlineLocation
-                                                        + "' OR (Container.beamlineLocation IS NULL OR Container.beamlineLocation like ''))");
-					List o = q.getResultList();
-					listInfo = o;
-				}
-				return listInfo;
+					return q.getResultList();
 			}
 		});
 
-		List<SampleInfo> listVOs = null;
-		int nb = orders.size();
-		if (nb > 0)
-			listVOs = new ArrayList<SampleInfo>();
+		if(orders.isEmpty()) return null;
 
-		Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
-		DiffractionPlan3Service diffractionPlanService = (DiffractionPlan3Service) ejb3ServiceLocator
-		.getLocalService(DiffractionPlan3Service.class);
+		orders.forEach(sampleInfo -> {
+			String blSampleImage = getSampleImagepath(sampleInfo.sampleId);
+			sampleInfo.blsampleImagePath = blSampleImage;
+			DiffractionPlanWS3VO diffPlanws = getDiffractionPlan(sampleInfo);
+			sampleInfo.diffractionPlan = diffPlanws;
+		});
 
-		for (int i = 0; i < nb; i++) {
-			Object[] o = (Object[]) orders.get(i);
-			int j=0;
-			Integer blSampleId = (Integer) o[j++];
-			String sampleName = (String) o[j++];
-			String sampleCode = (String) o[j++];
-			Double holderLength = (Double) o[j++];
-			String sampleLocation = (String) o[j++];
-			String smiles = (String) o[j++];
-			Integer sampleDiffractionPlanId = (Integer) o[j++];
-			String proteinAcronym = (String) o[j++];
-			Integer crystalId = (Integer) o[j++];
-			String crystalSpaceGroup = (String) o[j++];
-			Double cellA = (Double) o[j++];
-			Double cellB = (Double) o[j++];
-			Double cellC = (Double) o[j++];
-			Double cellAlpha = (Double) o[j++];
-			Double cellBeta = (Double) o[j++];
-			Double cellGamma = (Double) o[j++];
-			Integer crystalDiffractionPlanId = (Integer) o[j++];
-			String containerSCLocation = (String) o[j++];
-			String containerCode = (String) o[j++];
+		return orders.toArray(new SampleInfo[0]);
+	}
+
+	private DiffractionPlanWS3VO getDiffractionPlan(SampleInfo sampleInfo) {
+		try {
+			Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
+			DiffractionPlan3Service diffractionPlanService = (DiffractionPlan3Service) ejb3ServiceLocator
+					.getLocalService(DiffractionPlan3Service.class);
 			DiffractionPlan3VO diffractionPlan = new DiffractionPlan3VO();
-			
-			String blSampleImage = getSampleImagepath(blSampleId);
-			
-			if (sampleDiffractionPlanId != null) {
-				diffractionPlan = diffractionPlanService.findByPk(sampleDiffractionPlanId, false, false);
-			} else if (crystalDiffractionPlanId != null)
-				diffractionPlan = diffractionPlanService.findByPk(crystalDiffractionPlanId, false, false);
+			if (sampleInfo.blDiffractionPlanId!= null) {
+				diffractionPlan = diffractionPlanService.findByPk(sampleInfo.blDiffractionPlanId, false, false);
+			} else if (sampleInfo.crystalDiffractionPlanId != null)
+				diffractionPlan = diffractionPlanService.findByPk(sampleInfo.crystalDiffractionPlanId, false, false);
 			Double minimalResolution = diffractionPlan.getMinimalResolution();
+			sampleInfo.minimalResolution = minimalResolution;
 			String experimentType = diffractionPlan.getExperimentKind();
-			DiffractionPlanWS3VO diffPlanws = new DiffractionPlanWS3VO(diffractionPlan);
-			SampleInfo sampleInfo = new SampleInfo(blSampleId, sampleName, sampleCode,
-					 holderLength,  sampleLocation,  smiles, proteinAcronym, crystalId,
-					 crystalSpaceGroup, cellA, cellB, cellC, cellAlpha, cellBeta, cellGamma, minimalResolution,
-					 experimentType, containerSCLocation, containerCode, diffPlanws, blSampleImage) ;
-			listVOs.add(sampleInfo);
+			sampleInfo.experimentType = experimentType;
+			return new DiffractionPlanWS3VO(diffractionPlan);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		if (listVOs == null)
-			return null;
-		SampleInfo[] tmpResults = new SampleInfo[listVOs.size()];
-		return listVOs.toArray(tmpResults);
 	}
 
 	/**
@@ -1084,14 +1041,18 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 
 	/* Private methods ------------------------------------------------------ */
 
-	private String getSampleImagepath(Integer blSampleId) throws Exception {
+	private String getSampleImagepath(Integer blSampleId) {
 		
 		// we suppose that only 1 image is created for now for 1 BLSample 
-		Set<BLSampleImage3VO> blsampleImageVOs = this.findByPk(blSampleId, false, false, true).getBlsampleImageVOs();
-		if (blsampleImageVOs != null && !blsampleImageVOs.isEmpty()) {	 
-			BLSampleImage3VO vo = (BLSampleImage3VO) blsampleImageVOs.toArray()[0];	
-			return vo.getImageFullPath();
-		} else {
+		try {
+			Set<BLSampleImage3VO> blsampleImageVOs = this.findByPk(blSampleId, false, false, true).getBlsampleImageVOs();
+			if (blsampleImageVOs != null && !blsampleImageVOs.isEmpty()) {	 
+				BLSampleImage3VO vo = (BLSampleImage3VO) blsampleImageVOs.toArray()[0];	
+				return vo.getImageFullPath();
+			} else {
+				return null;
+			}
+		} catch (Exception e) {
 			return null;
 		}
 	}
