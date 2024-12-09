@@ -63,10 +63,6 @@ public interface Container3Service {
 	public void delete(final Container3VO vo) throws Exception;
 
 	/**
-	 * Set sampleChangerLocation value in Container table to null, not "".
-	 */
-	public void setSampleChangerLocationToNull(Integer containerId) throws Exception;
-	/**
 	 * Finds a Container3 entity by its primary key and set linked value objects if necessary.
 	 * 
 	 * @param pk

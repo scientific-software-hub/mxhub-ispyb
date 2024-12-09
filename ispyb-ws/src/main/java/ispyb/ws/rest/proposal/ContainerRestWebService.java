@@ -49,14 +49,13 @@ public class ContainerRestWebService extends RestWebService {
 			for (int i = 0; i < containerIdList.size(); i++) {
 
 				Container3VO container = this.getContainer3Service().findByPk(containerIdList.get(i), false);
-
-				if(sampleChangerLocationList.get(i) == null || sampleChangerLocationList.get(i).isEmpty()) {
-					container.setSampleChangerLocation(null);
-					this.getContainer3Service().setSampleChangerLocationToNull(container.getContainerId());
-				}
-				else
+				container.setBeamlineLocation(beamlinesList.get(i));
+				if (sampleChangerLocationList.get(i) != null){
 					container.setSampleChangerLocation(sampleChangerLocationList.get(i));
-
+				}
+				else{
+					container.setSampleChangerLocation(null);
+				}
 				this.getContainer3Service().update(container);
 			}
 			
@@ -84,7 +83,7 @@ public class ContainerRestWebService extends RestWebService {
 			for (int i = 0; i < containerIdList.size(); i++) {
 				Container3VO container = this.getContainer3Service().findByPk(containerIdList.get(i), false);
 				container.setSampleChangerLocation(null);
-				this.getContainer3Service().setSampleChangerLocationToNull(container.getContainerId());
+				container.setBeamlineLocation("");
 				this.getContainer3Service().update(container);
 			}			
 			this.logFinish("emptySampleLocation", id, logger);
