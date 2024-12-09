@@ -43,12 +43,6 @@ public class ScreeningStrategyWedge3ServiceBean implements ScreeningStrategyWedg
 
 	private final static Logger LOG = Logger.getLogger(ScreeningStrategyWedge3ServiceBean.class);
 
-	// Generic HQL request to find instances of ScreeningStrategyWedge3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of ScreeningStrategyWedge3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

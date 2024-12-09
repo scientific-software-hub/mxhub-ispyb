@@ -43,12 +43,6 @@ public class ScreeningStrategy3ServiceBean implements ScreeningStrategy3Service,
 
 	private final static Logger LOG = Logger.getLogger(ScreeningStrategy3ServiceBean.class);
 
-	// Generic HQL request to find instances of ScreeningStrategy3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of ScreeningStrategy3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	

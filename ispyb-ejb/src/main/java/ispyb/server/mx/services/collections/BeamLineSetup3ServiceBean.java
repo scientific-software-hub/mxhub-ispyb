@@ -48,12 +48,6 @@ public class BeamLineSetup3ServiceBean implements BeamLineSetup3Service, BeamLin
 
 	private final static Logger LOG = Logger.getLogger(BeamLineSetup3ServiceBean.class);
 
-	// Generic HQL request to find instances of BeamLineSetup by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of BeamLineSetup
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	

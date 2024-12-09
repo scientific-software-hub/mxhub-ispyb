@@ -116,41 +116,26 @@ public class DiffractionPlan3ServiceBean implements DiffractionPlan3Service, Dif
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the DiffractionPlan3 value object
 	 */
 	public DiffractionPlan3VO findByPk(final Integer pk, final boolean withLink1, final boolean withLink2)
 			throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return entityManager.createQuery("SELECT vo FROM DiffractionPlan3VO vo "
-							+ (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-							+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "")
-							+ "where vo.diffractionPlanId = :pk", DiffractionPlan3VO.class)
-					.setParameter("pk", pk)
-					.getSingleResult();
-			}catch(NoResultException e){
-				return null;
-			}
+			return entityManager.find(DiffractionPlan3VO.class, pk);
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all DiffractionPlan3s and set linked value objects if necessary
-	 * 
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<DiffractionPlan3VO> findAll(final boolean withLink1, final boolean withLink2) throws Exception {
 
-		List<DiffractionPlan3VO> foundEntities = entityManager.createQuery("SELECT vo FROM DiffractionPlan3VO vo "
-				+ (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (withLink2 ? "<inner|left> join fetch vo.link2 " : ""), DiffractionPlan3VO.class)
-				.getResultList();
+		List<DiffractionPlan3VO> foundEntities = entityManager.createQuery("SELECT vo FROM DiffractionPlan3VO vo ").getResultList();
 		return foundEntities;
 	}
 

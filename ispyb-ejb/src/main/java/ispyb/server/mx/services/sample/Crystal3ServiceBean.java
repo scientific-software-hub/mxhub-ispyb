@@ -53,12 +53,6 @@ public class Crystal3ServiceBean implements Crystal3Service, Crystal3ServiceLoca
 
 	private final static Logger LOG = Logger.getLogger(Crystal3ServiceBean.class);
 
-	// Generic HQL request to find instances of Crystal3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of Crystal3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -175,17 +169,12 @@ public class Crystal3ServiceBean implements Crystal3Service, Crystal3ServiceLoca
 	// TODO remove following method if not adequate
 	/**
 	 * Find all Crystal3s and set linked value objects if necessary
-	 * 
-	 * @param withLink1
-	 * @param withLink2
+	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Crystal3VO> findAll(final boolean withLink1, final boolean withLink2) throws Exception {
 
-		String qlString = "SELECT vo from Crystal3VO vo "
-				+ (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "");
-		List<Crystal3VO> foundEntities = entityManager.createQuery(qlString).getResultList();
+		List<Crystal3VO> foundEntities = entityManager.createQuery("SELECT vo from Crystal3VO vo ").getResultList();
 		return foundEntities;
 	}
 

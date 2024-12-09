@@ -18,30 +18,19 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.sample;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.sample.BLSubSample3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 
-import java.util.List;
-
-import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.NoResultException;
-
-import org.apache.log4j.Logger;
-
-import ispyb.server.mx.vos.sample.BLSubSample3VO;
 
 /**
  * <p>
@@ -51,22 +40,6 @@ import ispyb.server.mx.vos.sample.BLSubSample3VO;
 @Stateless
 public class BLSubSample3ServiceBean implements BLSubSample3Service,
 		BLSubSample3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(BLSubSample3ServiceBean.class);
-
-	// Generic HQL request to find instances of BLSubSample3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from BLSubSample3VO vo "
-				+ "where vo.blSubSampleId = :pk";
-	}
-
-	// Generic HQL request to find all instances of BLSubSample3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from BLSubSample3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -137,9 +110,7 @@ public class BLSubSample3ServiceBean implements BLSubSample3Service,
 		checkCreateChangeRemoveAccess();
 		// TODO Edit this business code
 		try {
-			return (BLSubSample3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(BLSubSample3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -150,9 +121,8 @@ public class BLSubSample3ServiceBean implements BLSubSample3Service,
 	 */
 	@SuppressWarnings("unchecked")
 	public List<BLSubSample3VO> findAll()throws Exception {
-		
-		List<BLSubSample3VO> foundEntities = (List<BLSubSample3VO>) entityManager.createQuery(
-				FIND_ALL()).getResultList();
+
+		List<BLSubSample3VO> foundEntities = (List<BLSubSample3VO>) entityManager.createQuery("SELECT vo from BLSubSample3VO vo ").getResultList();
 		return foundEntities;
 	}
 

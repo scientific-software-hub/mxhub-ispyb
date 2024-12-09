@@ -39,13 +39,6 @@ public class AutoProc3ServiceBean implements AutoProc3Service, AutoProc3ServiceL
 
 	private final static Logger LOG = Logger.getLogger(AutoProc3ServiceBean.class);
 
-	// Generic HQL request to find instances of AutoProc3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of AutoProc3
-	// TODO choose between left/inner join
-
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

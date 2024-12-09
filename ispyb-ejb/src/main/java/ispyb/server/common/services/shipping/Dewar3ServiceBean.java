@@ -54,10 +54,6 @@ public class Dewar3ServiceBean implements Dewar3Service, Dewar3ServiceLocal {
 
 	public static final String LOCATION_EMPTY = "EMPTY"; // to encode URL parameters values
 
-
-	// Generic HQL request to find all instances of Dewar3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -131,13 +127,8 @@ public class Dewar3ServiceBean implements Dewar3Service, Dewar3ServiceLocal {
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the Dewar3 value object
 	 */
-
-	// Generic HQL request to find instances of Dewar3 by pk
-	// TODO choose between left/inner join
 	public Dewar3VO findByPk(final Integer pk, final boolean withContainers, final boolean withDewarTransportHistory) throws Exception {
 		
 		checkCreateChangeRemoveAccess();

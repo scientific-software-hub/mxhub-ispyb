@@ -45,13 +45,6 @@ public class PhasingHasScaling3ServiceBean implements PhasingHasScaling3Service,
 
 	private final static Logger LOG = Logger.getLogger(PhasingHasScaling3ServiceBean.class);
 
-	// Generic HQL request to find instances of PhasingHasScaling3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of PhasingHasScaling3
-	// TODO choose between left/inner join
-
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -115,11 +108,7 @@ public class PhasingHasScaling3ServiceBean implements PhasingHasScaling3Service,
 	
 		checkCreateChangeRemoveAccess();
 		try {
-			String qlString = "SELECT vo from PhasingHasScaling3VO vo "
-					+ "where vo.phasingHasScalingId = :pk";
-			return entityManager
-					.createQuery(qlString, PhasingHasScaling3VO.class)
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(PhasingHasScaling3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}

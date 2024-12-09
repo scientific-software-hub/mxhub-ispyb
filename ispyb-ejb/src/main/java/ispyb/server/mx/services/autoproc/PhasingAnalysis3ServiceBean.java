@@ -25,8 +25,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 import ispyb.server.common.exceptions.AccessDeniedException;
 
 import ispyb.server.mx.vos.autoproc.PhasingAnalysis3VO;
@@ -39,22 +37,6 @@ import ispyb.server.mx.vos.autoproc.PhasingAnalysis3VO;
 @Stateless
 public class PhasingAnalysis3ServiceBean implements PhasingAnalysis3Service,
 		PhasingAnalysis3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(PhasingAnalysis3ServiceBean.class);
-	
-	// Generic HQL request to find instances of PhasingAnalysis3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from PhasingAnalysis3VO vo "
-				+ "where vo.phasingAnalysisId = :phasingAnalysisId";
-	}
-
-	// Generic HQL request to find all instances of PhasingAnalysis3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from PhasingAnalysis3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -70,7 +52,6 @@ public class PhasingAnalysis3ServiceBean implements PhasingAnalysis3Service,
 	public PhasingAnalysis3VO create(final PhasingAnalysis3VO vo) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -120,11 +101,8 @@ public class PhasingAnalysis3ServiceBean implements PhasingAnalysis3Service,
 	public PhasingAnalysis3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (PhasingAnalysis3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("phasingAnalysisId", pk).getSingleResult();
+			return entityManager.find(PhasingAnalysis3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -138,7 +116,7 @@ public class PhasingAnalysis3ServiceBean implements PhasingAnalysis3Service,
 	@SuppressWarnings("unchecked")
 	public List<PhasingAnalysis3VO> findAll()throws Exception {
 
-		List<PhasingAnalysis3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<PhasingAnalysis3VO> foundEntities = entityManager.createQuery("SELECT vo from PhasingAnalysis3VO vo ").getResultList();
 		return foundEntities;
 	}
 

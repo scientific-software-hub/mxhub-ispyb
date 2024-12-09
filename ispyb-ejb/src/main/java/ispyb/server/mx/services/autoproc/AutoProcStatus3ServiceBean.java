@@ -25,8 +25,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 import ispyb.server.common.exceptions.AccessDeniedException;
 import ispyb.server.mx.vos.autoproc.AutoProcStatus3VO;
 
@@ -38,20 +36,6 @@ import ispyb.server.mx.vos.autoproc.AutoProcStatus3VO;
 @Stateless
 public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 		AutoProcStatus3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(AutoProcStatus3ServiceBean.class);
-
-	// Generic HQL request to find instances of AutoProcStatus3 by pk
-	private static final String FIND_BY_PK() {
-		return "from AutoProcStatus3VO vo "
-				+ "where vo.autoProcStatusId = :pk";
-	}
-
-	// Generic HQL request to find all instances of AutoProcStatus3
-	private static final String FIND_ALL() {
-		return "from AutoProcStatus3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -67,7 +51,6 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 	public AutoProcStatus3VO create(final AutoProcStatus3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -81,7 +64,6 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 	public AutoProcStatus3VO update(final AutoProcStatus3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -94,7 +76,6 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 
 		checkCreateChangeRemoveAccess();
 		AutoProcStatus3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -105,7 +86,6 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 	public void delete(final AutoProcStatus3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -117,9 +97,8 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 	public AutoProcStatus3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (AutoProcStatus3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk).getSingleResult();
+			return entityManager.find(AutoProcStatus3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -131,7 +110,7 @@ public class AutoProcStatus3ServiceBean implements AutoProcStatus3Service,
 	@SuppressWarnings("unchecked")
 	public List<AutoProcStatus3VO> findAll() throws Exception {
 
-		List<AutoProcStatus3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<AutoProcStatus3VO> foundEntities = entityManager.createQuery("SELECT vo from AutoProcStatus3VO vo ").getResultList();
 		return foundEntities;
 	}
 

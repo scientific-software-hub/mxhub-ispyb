@@ -34,7 +34,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -44,21 +43,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class Detector3ServiceBean implements Detector3Service,
 		Detector3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(Detector3ServiceBean.class);
-
-	// Generic HQL request to find instances of Detector3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from Detector3VO vo " + "where vo.detectorId = :pk";
-	}
-
-	// Generic HQL request to find all instances of Detector3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from Detector3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -136,7 +120,7 @@ public class Detector3ServiceBean implements Detector3Service,
 		//autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			return (Detector3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk).getSingleResult();
+			return entityManager.find(Detector3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -164,7 +148,7 @@ public class Detector3ServiceBean implements Detector3Service,
 	public List<Detector3VO> findAll()
 			throws Exception {
 
-		List<Detector3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<Detector3VO> foundEntities = entityManager.createQuery("SELECT vo from Detector3VO vo ").getResultList();
 		return foundEntities;
 	}
 
@@ -182,7 +166,7 @@ public class Detector3ServiceBean implements Detector3Service,
 		//autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			return (Detector3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk).getSingleResult();
+			return entityManager.find(Detector3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}

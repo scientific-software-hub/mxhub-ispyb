@@ -25,8 +25,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 import ispyb.server.common.exceptions.AccessDeniedException;
 
 import ispyb.server.mx.vos.autoproc.IspybAutoProcAttachment3VO;
@@ -39,21 +37,6 @@ import ispyb.server.mx.vos.autoproc.IspybAutoProcAttachment3VO;
 @Stateless
 public class IspybAutoProcAttachment3ServiceBean implements IspybAutoProcAttachment3Service,
 		IspybAutoProcAttachment3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(IspybAutoProcAttachment3ServiceBean.class);
-
-	// Generic HQL request to find instances of IspybAutoProcAttachment3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from IspybAutoProcAttachment3VO vo "  + "where vo.autoProcAttachmentId = :pk";
-	}
-
-	// Generic HQL request to find all instances of IspybAutoProcAttachment3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from IspybAutoProcAttachment3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -104,7 +87,6 @@ public class IspybAutoProcAttachment3ServiceBean implements IspybAutoProcAttachm
 	public void delete(final IspybAutoProcAttachment3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -117,11 +99,10 @@ public class IspybAutoProcAttachment3ServiceBean implements IspybAutoProcAttachm
 
 		checkCreateChangeRemoveAccess();
 		try{
-			return (IspybAutoProcAttachment3VO) entityManager.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
-			}catch(NoResultException e){
-				return null;
-			}
+			return entityManager.find(IspybAutoProcAttachment3VO.class, pk);
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
 	/**
@@ -130,8 +111,8 @@ public class IspybAutoProcAttachment3ServiceBean implements IspybAutoProcAttachm
 	@SuppressWarnings("unchecked")
 	public List<IspybAutoProcAttachment3VO> findAll()
 			throws Exception {
-	
-		List<IspybAutoProcAttachment3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<IspybAutoProcAttachment3VO> foundEntities = entityManager.createQuery("SELECT vo from IspybAutoProcAttachment3VO vo ").getResultList();
 		return foundEntities;
 	}
 

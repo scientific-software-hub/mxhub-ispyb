@@ -18,16 +18,12 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.GridInfo3VO;
 
 import java.util.List;
 
 import ispyb.server.mx.vos.collections.WorkflowMesh3VO;
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -38,7 +34,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -48,23 +43,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class GridInfo3ServiceBean implements GridInfo3Service,
 		GridInfo3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(GridInfo3ServiceBean.class);
-
-
-	// Generic HQL request to find instances of GridInfo3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from GridInfo3VO vo "
-				+ "where vo.gridInfoId = :pk";
-	}
-
-	// Generic HQL request to find all instances of GridInfo3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from GridInfo3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -83,7 +61,6 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 	public GridInfo3VO create(final GridInfo3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -97,7 +74,6 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 	public GridInfo3VO update(final GridInfo3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -110,7 +86,6 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 
 		checkCreateChangeRemoveAccess();
 		GridInfo3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -122,7 +97,6 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 	public void delete(final GridInfo3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -136,11 +110,8 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 	public GridInfo3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (GridInfo3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(GridInfo3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -154,9 +125,9 @@ public class GridInfo3ServiceBean implements GridInfo3Service,
 	@SuppressWarnings("unchecked")
 	public List<GridInfo3VO> findAll()
 			throws Exception {
-		
+
 		List<GridInfo3VO> foundEntities = (List<GridInfo3VO>) entityManager.createQuery(
-				FIND_ALL()).getResultList();
+				"SELECT vo from GridInfo3VO vo ").getResultList();
 		return foundEntities;
 	}
 

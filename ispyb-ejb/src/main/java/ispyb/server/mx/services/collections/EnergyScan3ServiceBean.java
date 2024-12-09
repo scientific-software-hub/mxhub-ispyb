@@ -18,15 +18,11 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.EnergyScan3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -36,7 +32,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -46,22 +41,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class EnergyScan3ServiceBean implements EnergyScan3Service,
 		EnergyScan3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(EnergyScan3ServiceBean.class);
-
-
-	// Generic HQL request to find instances of EnergyScan3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from EnergyScan3VO vo " + "where vo.energyScanId = :pk";
-	}
-
-	// Generic HQL request to find all instances of EnergyScan3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from EnergyScan3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -80,7 +59,6 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 	public EnergyScan3VO create(final EnergyScan3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -94,7 +72,6 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 	public EnergyScan3VO update(final EnergyScan3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -107,7 +84,6 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 		
 		checkCreateChangeRemoveAccess();
 		EnergyScan3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -118,7 +94,6 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 	public void delete(final EnergyScan3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -132,9 +107,8 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 	public EnergyScan3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (EnergyScan3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk).getSingleResult();
+			return entityManager.find(EnergyScan3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -150,7 +124,7 @@ public class EnergyScan3ServiceBean implements EnergyScan3Service,
 	@SuppressWarnings("unchecked")
 	public List<EnergyScan3VO> findAll() throws Exception {
 
-		List<EnergyScan3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<EnergyScan3VO> foundEntities = entityManager.createQuery("SELECT vo from EnergyScan3VO vo ").getResultList();
 		return foundEntities;
 	}
 

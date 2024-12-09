@@ -30,7 +30,6 @@ import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 
@@ -44,20 +43,6 @@ import ispyb.server.mx.vos.autoproc.AutoProcScalingStatistics3VO;
 @Stateless
 public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingStatistics3Service,
 		AutoProcScalingStatistics3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(AutoProcScalingStatistics3ServiceBean.class);
-	
-	// Generic HQL request to find instances of AutoProcScalingStatistics3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from AutoProcScalingStatistics3VO vo " + "where vo.autoProcScalingStatisticsId = :pk";
-	}
-
-	// Generic HQL request to find all instances of AutoProcScalingStatistics3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from AutoProcScalingStatistics3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -75,7 +60,6 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 	public AutoProcScalingStatistics3VO create(final AutoProcScalingStatistics3VO vo) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -91,7 +75,6 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 	public AutoProcScalingStatistics3VO update(final AutoProcScalingStatistics3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -106,7 +89,6 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 
 		checkCreateChangeRemoveAccess();
 		AutoProcScalingStatistics3VO vo = findByPk(pk);
-		// TODO Edit this business code
 		delete(vo);
 	}
 
@@ -119,7 +101,6 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 	public void delete(final AutoProcScalingStatistics3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -137,14 +118,12 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 
 		checkCreateChangeRemoveAccess();
 		try{
-			return (AutoProcScalingStatistics3VO) entityManager.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
-			}catch(NoResultException e){
-				return null;
-			}
+			return entityManager.find(AutoProcScalingStatistics3VO.class, pk);
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all AutoProcScalingStatistics3s and set linked value objects if necessary
 	 * 
@@ -154,8 +133,8 @@ public class AutoProcScalingStatistics3ServiceBean implements AutoProcScalingSta
 	@SuppressWarnings("unchecked")
 	public List<AutoProcScalingStatistics3VO> findAll()
 			throws Exception {
-		
-		List<AutoProcScalingStatistics3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<AutoProcScalingStatistics3VO> foundEntities = entityManager.createQuery("SELECT vo from AutoProcScalingStatistics3VO vo ").getResultList();
 		return foundEntities;
 	}
 	

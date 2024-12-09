@@ -18,16 +18,12 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.XFEFluorescenceSpectrum3VO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -35,7 +31,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -45,22 +40,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpectrum3Service,
 		XFEFluorescenceSpectrum3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(XFEFluorescenceSpectrum3ServiceBean.class);
-
-
-	// Generic HQL request to find instances of XFEFluorescenceSpectrum3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from XFEFluorescenceSpectrum3VO vo "  + "where vo.xfeFluorescenceSpectrumId = :pk";
-	}
-
-	// Generic HQL request to find all instances of XFEFluorescenceSpectrum3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from XFEFluorescenceSpectrum3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -79,7 +58,6 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	public XFEFluorescenceSpectrum3VO create(final XFEFluorescenceSpectrum3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -93,7 +71,6 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	public XFEFluorescenceSpectrum3VO update(final XFEFluorescenceSpectrum3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -106,7 +83,6 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	
 		checkCreateChangeRemoveAccess();
 		XFEFluorescenceSpectrum3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -117,7 +93,6 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	public void delete(final XFEFluorescenceSpectrum3VO vo) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -131,17 +106,13 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	public XFEFluorescenceSpectrum3VO findByPk(final Integer pk) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (XFEFluorescenceSpectrum3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(XFEFluorescenceSpectrum3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-
-	// TODO remove following method if not adequate
 	/**
 	 * Find all XFEFluorescenceSpectrum3s and set linked value objects if necessary
 	 * @param withLink1
@@ -151,7 +122,7 @@ public class XFEFluorescenceSpectrum3ServiceBean implements XFEFluorescenceSpect
 	public List<XFEFluorescenceSpectrum3VO> findAll()
 			throws Exception {
 
-		List<XFEFluorescenceSpectrum3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<XFEFluorescenceSpectrum3VO> foundEntities = entityManager.createQuery("SELECT vo from XFEFluorescenceSpectrum3VO vo ").getResultList();
 		return foundEntities;
 	}
 

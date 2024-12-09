@@ -18,22 +18,17 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.sample;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
+import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.mx.vos.sample.ExperimentKindDetails3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -43,22 +38,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class ExperimentKindDetails3ServiceBean implements ExperimentKindDetails3Service,
 		ExperimentKindDetails3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(ExperimentKindDetails3ServiceBean.class);
-
-	// Generic HQL request to find instances of ExperimentKindDetails3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK(boolean fetchLink1, boolean fetchLink2) {
-		return "from ExperimentKindDetails3VO vo " + (fetchLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (fetchLink2 ? "<inner|left> join fetch vo.link2 " : "") + "where vo.experimentKindId = :pk";
-	}
-
-	// Generic HQL request to find all instances of ExperimentKindDetails3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL(boolean fetchLink1, boolean fetchLink2) {
-		return "from ExperimentKindDetails3VO vo " + (fetchLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (fetchLink2 ? "<inner|left> join fetch vo.link2 " : "");
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -140,10 +119,8 @@ public class ExperimentKindDetails3ServiceBean implements ExperimentKindDetails3
 			throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (ExperimentKindDetails3VO) entityManager.createQuery(FIND_BY_PK(withLink1, withLink2))
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(ExperimentKindDetails3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -152,14 +129,12 @@ public class ExperimentKindDetails3ServiceBean implements ExperimentKindDetails3
 	// TODO remove following method if not adequate
 	/**
 	 * Find all ExperimentKindDetails3s and set linked value objects if necessary
-	 * 
-	 * @param withLink1
-	 * @param withLink2
+	 *
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ExperimentKindDetails3VO> findAll(final boolean withLink1, final boolean withLink2) throws Exception {
 
-		List<ExperimentKindDetails3VO> foundEntities = entityManager.createQuery(FIND_ALL(withLink1, withLink2)).getResultList();
+		List<ExperimentKindDetails3VO> foundEntities = entityManager.createQuery("SELECT vo from ExperimentKindDetails3VO vo ").getResultList();
 		return foundEntities;
 	}
 	

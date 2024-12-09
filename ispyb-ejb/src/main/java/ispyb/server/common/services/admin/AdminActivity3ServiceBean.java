@@ -104,19 +104,14 @@ public class AdminActivity3ServiceBean implements AdminActivity3Service, AdminAc
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
 	 * // Generic HQL request to find instances of AdminActivity3 by pk
-	 * 	// TODO choose between left/inner join
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the AdminActivity3 value object
 	 */
 	public AdminActivity3VO findByPk(final Integer pk, final boolean withLink1, final boolean withLink2) throws Exception {
 		checkCreateChangeRemoveAccess();
 		try {
-			return (AdminActivity3VO) entityManager.createQuery("from AdminActivity3VO vo " + "where vo.adminActivityId = :pk ")
-					.setParameter("pk", pk)
-					.getSingleResult();
+			return entityManager.find(AdminActivity3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -139,15 +134,11 @@ public class AdminActivity3ServiceBean implements AdminActivity3Service, AdminAc
 	 * Find all AdminActivity3s and set linked value objects if necessary
 	 *
 	 * 	// Generic HQL request to find all instances of AdminActivity3
-	 * 	// TODO choose between left/inner join
-	 *
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<AdminActivity3VO> findAll() throws Exception {
 
-		List<AdminActivity3VO> foundEntities = entityManager.createQuery("from AdminActivity3VO vo ").getResultList();
+		List<AdminActivity3VO> foundEntities = entityManager.createQuery("SELECT vo from AdminActivity3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -50,12 +50,6 @@ public class Protein3ServiceBean extends WsServiceBean implements Protein3Servic
 
 	private final static Logger LOG = Logger.getLogger(Protein3ServiceBean.class);
 
-	// Generic HQL request to find instances of Protein3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of Protein3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	

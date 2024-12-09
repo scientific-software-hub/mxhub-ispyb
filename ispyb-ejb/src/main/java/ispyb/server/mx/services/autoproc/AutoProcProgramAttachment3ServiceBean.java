@@ -41,12 +41,6 @@ public class AutoProcProgramAttachment3ServiceBean implements AutoProcProgramAtt
 	private final static Logger LOG = Logger
 			.getLogger(AutoProcProgramAttachment3ServiceBean.class);
 
-	// Generic HQL request to find instances of AutoProcProgramAttachment3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of AutoProcProgramAttachment3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -111,8 +105,6 @@ public class AutoProcProgramAttachment3ServiceBean implements AutoProcProgramAtt
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
 	 * @param pk the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the AutoProcProgramAttachment3 value object
 	 */
 	public AutoProcProgramAttachment3VO findByPk(final Integer pk) throws Exception {
@@ -121,20 +113,14 @@ public class AutoProcProgramAttachment3ServiceBean implements AutoProcProgramAtt
 		//autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from AutoProcProgramAttachment3VO vo where vo.autoProcProgramAttachmentId = :pk";
-			return entityManager.createQuery(qlString, AutoProcProgramAttachment3VO.class)
-					.setParameter("pk", pk)
-					.getSingleResult();
+			return entityManager.find(AutoProcProgramAttachment3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all AutoProcProgramAttachment3s and set linked value objects if necessary
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	public List<AutoProcProgramAttachment3VO> findAll()
 			throws Exception {

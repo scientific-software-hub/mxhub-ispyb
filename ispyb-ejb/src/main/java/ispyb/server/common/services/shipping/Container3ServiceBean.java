@@ -137,12 +137,9 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the Container3 value object
 	 *
 	 * 	// Generic HQL request to find instances of Container3 by pk
-	 * 	// TODO choose between left/inner join
 	 */
 	public Container3VO findByPk(final Integer pk, final boolean fetchSamples) throws Exception {
 
@@ -165,7 +162,6 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 	}
 
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all Container3s and set linked value objects if necessary
 	 *

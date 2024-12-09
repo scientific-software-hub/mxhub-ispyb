@@ -32,8 +32,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 /**
  * <p>
  * This session bean handles ISPyB ScreeningRank3.
@@ -41,21 +39,6 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class ScreeningRank3ServiceBean implements ScreeningRank3Service, ScreeningRank3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(ScreeningRank3ServiceBean.class);
-
-	// Generic HQL request to find instances of ScreeningRank3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from ScreeningRank3VO vo " 
-				+ "where vo.screeningRankId = :pk";
-	}
-
-	// Generic HQL request to find all instances of ScreeningRank3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from ScreeningRank3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -76,7 +59,6 @@ public class ScreeningRank3ServiceBean implements ScreeningRank3Service, Screeni
 	public ScreeningRank3VO create(final ScreeningRank3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -92,7 +74,6 @@ public class ScreeningRank3ServiceBean implements ScreeningRank3Service, Screeni
 	public ScreeningRank3VO update(final ScreeningRank3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -107,7 +88,6 @@ public class ScreeningRank3ServiceBean implements ScreeningRank3Service, Screeni
 
 		checkCreateChangeRemoveAccess();
 		ScreeningRank3VO vo = findByPk(pk);
-		// TODO Edit this business code
 		delete(vo);
 	}
 
@@ -120,7 +100,6 @@ public class ScreeningRank3ServiceBean implements ScreeningRank3Service, Screeni
 	public void delete(final ScreeningRank3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -129,35 +108,26 @@ public class ScreeningRank3ServiceBean implements ScreeningRank3Service, Screeni
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the ScreeningRank3 value object
 	 */
 	public ScreeningRank3VO findByPk(final Integer pk)
 			throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (ScreeningRank3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(ScreeningRank3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-
-	// TODO remove following method if not adequate
 	/**
 	 * Find all ScreeningRank3s and set linked value objects if necessary
-	 * 
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ScreeningRank3VO> findAll() throws Exception {
-	
-		List<ScreeningRank3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<ScreeningRank3VO> foundEntities = entityManager.createQuery("SELECT vo from ScreeningRank3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -30,7 +30,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 
@@ -43,21 +42,6 @@ import ispyb.server.mx.vos.autoproc.PhasingStatistics3VO;
  */
 @Stateless
 public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,PhasingStatistics3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(PhasingStatistics3ServiceBean.class);
-
-	// Generic HQL request to find instances of PhasingStatistics3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from PhasingStatistics3VO vo "
-				+ "where vo.phasingStatisticsId = :pk";
-	}
-
-	// Generic HQL request to find all instances of PhasingStatistics3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from PhasingStatistics3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -73,7 +57,6 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	public PhasingStatistics3VO create(final PhasingStatistics3VO vo) throws Exception {
 
 				checkCreateChangeRemoveAccess();
-				// TODO Edit this business code
 				this.checkAndCompleteData(vo, true);
 				this.entityManager.persist(vo);
 				return vo;
@@ -88,7 +71,6 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	public PhasingStatistics3VO update(final PhasingStatistics3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -101,7 +83,6 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	
 		checkCreateChangeRemoveAccess();
 		PhasingStatistics3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -112,7 +93,6 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	public void delete(final PhasingStatistics3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -124,11 +104,8 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	public PhasingStatistics3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (PhasingStatistics3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(PhasingStatistics3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -141,9 +118,9 @@ public class PhasingStatistics3ServiceBean implements PhasingStatistics3Service,
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PhasingStatistics3VO> findAll()throws Exception {
-	
+
 		List<PhasingStatistics3VO> foundEntities = entityManager.createQuery(
-				FIND_ALL()).getResultList();
+				"SELECT vo from PhasingStatistics3VO vo ").getResultList();
 		return foundEntities;
 	}
 	

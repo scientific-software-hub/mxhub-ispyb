@@ -18,24 +18,17 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.autoproc;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.autoproc.PhasingAnalysis3VO;
 import ispyb.server.mx.vos.autoproc.SubstructureDetermination3VO;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
-import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -45,22 +38,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class SubstructureDetermination3ServiceBean implements SubstructureDetermination3Service,
 		SubstructureDetermination3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(SubstructureDetermination3ServiceBean.class);
-	
-	// Generic HQL request to find instances of SubstructureDetermination3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from SubstructureDetermination3VO vo "
-				+ "where vo.substructureDeterminationId = :substructureDeterminationId";
-	}
-
-	// Generic HQL request to find all instances of SubstructureDetermination3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from SubstructureDetermination3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -76,7 +53,6 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 	public SubstructureDetermination3VO create(final SubstructureDetermination3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -90,7 +66,6 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 	public SubstructureDetermination3VO update(final SubstructureDetermination3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -103,7 +78,6 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 
 		checkCreateChangeRemoveAccess();
 		SubstructureDetermination3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -114,7 +88,6 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 	public void delete(final SubstructureDetermination3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -126,11 +99,8 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 	public SubstructureDetermination3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (SubstructureDetermination3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("substructureDeterminationId", pk).getSingleResult();
+			return entityManager.find(SubstructureDetermination3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -144,9 +114,9 @@ public class SubstructureDetermination3ServiceBean implements SubstructureDeterm
 	@SuppressWarnings("unchecked")
 	public List<SubstructureDetermination3VO> findAll()
 			throws Exception {
-		
+
 		List<SubstructureDetermination3VO> foundEntities = entityManager.createQuery(
-							FIND_ALL()).getResultList();
+				"SELECT vo from SubstructureDetermination3VO vo ").getResultList();
 		return foundEntities;
 	}
 

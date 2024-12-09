@@ -43,12 +43,6 @@ public class ScreeningRankSet3ServiceBean implements ScreeningRankSet3Service, S
 
 	private final static Logger LOG = Logger.getLogger(ScreeningRankSet3ServiceBean.class);
 
-	// Generic HQL request to find instances of ScreeningRankSet3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of ScreeningRankSet3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

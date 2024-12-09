@@ -111,16 +111,13 @@ public class MenuGroup3ServiceBean implements MenuGroup3Service,
 	 * @return the MenuGroup3 value object
 	 *
 	 * 	// Generic HQL request to find instances of MenuGroup3 by pk
-	 * 	// TODO choose between left/inner join
 	 */
 	public MenuGroup3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
 		try {
 			entityManager = entitymanagerFactory.createEntityManager();
-			return (MenuGroup3VO) entityManager.createQuery("select vo from MenuGroup3VO vo " + "where vo.menuGroupId = :pk")
-					.setParameter("pk", pk)
-					.getSingleResult();
+			return entityManager.find(MenuGroup3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		} finally {
@@ -140,14 +137,10 @@ public class MenuGroup3ServiceBean implements MenuGroup3Service,
 		return newVO;
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all MenuGroup3s and set linked value objects if necessary
-	 * @param withLink1
-	 * @param withLink2
 	 *
 	 * 	// Generic HQL request to find all instances of MenuGroup3
-	 * 	// TODO choose between left/inner join
 	 */
 	@SuppressWarnings("unchecked")
 	public List<MenuGroup3VO> findAll(final boolean detachLight) throws Exception {

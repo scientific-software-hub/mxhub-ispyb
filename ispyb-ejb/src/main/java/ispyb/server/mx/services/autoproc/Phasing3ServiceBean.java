@@ -27,7 +27,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 
@@ -40,21 +39,6 @@ import ispyb.server.mx.vos.autoproc.Phasing3VO;
  */
 @Stateless
 public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(Phasing3ServiceBean.class);
-	
-	// Generic HQL request to find instances of Phasing3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from Phasing3VO vo "
-				+ "where vo.phasingId = :phasingId";
-	}
-
-	// Generic HQL request to find all instances of Phasing3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from Phasing3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -70,7 +54,6 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	public Phasing3VO create(final Phasing3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -84,7 +67,6 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	public Phasing3VO update(final Phasing3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -97,7 +79,6 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	
 		checkCreateChangeRemoveAccess();
 		Phasing3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -108,7 +89,6 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	public void delete(final Phasing3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 	
@@ -120,11 +100,8 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	public Phasing3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (Phasing3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("phasingId", pk).getSingleResult();
+			return entityManager.find(Phasing3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -138,7 +115,7 @@ public class Phasing3ServiceBean implements Phasing3Service,Phasing3ServiceLocal
 	@SuppressWarnings("unchecked")
 	public List<Phasing3VO> findAll()throws Exception {
 
-		List<Phasing3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<Phasing3VO> foundEntities = entityManager.createQuery("SELECT vo from Phasing3VO vo ").getResultList();
 		return foundEntities;
 	}
 

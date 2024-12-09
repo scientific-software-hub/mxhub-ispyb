@@ -18,24 +18,17 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.autoproc;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcScalingHasInt3VO;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
-import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -45,21 +38,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3Service,
 		AutoProcScalingHasInt3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(AutoProcScalingHasInt3ServiceBean.class);
-	
-	// Generic HQL request to find instances of AutoProcScalingHasInt3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from AutoProcScalingHasInt3VO vo "  + "where vo.autoProcScalingHasIntId = :pk";
-	}
-
-	// Generic HQL request to find all instances of AutoProcScalingHasInt3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from AutoProcScalingHasInt3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -75,7 +53,6 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 	public AutoProcScalingHasInt3VO create(final AutoProcScalingHasInt3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -89,7 +66,6 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 	public AutoProcScalingHasInt3VO update(final AutoProcScalingHasInt3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -102,7 +78,6 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 
 		checkCreateChangeRemoveAccess();
 		AutoProcScalingHasInt3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -113,7 +88,6 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 	public void delete(final AutoProcScalingHasInt3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -128,14 +102,12 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 
 		checkCreateChangeRemoveAccess();
 		try{
-			return (AutoProcScalingHasInt3VO) entityManager.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
-			}catch(NoResultException e){
+				return entityManager.find(AutoProcScalingHasInt3VO.class, pk);
+		}catch(NoResultException e){
 				return null;
-			}
+		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all AutoProcScalingHasInt3s and set linked value objects if necessary
 	 * @param withLink1
@@ -145,7 +117,7 @@ public class AutoProcScalingHasInt3ServiceBean implements AutoProcScalingHasInt3
 	public List<AutoProcScalingHasInt3VO> findAll()
 			throws Exception {
 
-		List<AutoProcScalingHasInt3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<AutoProcScalingHasInt3VO> foundEntities = entityManager.createQuery("SELECT vo from AutoProcScalingHasInt3VO vo ").getResultList();
 		return foundEntities;
 	}
 

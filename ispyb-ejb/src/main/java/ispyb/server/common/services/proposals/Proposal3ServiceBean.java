@@ -56,10 +56,6 @@ import ispyb.server.common.vos.proposals.ProposalWS3VO;
 @TransactionAttribute(value=TransactionAttributeType.NEVER)
 public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceLocal {
 
-	// Generic HQL request to find all instances of Proposal
-	// TODO choose between left/inner join
-
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -135,10 +131,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	@WebMethod
 	public Proposal3VO findByPk(final Integer pk) throws Exception {
 
-		Query query = entityManager.createQuery("SELECT vo FROM Proposal3VO vo WHERE vo.proposalId = :pk", Proposal3VO.class)
-				.setParameter("pk", pk);
-		Proposal3VO result = (Proposal3VO) query.getSingleResult();
-		
+		Proposal3VO result = entityManager.find(Proposal3VO.class, pk);
 		checkChangeRemoveAccess(result);
 		return result;
 	}

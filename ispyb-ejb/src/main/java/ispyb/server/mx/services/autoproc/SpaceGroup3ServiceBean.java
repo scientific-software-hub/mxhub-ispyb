@@ -29,7 +29,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -38,20 +37,6 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(SpaceGroup3ServiceBean.class);
-
-	// Generic HQL request to find instances of SpaceGroup3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from SpaceGroup3VO vo " + "where vo.spaceGroupId = :pk";
-	}
-
-	// Generic HQL request to find all instances of SpaceGroup3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from SpaceGroup3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -72,7 +57,6 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 		// ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class); // TODO change method
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -91,7 +75,6 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 		// ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class); // TODO change method
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -109,7 +92,6 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
 		SpaceGroup3VO vo = findByPk(pk);
-		// TODO Edit this business code
 		delete(vo);
 	}
 
@@ -125,7 +107,6 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 		// ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class); // TODO change method
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -144,9 +125,8 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 		// ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class); // TODO change method
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
-		// TODO Edit this business code
 		try{
-			return (SpaceGroup3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk).getSingleResult();
+			return entityManager.find(SpaceGroup3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -184,8 +164,8 @@ public class SpaceGroup3ServiceBean implements SpaceGroup3Service, SpaceGroup3Se
 	 */
 	@SuppressWarnings("unchecked")
 	public List<SpaceGroup3VO> findAll() throws Exception {
-				
-		List<SpaceGroup3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<SpaceGroup3VO> foundEntities = entityManager.createQuery("SELECT vo from SpaceGroup3VO vo ").getResultList();
 		return foundEntities;
 	}
 

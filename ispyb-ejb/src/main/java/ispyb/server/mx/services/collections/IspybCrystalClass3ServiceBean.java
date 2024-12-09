@@ -26,7 +26,6 @@ import ispyb.server.mx.vos.collections.IspybCrystalClass3VO;
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -46,19 +45,6 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 
 	private final static Logger LOG = Logger
 			.getLogger(IspybCrystalClass3ServiceBean.class);
-
-	// Generic HQL request to find instances of IspybCrystalClass3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from IspybCrystalClass3VO vo " + "where vo.crystalClassId = :pk";
-	}
-
-	// Generic HQL request to find all instances of IspybCrystalClass3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from IspybCrystalClass3VO vo " ;
-	}
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -76,7 +62,6 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 	public IspybCrystalClass3VO create(final IspybCrystalClass3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -90,7 +75,6 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 	public IspybCrystalClass3VO update(final IspybCrystalClass3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -103,7 +87,6 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 		
 		checkCreateChangeRemoveAccess();
 		IspybCrystalClass3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -114,7 +97,6 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 	public void delete(final IspybCrystalClass3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -128,16 +110,13 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 	public IspybCrystalClass3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (IspybCrystalClass3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(IspybCrystalClass3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all IspybCrystalClass3s and set linked value objects if necessary
 	 * @param withLink1
@@ -146,8 +125,8 @@ public class IspybCrystalClass3ServiceBean implements IspybCrystalClass3Service,
 	@SuppressWarnings("unchecked")
 	public List<IspybCrystalClass3VO> findAll()
 			throws Exception {
-		
-		List<IspybCrystalClass3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<IspybCrystalClass3VO> foundEntities = entityManager.createQuery("SELECT vo from IspybCrystalClass3VO vo ").getResultList();
 		return foundEntities;
 	}
 

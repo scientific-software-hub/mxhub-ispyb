@@ -39,11 +39,6 @@ public class DataCollectionFileAttachment3ServiceBean implements DataCollectionF
 
 	private final static Logger LOG = Logger.getLogger(DataCollectionFileAttachment3ServiceBean.class);
 
-
-	// Generic HQL request to find instances of DataCollectionFileAttachment3 by pk
-	// TODO choose between left/inner join
-
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	

@@ -39,12 +39,6 @@ public class GeometryClassname3ServiceBean implements GeometryClassname3Service,
 
 	private final static Logger LOG = Logger.getLogger(GeometryClassname3ServiceBean.class);
 
-	// Generic HQL request to find instances of GeometryClassname3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of GeometryClassname3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
