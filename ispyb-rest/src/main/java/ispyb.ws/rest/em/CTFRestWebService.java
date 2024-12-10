@@ -5,7 +5,6 @@ import ispyb.server.em.services.collections.EM3Service;
 import ispyb.server.em.vos.CTF;
 import ispyb.server.em.vos.MotionCorrection;
 import ispyb.ws.rest.RestWebService;
-import ispyb.ws.soap.em.ToolsForEMDataCollection;
 
 import java.io.File;
 
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
 @GZIP(threshold = 1024)
 public class CTFRestWebService extends RestWebService {
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = LoggerFactory.getLogger(CTFRestWebService.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
