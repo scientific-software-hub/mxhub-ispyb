@@ -21,14 +21,13 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.cxf.annotations.GZIP;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.log4j.Logger;
 
 @Path("/")
 @GZIP(threshold = 1024)
 public class MovieRestWebService extends RestWebService {
 
-	protected Logger log = LoggerFactory.getLogger(MovieRestWebService.class);
+	protected Logger log = Logger.getLogger(MovieRestWebService.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
@@ -44,7 +43,7 @@ public class MovieRestWebService extends RestWebService {
 	public Response getDoseByDataCollectionId(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId) throws Exception {
 
-		log.info("getDoseByMovieId. technique=EM proposal={} dataCollectionId={}", proposal, dataCollectionId);
+		log.info(String.format("getDoseByMovieId. technique=EM proposal=%s dataCollectionId=%d", proposal, dataCollectionId));
 		List<String> doses = getEMService().getDoseByDataCollectionId(this.getProposalId(proposal), dataCollectionId);
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < doses.size(); i++) {
@@ -61,7 +60,7 @@ public class MovieRestWebService extends RestWebService {
 	public Response getMoviesByDataCollectionId(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId) throws Exception {
 
-		log.info("getMoviesByDataCollectionId. technique=EM proposal={} dataCollectionId={}", proposal, dataCollectionId);
+		log.info(String.format("getMoviesByDataCollectionId. technique=EM proposal=%s dataCollectionId=%d", proposal, dataCollectionId));
 		return this.sendResponse(getEMService().getMoviesByDataCollectionId(this.getProposalId(proposal), dataCollectionId));
 
 	}
@@ -73,7 +72,7 @@ public class MovieRestWebService extends RestWebService {
 	public Response getMoviesDataByDataCollectionId(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId) throws Exception {
 
-		log.info("getMoviesDataByDataCollectionId. technique=EM proposal={} dataCollectionId={}", proposal, dataCollectionId);
+		log.info(String.format("getMoviesDataByDataCollectionId. technique=EM proposal=%s dataCollectionId=%d", proposal, dataCollectionId));
 		return this.sendResponse(getEMService().getMoviesDataByDataCollectionId(this.getProposalId(proposal), dataCollectionId), false);
 
 	}
@@ -85,13 +84,13 @@ public class MovieRestWebService extends RestWebService {
 	public Response getMovieMicrographThumbnail(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId, @PathParam("movieId") int movieId) throws NamingException, Exception {
 
-		log.info("getMovieMicrographThumbnail. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getMovieMicrographThumbnail. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		Movie movie = getEMService().getMovieByDataCollectionId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (movie != null) {
 			if (new File(movie.getThumbnailMicrographPath()).exists()) {
 				return this.sendImage(movie.getThumbnailMicrographPath());
 			} else {
-				log.error("getMovieMicrographThumbnail Path {} does not exist. technique=EM ", movie.getThumbnailMicrographPath());
+				log.error(String.format("getMovieMicrographThumbnail Path %s does not exist. technique=EM ", movie.getThumbnailMicrographPath()));
 			}
 		}
 		return null;
@@ -104,13 +103,13 @@ public class MovieRestWebService extends RestWebService {
 	public Response getMovieMetadataXML(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId, @PathParam("movieId") int movieId) throws NamingException, Exception {
 
-		log.info("getMovieMetadataXML. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getMovieMetadataXML. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		Movie movie = getEMService().getMovieByDataCollectionId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (movie != null) {
 			if (new File(movie.getThumbnailMicrographPath()).exists()) {
 				return this.downloadFileAsAttachment(movie.getXmlMetaDataPath());
 			} else {
-				log.error("getMovieMetadataXML Path {} does not exist. technique=EM ", movie.getThumbnailMicrographPath());
+				log.error(String.format("getMovieMetadataXML Path %s does not exist. technique=EM ", movie.getThumbnailMicrographPath()));
 			}
 		}
 		return null;
@@ -123,13 +122,13 @@ public class MovieRestWebService extends RestWebService {
 	public Response getMovieMRC(@PathParam("token") String token, @PathParam("proposal") String proposal,
 			@PathParam("dataCollectionId") int dataCollectionId, @PathParam("movieId") int movieId) throws NamingException, Exception {
 
-		log.info("getMovieMetadataXML. technique=EM proposal={} dataCollectionId={} movieId={}", proposal, dataCollectionId, movieId);
+		log.info(String.format("getMovieMetadataXML. technique=EM proposal=%s dataCollectionId=%d movieId=%d", proposal, dataCollectionId, movieId));
 		Movie movie = getEMService().getMovieByDataCollectionId(this.getProposalId(proposal), dataCollectionId, movieId);
 		if (movie != null) {
 			if (new File(movie.getMicrographPath()).exists()) {
 				return this.downloadFileAsAttachment(movie.getMicrographPath());
 			} else {
-				log.error("getMovieMetadataXML Path {} does not exist. technique=EM ", movie.getMicrographPath());
+				log.error(String.format("getMovieMetadataXML Path %s does not exist. technique=EM ", movie.getMicrographPath()));
 			}
 		}
 		return null;
