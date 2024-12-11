@@ -27,8 +27,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 import ispyb.server.mx.vos.sample.BLSampleImage3VO;
 
 /**
@@ -39,18 +37,6 @@ import ispyb.server.mx.vos.sample.BLSampleImage3VO;
 @Stateless
 public class BLSampleImage3ServiceBean implements BLSampleImage3Service, BLSampleImage3ServiceLocal {
 
-	private final static Logger LOG = Logger.getLogger(BLSampleImage3ServiceBean.class);
-
-	// Generic HQL request to find instances of BLSample3 by pk
-	private static final String FIND_BY_PK() {
-		return "from BLSampleImage3VO vo where vo.blSampleImageId = :pk";
-	}
-
-	// Generic HQL request to find instances of BLSample3 by pk
-	private static final String FIND_BY_BLSAMPLE() {
-		return "from BLSampleImage3VO vo where vo.blSampleId = :blsampleId";
-	}
-	
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	
@@ -119,16 +105,13 @@ public class BLSampleImage3ServiceBean implements BLSampleImage3Service, BLSampl
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the BLSample3 value object
 	 */
 	public BLSampleImage3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
 		try {
-			return (BLSampleImage3VO) entityManager.createQuery(FIND_BY_PK()).setParameter("pk", pk)
-					.getSingleResult();
+			return entityManager.find(BLSampleImage3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -136,9 +119,9 @@ public class BLSampleImage3ServiceBean implements BLSampleImage3Service, BLSampl
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<BLSampleImage3VO> findByBlSampleId(Integer blsampleId) throws Exception {	
-		List<BLSampleImage3VO> foundEntities = entityManager.createQuery(FIND_BY_BLSAMPLE()).getResultList();
-		return foundEntities;
+	public List<BLSampleImage3VO> findByBlSampleId(Integer blsampleId) {
+		return entityManager.createQuery("SELECT vo from BLSampleImage3VO vo where vo.blsampleVO.blSampleId = :blsampleId")
+				.getResultList();
 	}
 	
 

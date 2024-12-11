@@ -18,22 +18,14 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.autoproc;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.autoproc.AutoProcScaling3VO;
 
 import java.util.List;
 
-import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
-import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -43,21 +35,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class AutoProcScaling3ServiceBean implements AutoProcScaling3Service,
 		AutoProcScaling3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(AutoProcScaling3ServiceBean.class);
-
-	// Generic HQL request to find instances of AutoProcScaling3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from AutoProcScaling3VO vo "  + "where vo.autoProcScalingId = :pk";
-	}
-
-	// Generic HQL request to find all instances of AutoProcScaling3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from AutoProcScaling3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -126,14 +103,12 @@ public class AutoProcScaling3ServiceBean implements AutoProcScaling3Service,
 	
 		checkCreateChangeRemoveAccess();
 		try{
-			return (AutoProcScaling3VO) entityManager.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(AutoProcScaling3VO.class, pk);
 			}catch(NoResultException e){
 				return null;
 			}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all AutoProcScaling3s and set linked value objects if necessary
 	 * @param withLink1
@@ -143,7 +118,7 @@ public class AutoProcScaling3ServiceBean implements AutoProcScaling3Service,
 	public List<AutoProcScaling3VO> findAll()
 			throws Exception {
 
-		List<AutoProcScaling3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<AutoProcScaling3VO> foundEntities = entityManager.createQuery("SELECT vo from AutoProcScaling3VO vo ").getResultList();
 		return foundEntities;
 	}
 

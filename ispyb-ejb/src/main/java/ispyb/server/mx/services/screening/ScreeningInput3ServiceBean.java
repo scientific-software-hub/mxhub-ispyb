@@ -29,8 +29,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
-import org.apache.log4j.Logger;
-
 /**
  * <p>
  * This session bean handles ISPyB ScreeningInput3.
@@ -38,20 +36,6 @@ import org.apache.log4j.Logger;
  */
 @Stateless
 public class ScreeningInput3ServiceBean implements ScreeningInput3Service, ScreeningInput3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(ScreeningInput3ServiceBean.class);
-	
-	// Generic HQL request to find instances of ScreeningInput3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from ScreeningInput3VO vo " + "where vo.screeningInputId = :pk";
-	}
-
-	// Generic HQL request to find all instances of ScreeningInput3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from ScreeningInput3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -72,7 +56,6 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 	public ScreeningInput3VO create(final ScreeningInput3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -88,7 +71,6 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 	public ScreeningInput3VO update(final ScreeningInput3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -103,7 +85,6 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 
 		checkCreateChangeRemoveAccess();
 		ScreeningInput3VO vo = findByPk(pk);
-		// TODO Edit this business code
 		delete(vo);
 	}
 
@@ -116,7 +97,6 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 	public void delete(final ScreeningInput3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -133,16 +113,13 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 			throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (ScreeningInput3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(ScreeningInput3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all ScreeningInput3s and set linked value objects if necessary
 	 * 
@@ -151,8 +128,8 @@ public class ScreeningInput3ServiceBean implements ScreeningInput3Service, Scree
 	 */
 	@SuppressWarnings("unchecked")
 	public List<ScreeningInput3VO> findAll() throws Exception {
-	
-		List<ScreeningInput3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+
+		List<ScreeningInput3VO> foundEntities = entityManager.createQuery("SELECT vo from ScreeningInput3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -38,7 +38,6 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.Root;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -48,20 +47,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattice3Service,
 		ScreeningOutputLattice3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(ScreeningOutputLattice3ServiceBean.class);
-
-	// Generic HQL request to find instances of ScreeningOutputLattice3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from ScreeningOutputLattice3VO vo " + "where vo.screeningOutputId = :pk";
-	}
-
-	// Generic HQL request to find all instances of ScreeningOutputLattice3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from ScreeningOutputLattice3VO vo " ;
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -82,7 +67,6 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 	public ScreeningOutputLattice3VO create(final ScreeningOutputLattice3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -98,7 +82,6 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 	public ScreeningOutputLattice3VO update(final ScreeningOutputLattice3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -113,7 +96,6 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 	
 		checkCreateChangeRemoveAccess();
 		ScreeningOutputLattice3VO vo = findByPk(pk);
-		// TODO Edit this business code
 		delete(vo);
 	}
 
@@ -126,7 +108,6 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 	public void delete(final ScreeningOutputLattice3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 		
@@ -143,16 +124,13 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 			throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try{
-			return (ScreeningOutputLattice3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(ScreeningOutputLattice3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all ScreeningOutputLattice3s and set linked value objects if necessary
 	 * 
@@ -162,7 +140,7 @@ public class ScreeningOutputLattice3ServiceBean implements ScreeningOutputLattic
 	@SuppressWarnings("unchecked")
 	public List<ScreeningOutputLattice3VO> findAll() throws Exception {
 
-		List<ScreeningOutputLattice3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<ScreeningOutputLattice3VO> foundEntities = entityManager.createQuery("SELECT vo from ScreeningOutputLattice3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -42,21 +42,6 @@ import org.apache.log4j.Logger;
 public class ScreeningStrategySubWedge3ServiceBean implements ScreeningStrategySubWedge3Service,
 		ScreeningStrategySubWedge3ServiceLocal {
 
-	private final static Logger LOG = Logger.getLogger(ScreeningStrategySubWedge3ServiceBean.class);
-
-	// Generic HQL request to find instances of ScreeningStrategySubWedge3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from ScreeningStrategySubWedge3VO vo " 
-				+ "where vo.screeningStrategySubWedgeId = :pk";
-	}
-
-	// Generic HQL request to find all instances of ScreeningStrategySubWedge3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from ScreeningStrategySubWedge3VO vo " ;
-	}
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -140,8 +125,7 @@ public class ScreeningStrategySubWedge3ServiceBean implements ScreeningStrategyS
 		checkCreateChangeRemoveAccess();
 		// TODO Edit this business code
 		try{
-			return (ScreeningStrategySubWedge3VO) entityManager.createQuery(FIND_BY_PK())
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(ScreeningStrategySubWedge3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -158,7 +142,7 @@ public class ScreeningStrategySubWedge3ServiceBean implements ScreeningStrategyS
 	public List<ScreeningStrategySubWedge3VO> findAll()
 			throws Exception {
 
-		List<ScreeningStrategySubWedge3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<ScreeningStrategySubWedge3VO> foundEntities = entityManager.createQuery("SELECT vo from ScreeningStrategySubWedge3VO vo ").getResultList();
 		return foundEntities;
 	}
 

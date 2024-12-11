@@ -105,38 +105,27 @@ public class DewarLocationList3ServiceBean implements DewarLocationList3Service,
 	 * 
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the DewarLocationList3 value object
 	 * 	// Generic HQL request to find instances of DewarLocationList3 by pk
-	 * 	// TODO choose between left/inner join
 	 */
-	public DewarLocationList3VO findByPk(final Integer pk, final boolean withLink1, final boolean withLink2)
-			throws Exception {
+	public DewarLocationList3VO findByPk(final Integer pk, final boolean withLink1, final boolean withLink2) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
 		try{
-			return (DewarLocationList3VO) entityManager.createQuery("select vo from DewarLocationList3VO vo " + (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-							+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "") + "where vo.locationId = :pk")
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(DewarLocationList3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all DewarLocationList3s and set linked value objects if necessary
 	 * 	// Generic HQL request to find all instances of DewarLocationList3
-	 * 	// TODO choose between left/inner join
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<DewarLocationList3VO> findAll() throws Exception {
 
-		List<DewarLocationList3VO> foundEntities = entityManager.createQuery("select vo from DewarLocationList3VO vo")
-				.getResultList();
+		List<DewarLocationList3VO> foundEntities = entityManager.createQuery("select vo from DewarLocationList3VO vo").getResultList();
 		return foundEntities;
 	}
 

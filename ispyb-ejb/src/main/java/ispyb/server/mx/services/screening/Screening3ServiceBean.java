@@ -45,12 +45,6 @@ public class Screening3ServiceBean implements Screening3Service, Screening3Servi
 
 	private final static Logger LOG = Logger.getLogger(Screening3ServiceBean.class);
 
-	// Generic HQL request to find instances of Screening3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of Screening3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

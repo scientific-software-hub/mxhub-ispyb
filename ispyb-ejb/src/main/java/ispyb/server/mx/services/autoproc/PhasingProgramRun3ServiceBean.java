@@ -39,12 +39,6 @@ public class PhasingProgramRun3ServiceBean implements PhasingProgramRun3Service,
 
 	private final static Logger LOG = Logger.getLogger(PhasingProgramRun3ServiceBean.class);
 
-	// Generic HQL request to find instances of PhasingProgram3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of PhasingProgram3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

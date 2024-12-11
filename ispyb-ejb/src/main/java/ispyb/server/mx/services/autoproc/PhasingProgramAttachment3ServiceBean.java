@@ -27,7 +27,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 
@@ -40,21 +39,6 @@ import ispyb.server.mx.vos.autoproc.PhasingProgramAttachment3VO;
  */
 @Stateless
 public class PhasingProgramAttachment3ServiceBean implements PhasingProgramAttachment3Service,PhasingProgramAttachment3ServiceLocal {
-
-	private final static Logger LOG = Logger.getLogger(PhasingProgramAttachment3ServiceBean.class);
-
-	// Generic HQL request to find instances of PhasingProgramAttachment3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from PhasingProgramAttachment3VO vo "
-				+ "where vo.phasingProgramAttachmentId = :phasingProgramAttachmentId";
-	}
-
-	// Generic HQL request to find all instances of PhasingProgramAttachment3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from PhasingProgramAttachment3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -95,7 +79,6 @@ public class PhasingProgramAttachment3ServiceBean implements PhasingProgramAttac
 	
 		checkCreateChangeRemoveAccess();
 		PhasingProgramAttachment3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -117,11 +100,8 @@ public class PhasingProgramAttachment3ServiceBean implements PhasingProgramAttac
 	public PhasingProgramAttachment3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (PhasingProgramAttachment3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("phasingProgramAttachmentId", pk).getSingleResult();
+			return entityManager.find(PhasingProgramAttachment3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -133,7 +113,7 @@ public class PhasingProgramAttachment3ServiceBean implements PhasingProgramAttac
 	@SuppressWarnings("unchecked")
 	public List<PhasingProgramAttachment3VO> findAll()throws Exception {
 
-		List<PhasingProgramAttachment3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<PhasingProgramAttachment3VO> foundEntities = entityManager.createQuery("SELECT vo from PhasingProgramAttachment3VO vo ").getResultList();
 		return foundEntities;
 	}
 

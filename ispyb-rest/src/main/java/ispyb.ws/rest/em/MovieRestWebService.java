@@ -11,7 +11,6 @@ import ispyb.server.em.services.collections.EM3Service;
 import ispyb.server.em.vos.Movie;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.ws.rest.RestWebService;
-import ispyb.ws.soap.em.ToolsForEMDataCollection;
 
 import jakarta.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -28,7 +27,7 @@ import org.apache.log4j.Logger;
 @GZIP(threshold = 1024)
 public class MovieRestWebService extends RestWebService {
 
-	protected Logger log = Logger.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = Logger.getLogger(MovieRestWebService.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 

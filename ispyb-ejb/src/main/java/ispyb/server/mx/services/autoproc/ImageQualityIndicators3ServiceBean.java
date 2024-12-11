@@ -48,12 +48,6 @@ public class ImageQualityIndicators3ServiceBean implements ImageQualityIndicator
 	private final static Logger LOG = Logger
 			.getLogger(ImageQualityIndicators3ServiceBean.class);
 
-	// Generic HQL request to find instances of ImageQualityIndicators3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of ImageQualityIndicators3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 	
@@ -129,12 +123,10 @@ public class ImageQualityIndicators3ServiceBean implements ImageQualityIndicator
 		//AuthorizationServiceLocal autService = (AuthorizationServiceLocal) ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class);			// TODO change method to the one checking the needed access rights
 		//autService.checkUserRightToChangeAdminData();
 		try{
-			String qlString = "SELECT vo from ImageQualityIndicators3VO vo where vo.imageQualityIndicatorsId = :pk";
-			return entityManager.createQuery(qlString, ImageQualityIndicators3VO.class)
-					.setParameter("pk", pk).getSingleResult();
-			}catch(NoResultException e){
-				return null;
-			}
+			return entityManager.find(ImageQualityIndicators3VO.class, pk);
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
 	// TODO remove following method if not adequate

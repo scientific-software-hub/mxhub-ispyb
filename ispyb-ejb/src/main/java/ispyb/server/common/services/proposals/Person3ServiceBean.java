@@ -119,13 +119,10 @@ public class Person3ServiceBean implements Person3Service, Person3ServiceLocal {
 	 *            if true, the linked instances by the relation "relation1" will be set.
 	 *
 	 *  // Generic HQL request to find instances of Person3 by pk
-	 * 	// TODO choose between left/inner join
 	 */
 	public Person3VO findByPk(Integer pk) {
 		try {
-			return (Person3VO) entityManager.createQuery("select vo from Person3VO vo  where vo.personId = :pk")
-					.setParameter("pk", pk)
-					.getSingleResult();
+			return entityManager.find(Person3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}

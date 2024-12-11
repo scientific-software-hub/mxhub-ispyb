@@ -27,7 +27,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 
@@ -41,22 +40,6 @@ import ispyb.server.mx.vos.autoproc.ModelBuilding3VO;
 @Stateless
 public class ModelBuilding3ServiceBean implements ModelBuilding3Service,
 		ModelBuilding3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(ModelBuilding3ServiceBean.class);
-	
-	// Generic HQL request to find instances of ModelBuilding3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from ModelBuilding3VO vo "
-				+ "where vo.modelBuildingId = :modelBuildingId";
-	}
-
-	// Generic HQL request to find all instances of ModelBuilding3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from ModelBuilding3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -120,16 +103,13 @@ public class ModelBuilding3ServiceBean implements ModelBuilding3Service,
 	public ModelBuilding3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (ModelBuilding3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("modelBuildingId", pk).getSingleResult();
+			return entityManager.find(ModelBuilding3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Find all ModelBuilding3s and set linked value objects if necessary
 	 */
@@ -137,7 +117,7 @@ public class ModelBuilding3ServiceBean implements ModelBuilding3Service,
 	public List<ModelBuilding3VO> findAll()
 			throws Exception {
 
-		List<ModelBuilding3VO> foundEntities = entityManager.createQuery(FIND_ALL()).getResultList();
+		List<ModelBuilding3VO> foundEntities = entityManager.createQuery("SELECT vo from ModelBuilding3VO vo ").getResultList();
 		return foundEntities;
 	}
 

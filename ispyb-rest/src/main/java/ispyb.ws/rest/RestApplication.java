@@ -52,7 +52,7 @@ import jakarta.ws.rs.core.Application;
 /**
  * A class extending {@link jakarta.ws.rs.core.Application} is the portable way to define JAX-RS 2.0 resources, and the {@link jakarta.ws.rs.ApplicationPath} defines the root path shared by all these resources.
  */
-@ApplicationPath("rest")
+@ApplicationPath("/")
 public class RestApplication extends Application {
 	public RestApplication() {
 //        BeanConfig beanConfig = new BeanConfig();

@@ -28,7 +28,6 @@ import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 import ispyb.server.common.exceptions.AccessDeniedException;
 import ispyb.server.mx.vos.autoproc.PreparePhasingData3VO;
@@ -41,22 +40,6 @@ import ispyb.server.mx.vos.autoproc.PreparePhasingData3VO;
 @Stateless
 public class PreparePhasingData3ServiceBean implements PreparePhasingData3Service,
 		PreparePhasingData3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(PreparePhasingData3ServiceBean.class);
-
-	// Generic HQL request to find instances of PreparePhasingData3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from PreparePhasingData3VO vo "
-				+ "where vo.preparePhasingDataId = :preparePhasingDataId";
-	}
-
-	// Generic HQL request to find all instances of PreparePhasingData3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from PreparePhasingData3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -72,7 +55,6 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 	public PreparePhasingData3VO create(final PreparePhasingData3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -86,7 +68,6 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 	public PreparePhasingData3VO update(final PreparePhasingData3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -99,7 +80,6 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 
 		checkCreateChangeRemoveAccess();
 		PreparePhasingData3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -110,7 +90,6 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 	public void delete(final PreparePhasingData3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -122,16 +101,13 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 	public PreparePhasingData3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (PreparePhasingData3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("preparePhasingDataId", pk).getSingleResult();
+			return entityManager.find(PreparePhasingData3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Find all PreparePhasingData3s and set linked value objects if necessary
 	 * @param withLink1
@@ -140,9 +116,8 @@ public class PreparePhasingData3ServiceBean implements PreparePhasingData3Servic
 	@SuppressWarnings("unchecked")
 	public List<PreparePhasingData3VO> findAll()
 			throws Exception {
-	
-		List<PreparePhasingData3VO> foundEntities = entityManager.createQuery(
-							FIND_ALL()).getResultList();
+
+		List<PreparePhasingData3VO> foundEntities = entityManager.createQuery("SELECT vo from PreparePhasingData3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -41,12 +41,6 @@ public class AutoProcIntegration3ServiceBean implements AutoProcIntegration3Serv
 	private final static Logger LOG = Logger
 			.getLogger(AutoProcIntegration3ServiceBean.class);
 
-	// Generic HQL request to find instances of AutoProcIntegration3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of AutoProcIntegration3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -106,8 +100,6 @@ public class AutoProcIntegration3ServiceBean implements AutoProcIntegration3Serv
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
 	 * @param pk the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the AutoProcIntegration3 value object
 	 */
 	public AutoProcIntegration3VO findByPk(final Integer pk) throws Exception {
@@ -115,20 +107,15 @@ public class AutoProcIntegration3ServiceBean implements AutoProcIntegration3Serv
 		//AuthorizationServiceLocal autService = (AuthorizationServiceLocal) ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class);			// TODO change method to the one checking the needed access rights
 		//autService.checkUserRightToChangeAdminData();
 		try{
-			String qlString = "SELECT vo from AutoProcIntegration3VO vo where vo.autoProcIntegrationId = :pk";
-			return entityManager.createQuery(qlString, AutoProcIntegration3VO.class)
-					.setParameter("pk", pk)
-					.getSingleResult();
-			}catch(NoResultException e){
-				return null;
-			}
+			return entityManager.find(AutoProcIntegration3VO.class, pk);
+		}catch(NoResultException e){
+			return null;
+		}
 	}
 
 	// TODO remove following method if not adequate
 	/**
 	 * Find all AutoProcIntegration3s and set linked value objects if necessary
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<AutoProcIntegration3VO> findAll() throws Exception {

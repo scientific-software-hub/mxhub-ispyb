@@ -1,7 +1,6 @@
 package ispyb.ws.rest.mx;
 
 import ispyb.server.mx.vos.collections.DataCollectionGroup3VO;
-import ispyb.ws.soap.em.ToolsForEMDataCollection;
 
 import java.io.File;
 
@@ -23,7 +22,7 @@ import org.slf4j.LoggerFactory;
 public class DataCollectionGroupRestWebService extends MXRestWebService {
 
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = LoggerFactory.getLogger(DataCollectionGroupRestWebService.class);
 	
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
 	@POST

@@ -24,6 +24,8 @@ import ispyb.server.mx.services.ws.rest.WsServiceBean;
 import ispyb.server.mx.vos.sample.Crystal3VO;
 import ispyb.server.mx.vos.sample.Protein3VO;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,12 +49,6 @@ import org.apache.log4j.Logger;
 public class Protein3ServiceBean extends WsServiceBean implements Protein3Service, Protein3ServiceLocal {
 
 	private final static Logger LOG = Logger.getLogger(Protein3ServiceBean.class);
-
-	// Generic HQL request to find instances of Protein3 by pk
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of Protein3
-	// TODO choose between left/inner join
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -291,12 +287,49 @@ public class Protein3ServiceBean extends WsServiceBean implements Protein3Servic
 
 	
 	@Override
-	public List<Protein3VO>  getStatsByProposal(int proposalId) {
+	public List<Map<String, Object>>  getStatsByProposal(int proposalId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where proposalId = ?1";
-		Query query = this.entityManager.createNativeQuery(mySQLQuery, Protein3VO.class)
+		Query query = this.entityManager.createNativeQuery(mySQLQuery)
 				.setParameter(1, proposalId);
-        return (List<Protein3VO>) ((Query) query).getResultList();
+		List<Object[]> results = ((Query) query).getResultList();
+
+		List<Map<String, Object>> mappedResults = new ArrayList<>();
+		for (Object[] row : results) {
+			Map<String, Object> rowMap = new HashMap<>();
+			rowMap.put("proposalId", row[0]);
+			rowMap.put("proteinId", row[1]);
+			rowMap.put("name", row[2]);
+			rowMap.put("acronym", row[3]);
+			rowMap.put("CrystalCount", row[4]);
+			rowMap.put("BLSampleCount", row[5]);
+			rowMap.put("DataCollectionGroupCount", row[6]);
+			rowMap.put("DataCollectionCount", row[7]);
+			rowMap.put("EnergyScanCount", row[8]);
+			rowMap.put("EnergyScanSessionIdList", row[9]);
+			rowMap.put("XFEFluorescenceSpectrumCount", row[10]);
+			rowMap.put("XFEFluorescenceSessionIdList", row[11]);
+			rowMap.put("latestDataCollectionId", row[12]);
+			rowMap.put("latestDataCollectionTime", row[13]);
+			rowMap.put("latestSessionId", row[14]);
+			rowMap.put("SessionCount", row[15]);
+			rowMap.put("SessionValuesList", row[16]);
+			rowMap.put("TestDataCollectionCount", row[17]);
+			rowMap.put("TestDataCollectionIdList", row[18]);
+			rowMap.put("AutoProcIntegrationCount", row[19]);
+			rowMap.put("PhasingStepCount", row[20]);
+			rowMap.put("SADPhasingStepCount", row[21]);
+			rowMap.put("MRPhasingStepCount", row[22]);
+			rowMap.put("ModelBuildingPhasingStepCount", row[23]);
+			rowMap.put("SpaceGroupModelBuildingPhasingStep", row[24]);
+			rowMap.put("ModelBuildingPhasingStepDataCollectionIdList", row[25]);
+			rowMap.put("PhasingProgramRunCount", row[26]);
+			rowMap.put("PhasingProgramAttachementCount", row[27]);
+			rowMap.put("ImagesPhasingProgramAttachementIds", row[28]);
+			rowMap.put("ModelBuildingPhasingProgramIdList", row[29]);
+			rowMap.put("ModelBuildingPhasingDataColletionIdList", row[30]);
+			mappedResults.add(rowMap);
+		}
+		return mappedResults;
     }
-	
 }

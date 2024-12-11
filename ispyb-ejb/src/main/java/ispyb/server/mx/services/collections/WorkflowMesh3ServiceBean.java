@@ -18,16 +18,12 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.Workflow3VO;
 import ispyb.server.mx.vos.collections.WorkflowMesh3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -35,7 +31,6 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 
 import jakarta.persistence.criteria.*;
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -45,23 +40,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 		WorkflowMesh3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(WorkflowMesh3ServiceBean.class);
-
-
-	// Generic HQL request to find instances of WorkflowMesh3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from WorkflowMesh3VO vo "
-				+ "where vo.workflowMeshId = :pk";
-	}
-
-	// Generic HQL request to find all instances of WorkflowMesh3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from WorkflowMesh3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -80,7 +58,6 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	public WorkflowMesh3VO create(final WorkflowMesh3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -94,7 +71,6 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	public WorkflowMesh3VO update(final WorkflowMesh3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -107,7 +83,6 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	
 		checkCreateChangeRemoveAccess();
 		WorkflowMesh3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -118,7 +93,6 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	public void delete(final WorkflowMesh3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -132,17 +106,13 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	public WorkflowMesh3VO findByPk(final Integer pk) throws Exception {
 		
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (WorkflowMesh3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(WorkflowMesh3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all WorkflowMesh3s and set linked value objects if necessary
 	 * @param withLink1
@@ -152,7 +122,7 @@ public class WorkflowMesh3ServiceBean implements WorkflowMesh3Service,
 	public List<WorkflowMesh3VO> findAll()throws Exception {
 
 		List<WorkflowMesh3VO> foundEntities = (List<WorkflowMesh3VO>) entityManager.createQuery(
-				FIND_ALL()).getResultList();
+				"SELECT vo from WorkflowMesh3VO vo ").getResultList();
 		return foundEntities;
 	}
 

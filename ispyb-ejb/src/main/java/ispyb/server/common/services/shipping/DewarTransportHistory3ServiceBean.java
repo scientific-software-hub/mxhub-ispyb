@@ -115,8 +115,6 @@ public class DewarTransportHistory3ServiceBean implements DewarTransportHistory3
 	 * 	// Generic HQL request to find instances of DewarTransportHistory3 by pk
 	 * @param pk
 	 *            the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the DewarTransportHistory3 value object
 	 */
 	public DewarTransportHistory3VO findByPk(final Integer pk, final boolean withLink1, final boolean withLink2)
@@ -125,9 +123,7 @@ public class DewarTransportHistory3ServiceBean implements DewarTransportHistory3
 		checkCreateChangeRemoveAccess();
 		// TODO Edit this business code
 		try{
-			return (DewarTransportHistory3VO) entityManager.createQuery("from DewarTransportHistory3VO vo " + (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-							+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "") + "where vo.dewarTransportHistory = :pk")
-				.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(DewarTransportHistory3VO.class, pk);
 		}catch(NoResultException e){
 			return null;
 		}
@@ -137,14 +133,11 @@ public class DewarTransportHistory3ServiceBean implements DewarTransportHistory3
 	/**
 	 * Find all DewarTransportHistory3s and set linked value objects if necessary
 	 * 	// Generic HQL request to find all instances of DewarTransportHistory3
-	 * @param withLink1
-	 * @param withLink2
 	 */
 	@SuppressWarnings("unchecked")
 	public List<DewarTransportHistory3VO> findAll(final boolean withLink1, final boolean withLink2) throws Exception {
 
-		List<DewarTransportHistory3VO> foundEntities = entityManager.createQuery("select vo from DewarTransportHistory3VO vo " + (withLink1 ? "<inner|left> join fetch vo.link1 " : "")
-				+ (withLink2 ? "<inner|left> join fetch vo.link2 " : "")).getResultList();
+		List<DewarTransportHistory3VO> foundEntities = entityManager.createQuery("select vo from DewarTransportHistory3VO vo ").getResultList();
 		return foundEntities;
 	}
 	

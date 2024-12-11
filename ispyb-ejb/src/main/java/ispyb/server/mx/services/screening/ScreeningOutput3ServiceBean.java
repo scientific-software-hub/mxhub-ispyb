@@ -43,12 +43,6 @@ public class ScreeningOutput3ServiceBean implements ScreeningOutput3Service, Scr
 
 	private final static Logger LOG = Logger.getLogger(ScreeningOutput3ServiceBean.class);
 
-	// Generic HQL request to find instances of ScreeningOutput3 by pkc
-	// TODO choose between left/inner join
-
-	// Generic HQL request to find all instances of ScreeningOutput3
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

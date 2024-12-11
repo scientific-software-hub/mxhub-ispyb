@@ -18,22 +18,16 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.IspybReference3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -43,22 +37,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class IspybReference3ServiceBean implements IspybReference3Service,
 		IspybReference3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(IspybReference3ServiceBean.class);
-
-	// Generic HQL request to find instances of IspybReference3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from IspybReference3VO vo "
-				+ "where vo.referenceId = :pk";
-	}
-
-	// Generic HQL request to find all instances of IspybReference3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from IspybReference3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -77,7 +55,6 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	public IspybReference3VO create(final IspybReference3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -91,7 +68,6 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	public IspybReference3VO update(final IspybReference3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -104,7 +80,6 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	
 		checkCreateChangeRemoveAccess();
 		IspybReference3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -115,7 +90,6 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	public void delete(final IspybReference3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 
@@ -129,11 +103,8 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	public IspybReference3VO findByPk(final Integer pk) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (IspybReference3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(IspybReference3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -147,9 +118,9 @@ public class IspybReference3ServiceBean implements IspybReference3Service,
 	@SuppressWarnings("unchecked")
 	public List<IspybReference3VO> findAll()
 			throws Exception {
-		
+
 		List<IspybReference3VO> foundEntities = (List<IspybReference3VO>) entityManager.createQuery(
-				FIND_ALL()).getResultList();	
+				"SELECT vo from IspybReference3VO vo ").getResultList();
 		return foundEntities;
 	}
 

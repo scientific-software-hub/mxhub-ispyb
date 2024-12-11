@@ -18,22 +18,16 @@
  ****************************************************************************************************/
 package ispyb.server.mx.services.collections;
 
-import ispyb.server.common.util.ejb.EJBAccessCallback;
-import ispyb.server.common.util.ejb.EJBAccessTemplate;
-
 import ispyb.server.mx.vos.collections.Position3VO;
 
 import java.util.List;
 
 import jakarta.annotation.Resource;
-import jakarta.ejb.EJB;
 import jakarta.ejb.SessionContext;
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
-
-import org.apache.log4j.Logger;
 
 /**
  * <p>
@@ -43,22 +37,6 @@ import org.apache.log4j.Logger;
 @Stateless
 public class Position3ServiceBean implements Position3Service,
 		Position3ServiceLocal {
-
-	private final static Logger LOG = Logger
-			.getLogger(Position3ServiceBean.class);
-
-	// Generic HQL request to find instances of Position3 by pk
-	// TODO choose between left/inner join
-	private static final String FIND_BY_PK() {
-		return "from Position3VO vo "
-				+ "where vo.positionId = :pk";
-	}
-
-	// Generic HQL request to find all instances of Position3
-	// TODO choose between left/inner join
-	private static final String FIND_ALL() {
-		return "from Position3VO vo ";
-	}
 
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
@@ -77,7 +55,6 @@ public class Position3ServiceBean implements Position3Service,
 	public Position3VO create(final Position3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, true);
 		this.entityManager.persist(vo);
 		return vo;
@@ -91,7 +68,6 @@ public class Position3ServiceBean implements Position3Service,
 	public Position3VO update(final Position3VO vo) throws Exception {
 	
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		this.checkAndCompleteData(vo, false);
 		return entityManager.merge(vo);
 	}
@@ -104,7 +80,6 @@ public class Position3ServiceBean implements Position3Service,
 	
 		checkCreateChangeRemoveAccess();
 		Position3VO vo = findByPk(pk);
-		// TODO Edit this business code				
 		delete(vo);
 	}
 
@@ -115,7 +90,6 @@ public class Position3ServiceBean implements Position3Service,
 	public void delete(final Position3VO vo) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		entityManager.remove(vo);
 	}
 	
@@ -127,11 +101,8 @@ public class Position3ServiceBean implements Position3Service,
 	public Position3VO findByPk(final Integer pk) throws Exception {
 
 		checkCreateChangeRemoveAccess();
-		// TODO Edit this business code
 		try {
-			return (Position3VO) entityManager
-					.createQuery(FIND_BY_PK())
-					.setParameter("pk", pk).getSingleResult();
+			return entityManager.find(Position3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
@@ -144,7 +115,7 @@ public class Position3ServiceBean implements Position3Service,
 	public List<Position3VO> findAll()throws Exception {
 
 		List<Position3VO> foundEntities = (List<Position3VO>) entityManager.createQuery(
-				FIND_ALL()).getResultList();
+				"SELECT vo from Position3VO vo ").getResultList();
 		return foundEntities;
 	}
 

@@ -106,12 +106,9 @@ public class Menu3ServiceBean implements Menu3Service,
 	/**
 	 * Finds a Scientist entity by its primary key and set linked value objects if necessary
 	 * @param pk the primary key
-	 * @param withLink1
-	 * @param withLink2
 	 * @return the Menu3 value object
 	 *
 	 * 	// Generic HQL request to find instances of Menu3 by pk
-	 * 	// TODO choose between left/inner join
 	 */
 	public Menu3VO findByPk(final Integer pk, final boolean withMenuGroup) throws Exception {
 		
@@ -150,7 +147,6 @@ public class Menu3ServiceBean implements Menu3Service,
 	 * @param withLink2
 	 *
 	 * 	// Generic HQL request to find all instances of Menu3
-	 * 	// TODO choose between left/inner join
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Menu3VO> findAll(final boolean withMenuGroup, final boolean detachLight) throws Exception {

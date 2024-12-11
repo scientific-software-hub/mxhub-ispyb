@@ -54,9 +54,6 @@ public class Shipping3ServiceBean implements Shipping3Service, Shipping3ServiceL
 
 	private final static Logger LOG = Logger.getLogger(Shipping3ServiceBean.class);
 
-	// Generic HQL request to find instances of Shipping3 by pk
-	// TODO choose between left/inner join
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 
@@ -236,11 +233,9 @@ public class Shipping3ServiceBean implements Shipping3Service, Shipping3ServiceL
 		return aliasToValueMapList;
 	}
 
-	// TODO remove following method if not adequate
 	/**
 	 * Find all Shipping3s and set linked value objects if necessary
 	 * 		// Generic HQL request to find all instances of Shipping3
-	 * 		// TODO choose between left/inner join
 	 * @param withLink1
 	 * @param withLink2
 	 */
