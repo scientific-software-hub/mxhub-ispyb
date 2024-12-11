@@ -9,6 +9,7 @@
 	<modules>
 		<module>ispyb-ejb</module>
 		<module>ispyb-ws</module>
+		<module>ispyb-rest</module>
 		<module>ispyb-ear</module>
 	</modules>
 

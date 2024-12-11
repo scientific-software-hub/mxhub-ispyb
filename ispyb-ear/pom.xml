@@ -23,7 +23,13 @@
 			<type>war</type>
 			<version>${project.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>ispyb</groupId>
+			<artifactId>ispyb-rest</artifactId>
+			<type>war</type>
+			<version>${project.version}</version>
+		</dependency>
 	
 	</dependencies>
 	<build>
@@ -60,6 +66,12 @@
 							<groupId>ispyb</groupId>
 							<artifactId>ispyb-ws</artifactId>
 							<contextRoot>/ispyb/ispyb-ws</contextRoot> <!--goes to url link for REST and SOAP-->
+						</webModule>
+
+						<webModule> <!--for front-end-->
+							<groupId>ispyb</groupId>
+							<artifactId>ispyb-rest</artifactId>
+							<contextRoot>/ispyb/ispyb-ws/rest</contextRoot> <!--goes to url link for REST and SOAP-->
 						</webModule>
 					</modules>
 					<fileNameMapping>no-version</fileNameMapping>

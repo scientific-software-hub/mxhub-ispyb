@@ -4,7 +4,6 @@ import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.em.services.collections.EM3Service;
 import ispyb.server.em.vos.ParticleClassification;
 import ispyb.ws.rest.RestWebService;
-import ispyb.ws.soap.em.ToolsForEMDataCollection;
 
 import java.io.File;
 
@@ -24,7 +23,7 @@ import org.slf4j.LoggerFactory;
 @GZIP(threshold = 1024)
 public class ClassificationRestWebService extends RestWebService {
 
-	protected Logger log = LoggerFactory.getLogger(ToolsForEMDataCollection.class);
+	protected Logger log = LoggerFactory.getLogger(ClassificationRestWebService.class);
 
 	private final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
