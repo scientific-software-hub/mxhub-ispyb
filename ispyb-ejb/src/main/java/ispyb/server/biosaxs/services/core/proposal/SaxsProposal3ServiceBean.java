@@ -183,7 +183,7 @@ public class SaxsProposal3ServiceBean implements SaxsProposal3Service, SaxsPropo
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<StockSolution3VO> findStockSolutionsByBoxId(String dewarId) {
+	public List<StockSolution3VO> findStockSolutionsByBoxId(int dewarId) {
 		String query = "SELECT st FROM StockSolution3VO st WHERE st.boxId = :dewarId";
 		Query EJBQuery = this.entityManager.createQuery(query, StockSolution3VO.class)
 				.setParameter("dewarId", dewarId);

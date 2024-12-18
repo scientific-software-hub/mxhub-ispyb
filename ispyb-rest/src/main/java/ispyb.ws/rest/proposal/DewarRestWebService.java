@@ -184,7 +184,7 @@ public class DewarRestWebService extends RestWebService {
 
 		try {
 			List<Sampleplate3VO> sampleplate3VOs = getSamplePlate3Service()
-					.getSamplePlatesByBoxId(String.valueOf(dewarId));
+					.getSamplePlatesByBoxId(dewarId);
 			for (Sampleplate3VO plate : sampleplate3VOs) {
 				if (plate.getBoxId() != null) {
 					if (plate.getBoxId() == dewarId) {
@@ -194,7 +194,7 @@ public class DewarRestWebService extends RestWebService {
 				}
 			}
 			List<StockSolution3VO> stockSolution3VOs = getSaxsProposal3Service()
-					.findStockSolutionsByBoxId(String.valueOf(dewarId));
+					.findStockSolutionsByBoxId(dewarId);
 			for (StockSolution3VO stockSolution3VO : stockSolution3VOs) {
 				if (stockSolution3VO.getBoxId() != null) {
 					if (stockSolution3VO.getBoxId() == dewarId) {

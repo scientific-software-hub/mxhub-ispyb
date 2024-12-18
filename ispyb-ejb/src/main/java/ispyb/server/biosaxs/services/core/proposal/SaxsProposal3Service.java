@@ -66,7 +66,7 @@ public interface SaxsProposal3Service {
 
 	public abstract void remove(StockSolution3VO stockSolution3VO);
 
-	public abstract List<StockSolution3VO> findStockSolutionsByBoxId(String dewarId);
+	public abstract List<StockSolution3VO> findStockSolutionsByBoxId(int dewarId);
 
 	public abstract List<StockSolution3VO> findStockSolutionsByProposalId(Integer proposalId);
 

@@ -36,7 +36,7 @@ public interface Sampleplate3Service {
 
 	public abstract Sampleplateposition3VO merge(Sampleplateposition3VO sampleplateposition3vo);
 	
-	public abstract List<Sampleplate3VO> getSamplePlatesByBoxId(String dewarId);
+	public abstract List<Sampleplate3VO> getSamplePlatesByBoxId(int dewarId);
 	
 	public abstract PlateGroup3VO merge(PlateGroup3VO plateGroup);
 	
