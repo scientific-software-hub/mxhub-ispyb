@@ -50,11 +50,6 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 
 	private final static Logger LOG = Logger.getLogger(DataCollection3ServiceBean.class);
 
-	// Generic HQL request to find instances of DataCollection3 by pk
-
-	// Generic HQL request to find all instances of DataCollection3
-
-
 	@PersistenceContext(unitName = "ispyb_db")
 	private EntityManager entityManager;
 

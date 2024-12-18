@@ -28,7 +28,7 @@ public class SessionWS3VO extends Session3VO{
 	private static final long serialVersionUID = -838581863634718334L;
 	private Integer beamLineSetupId;
 	private Integer proposalId;
-	private String proposalName;
+	private String proposalName; //= (proposalCode + proposalNumber).toLowerCase()
 
 	
 	public SessionWS3VO(){
