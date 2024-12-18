@@ -1,5 +1,10 @@
 package ispyb.ws.rest.proposal;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.TypeAdapter;
+import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonWriter;
 import generated.ws.smis.ProposalParticipantInfoLightVO;
 import ispyb.common.util.Constants;
 import ispyb.common.util.PropertyLoader;
@@ -15,16 +20,14 @@ import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.smis.ScientistsFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
+import java.io.IOException;
+import java.io.StringReader;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
 
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
@@ -96,15 +99,15 @@ public class ShippingRestWebService extends MXRestWebService {
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@POST
 	@Path("{token}/proposal/{proposal}/shipping/labcontact/save")
+	@Consumes({ "application/json" })
 	@Produces({ "application/json" })
 	public Response saveLabContact(
 			@PathParam("token") String token, 
 			@PathParam("proposal") String proposal, 
-			@FormParam("labcontact") String labContactJson) {
+			LabContact3VO labContact) {
 		String methodName = "saveLabContact";
-		long id = this.logInit(methodName, logger, token, proposal, labContactJson);
+		long id = this.logInit(methodName, logger, token, proposal, labContact);
 		try {
-			LabContact3VO labContact = this.getGson().fromJson(labContactJson, LabContact3VO.class);
 			/** Update Person **/
 			
 			Person3VO person = this.getPerson3Service().findByPk(labContact.getPersonVO().getPersonId());
