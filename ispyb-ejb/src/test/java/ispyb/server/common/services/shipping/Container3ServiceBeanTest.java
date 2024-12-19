@@ -2,6 +2,7 @@ package ispyb.server.common.services.shipping;
 
 import ispyb.TestBase;
 import jakarta.inject.Inject;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.assertNotNull;
