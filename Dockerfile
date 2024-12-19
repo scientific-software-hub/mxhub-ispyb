@@ -39,7 +39,7 @@ COPY configuration/mariadb/mariadb-java-client-3.3.3.jar $CATALINA_HOME/lib/
 EXPOSE 8080
 
 # Environment variable for Java options, include serialization configs
-ENV JAVA_OPTS="-Dtomee.serialization.class.blacklist=- -Dtomee.serialization.class.whitelist=* -Dispyb.properties=file:///etc/ispyb/ispyb.properties -Dtomee.jaxws.subcontext=/ispybWS -Dopenejb.localcopy=false"
+ENV JAVA_OPTS="-Dtomee.serialization.class.blacklist=- -Dtomee.serialization.class.whitelist=* -Dispyb.properties=file:///etc/ispyb/ispyb.properties -Dtomee.jaxws.subcontext=/ispybWS"
 
 # Start Tomcat server
 CMD ["catalina.sh", "run"]
