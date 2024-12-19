@@ -50,12 +50,14 @@ public class ContainerRestWebService extends RestWebService {
 
 				Container3VO container = this.getContainer3Service().findByPk(containerIdList.get(i), false);
 				container.setBeamlineLocation(beamlinesList.get(i));
-				if(sampleChangerLocationList.get(i) == null || sampleChangerLocationList.get(i).isEmpty())
-					container.setSampleChangerLocation(null);
-				else
-					container.setSampleChangerLocation(sampleChangerLocationList.get(i));
+                if(sampleChangerLocationList.get(i) == null || sampleChangerLocationList.get(i).isEmpty()) {
+                    container.setSampleChangerLocation(null);
+                    this.getContainer3Service().setSampleChangerLocationToNull(container.getContainerId());
+                }
+                else
+                    container.setSampleChangerLocation(sampleChangerLocationList.get(i));
 
-				this.getContainer3Service().update(container);
+                this.getContainer3Service().update(container);
 			}
 			
 			this.logFinish("updateSampleLocation", id, logger);

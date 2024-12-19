@@ -161,6 +161,22 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 		}
 	}
 
+	/*
+	* To make sampleChangerLocation value null.
+	* This is because when using OpenJPA, the default behavior might not update a database column to NULL
+	* if the field in your entity is set to null, due to OpenJPA’s dirty-checking mechanism or optimizations.
+	* So .merge(vo) method leaved DB table value unchanged.
+	* */
+
+	public void setSampleChangerLocationToNull(Integer containerId) {
+		String updateQuery = "UPDATE Container SET sampleChangerLocation = ?1 WHERE containerId = ?2";
+		entityManager.createNativeQuery(updateQuery)
+				.setParameter(1, null) // Explicitly set to null
+				.setParameter(2, containerId) // Ensure proper ID is used
+				.executeUpdate();
+	}
+
+
 
 	/**
 	 * Find all Container3s and set linked value objects if necessary
