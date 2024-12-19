@@ -1,13 +1,7 @@
 package ispyb.ws.rest.proposal;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.TypeAdapter;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import generated.ws.smis.ProposalParticipantInfoLightVO;
 import ispyb.common.util.Constants;
-import ispyb.common.util.PropertyLoader;
 import ispyb.common.util.StringUtils;
 import ispyb.server.common.vos.proposals.LabContact3VO;
 import ispyb.server.common.vos.proposals.Person3VO;
@@ -20,9 +14,6 @@ import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.smis.ScientistsFromSMIS;
 import ispyb.ws.rest.mx.MXRestWebService;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -335,7 +326,7 @@ public class ShippingRestWebService extends MXRestWebService {
 
 		long id = this.logInit("savePuck", logger, token, proposal, shippingId, containerId,puck);
 		try {
-			this.getContainer3Service().saveContainer(this.getGson().fromJson(puck, Container3VO.class), this.getProposalId(proposal));
+			this.getContainer3Service().saveContainer(this.newGson().fromJson(puck, Container3VO.class), this.getProposalId(proposal));
 			this.logFinish("savePuck", id, logger);
 			return sendResponse(this.getContainer3Service().findByPk(containerId, true));
 		} catch (Exception e) {
@@ -354,7 +345,7 @@ public class ShippingRestWebService extends MXRestWebService {
 
 		try {
 			Type listType = new TypeToken<List<Dewar3VO>>(){}.getType();
-			List<Dewar3VO> dewars3vo = this.getGson().fromJson(dewars, listType);
+			List<Dewar3VO> dewars3vo = this.newGson().fromJson(dewars, listType);
 			logger.info(dewars3vo);
 			for (Dewar3VO dewar3vo : dewars3vo) {
 				logger.info(String.format("\t %s %s", dewar3vo.getCode(), dewar3vo.getContainerVOs().size()));

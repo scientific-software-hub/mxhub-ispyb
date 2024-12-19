@@ -61,7 +61,7 @@ public class MacromoleculeRestWebService extends SaxsRestWebService {
 		long id = this.logInit(methodName, logger, token, proposal, macromolecule);
 		try {
 			SaxsProposal3Service saxsProposalService = this.getSaxsProposal3Service();
-			Macromolecule3VO macromolecule3VO = saxsProposalService.merge(this.getGson().fromJson(macromolecule, Macromolecule3VO.class));
+			Macromolecule3VO macromolecule3VO = saxsProposalService.merge(this.newGson().fromJson(macromolecule, Macromolecule3VO.class));
 			this.logFinish(methodName, id, logger);
 			return this.sendResponse(macromolecule3VO);
 		} catch (Exception e) {

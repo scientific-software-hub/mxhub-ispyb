@@ -68,7 +68,7 @@ public class BufferAdditiveRestWebService extends SaxsRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, buffer, additive);
 		try {
 			SaxsProposal3Service saxsProposalService = this.getSaxsProposal3Service();
-			Additive3VO additive3VO = this.getGson().fromJson(additive, Additive3VO.class);
+			Additive3VO additive3VO = this.newGson().fromJson(additive, Additive3VO.class);
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(saxsProposalService.merge(additive3VO));
 		} catch (Exception e) {

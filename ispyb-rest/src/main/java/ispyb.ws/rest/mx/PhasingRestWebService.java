@@ -5,7 +5,6 @@ import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.mx.services.ws.rest.phasing.PhasingRestWsService;
 import ispyb.server.mx.vos.autoproc.PhasingProgramAttachment3VO;
 import ispyb.server.mx.vos.autoproc.PhasingStepVO;
-import ispyb.server.mx.vos.collections.DataCollection3VO;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -21,7 +20,6 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 
-import org.apache.commons.compress.archivers.zip.ZipMethod;
 import org.apache.cxf.annotations.GZIP;
 import org.apache.log4j.Logger;
 
@@ -294,7 +292,7 @@ public class PhasingRestWebService extends MXRestWebService {
 				list.add(this.getPhasingWSService().getPhasingFilesViewByPhasingProgramAttachmentId(id, this.getProposalId(proposal)));
 			}
 			
-			System.out.println(this.getGson().toJson(list));
+			System.out.println(this.newGson().toJson(list));
 			
 			/** If single file it returns the file otherwise it returns a zip file **/
 			if (list != null){
@@ -343,7 +341,7 @@ public class PhasingRestWebService extends MXRestWebService {
 				list.add(this.getPhasingWSService().getPhasingFilesViewByPhasingProgramAttachmentId(id, this.getProposalId(proposal)));
 			}
 			
-			System.out.println(this.getGson().toJson(list));
+			System.out.println(this.newGson().toJson(list));
 			
 			/** If single file it returns the file otherwise it returns a zip file **/
 			if (list != null){

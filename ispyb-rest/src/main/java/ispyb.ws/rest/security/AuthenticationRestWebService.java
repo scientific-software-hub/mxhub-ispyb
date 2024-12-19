@@ -52,7 +52,7 @@ public class AuthenticationRestWebService extends RestWebService {
 		}
 		logger.info(methodName.toUpperCase());
 		LoggerFormatter.log(logger, LoggerFormatter.Package.ISPyB_API_LOGIN, methodName, System.currentTimeMillis(),
-				System.currentTimeMillis(), this.getGson().toJson(params));
+				System.currentTimeMillis(), this.newGson().toJson(params));
 		return this.now;
 	}
 	

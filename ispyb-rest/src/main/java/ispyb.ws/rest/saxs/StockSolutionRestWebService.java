@@ -63,7 +63,7 @@ public class StockSolutionRestWebService extends SaxsRestWebService {
 		long start = this.logInit(methodName, logger, token, stocksolution);
 		try {
 			SaxsProposal3Service saxsProposalService = this.getSaxsProposal3Service();
-			StockSolution3VO stockSolution3VO = this.getGson().fromJson(stocksolution, StockSolution3VO.class);
+			StockSolution3VO stockSolution3VO = this.newGson().fromJson(stocksolution, StockSolution3VO.class);
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(saxsProposalService.merge(stockSolution3VO));
 		} catch (Exception e) {

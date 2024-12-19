@@ -62,7 +62,7 @@ public class BufferRestWebService extends SaxsRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, buffer);
 		try {
 			SaxsProposal3Service saxsProposalService = this.getSaxsProposal3Service();
-			Buffer3VO buffer3VO = this.getGson().fromJson(buffer, Buffer3VO.class);
+			Buffer3VO buffer3VO = this.newGson().fromJson(buffer, Buffer3VO.class);
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(saxsProposalService.merge(buffer3VO));
 		} catch (Exception e) {

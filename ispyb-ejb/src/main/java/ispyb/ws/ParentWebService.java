@@ -1,5 +1,7 @@
 package ispyb.ws;
 
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
 import file.FileUploadForm;
 import ispyb.common.util.Constants;
 import ispyb.common.util.PropertyLoader;
@@ -150,14 +152,31 @@ public  class ParentWebService {
 		
 	}
 	
-	protected Gson getGson() {
-		return new GsonBuilder().serializeNulls().excludeFieldsWithModifiers(Modifier.PRIVATE).serializeSpecialFloatingPointValues()
+	protected Gson newGson() {
+		return new GsonBuilder()
+				.serializeNulls()
+				.excludeFieldsWithModifiers(Modifier.PRIVATE)
+				.addDeserializationExclusionStrategy(new ExclusionStrategy() {
+					@Override
+					public boolean shouldSkipField(FieldAttributes fieldAttributes) {
+						if (fieldAttributes.getName().equals("stateManager") || fieldAttributes.getName().equals("pcStateManager")) {
+							return true;
+						}
+						return false;
+					}
+
+					@Override
+					public boolean shouldSkipClass(Class<?> aClass) {
+						return false;
+					}
+				})
+				.serializeSpecialFloatingPointValues()
 				.create();
 	}
 	
-	protected Gson getGson(boolean serializeNull) {
+	protected Gson newGson(boolean serializeNull) {
 		if (serializeNull)
-			return this.getGson();
+			return this.newGson();
 					
 		return new GsonBuilder().excludeFieldsWithModifiers(Modifier.PRIVATE).serializeSpecialFloatingPointValues()
 				.create();
@@ -173,7 +192,7 @@ public  class ParentWebService {
 	}
 
 	protected Response sendResponse(Object response) {
-		return Response.ok(getGson().toJson(response)).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(newGson().toJson(response)).header("Access-Control-Allow-Origin", "*").build();
 	}
 	
 	protected Response sendError(String message) {
@@ -181,7 +200,7 @@ public  class ParentWebService {
 	}
 	
 	protected Response sendResponse(Object response, boolean serializeNulls) {
-		return Response.ok(getGson(serializeNulls).toJson(response)).header("Access-Control-Allow-Origin", "*").build();
+		return Response.ok(newGson(serializeNulls).toJson(response)).header("Access-Control-Allow-Origin", "*").build();
 	}
 
 	protected Response sendOk() {
@@ -387,7 +406,7 @@ public  class ParentWebService {
 		}
 		logger.info(methodName.toUpperCase());
 		LoggerFormatter.log(logger, LoggerFormatter.Package.ISPyB_API, methodName, System.currentTimeMillis(),
-				System.currentTimeMillis(), this.getGson().toJson(params));
+				System.currentTimeMillis(), this.newGson().toJson(params));
 		return this.now;
 	}
 

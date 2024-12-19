@@ -7,12 +7,10 @@ import ispyb.server.biosaxs.vos.dataAcquisition.Measurement3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.Specimen3VO;
 import ispyb.server.biosaxs.vos.datacollection.MeasurementTodataCollection3VO;
 import ispyb.server.biosaxs.vos.utils.comparator.SaxsDataCollectionComparator;
-import ispyb.ws.rest.RestWebService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
@@ -74,7 +72,7 @@ public class MeasurementRestWebService extends SaxsRestWebService {
 		String methodName = "saveMeasurement";
 		long start = this.logInit(methodName, logger, token, proposal, measurement);
 		try {
-			Measurement3VO measurement3VO = getGson().fromJson(measurement, Measurement3VO.class);
+			Measurement3VO measurement3VO = newGson().fromJson(measurement, Measurement3VO.class);
 			measurement3VO = getWebUserInterfaceService().merge(measurement3VO);
 			this.logFinish("saveMeasurement", start, logger);
 			return this.sendResponse(measurement3VO);

@@ -29,7 +29,7 @@ public class SpecimenRestWebService extends SaxsRestWebService {
 		String methodName = "saveSpecimen";
 		long start = this.logInit(methodName, logger, token, proposal, specimen);
 		try {
-			Specimen3VO specimen3VO = getGson().fromJson(specimen, Specimen3VO.class);
+			Specimen3VO specimen3VO = newGson().fromJson(specimen, Specimen3VO.class);
 			specimen3VO = getWebUserInterfaceService().merge(specimen3VO);
 			this.logFinish(methodName, start, logger);
 			return Response.ok(getWithoutExposeAnnotationGson().toJson(specimen3VO)).header("Access-Control-Allow-Origin", "*").build();
