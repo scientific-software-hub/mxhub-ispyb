@@ -23,6 +23,7 @@ import java.lang.reflect.Modifier;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -304,6 +305,7 @@ public class ToolsForCollectionWebService {
 			session.setProposalVO(proposal);
 
 			session.setTimeStamp(StringUtils.getCurrentTimeStamp());
+			session.setLastUpdate(new Date());
 
 			if (sessionId == null || sessionId == 0) {
 				session.setSessionId(null);
