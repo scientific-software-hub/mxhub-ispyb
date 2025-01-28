@@ -18,14 +18,37 @@ ISPyB serves as a platform for managing the experimental life cycle at synchrotr
   - access post-experiment results and reports.
 - Security and User Management: has role-based access control and manages user accounts and permissions.
 
+#
 ## Tech Stack of ISPyB project
 
 ![](documentation/images/ISPYB_techstack.svg)
 
-## High overview of ISPyB Deployment
+#
+## High level overview of ISPyB Deployment Architecture
 
 ![](documentation/images/ISPYB_deployment.svg)
 
+ISPyB system is hosted inside a virtual machine, containing multiple components (light blue box).
+
+External Services (yellow circles):
+- *DOOR* – a proposal management system that provides data to ISPyB as well as EXI user authentication and role-base access control.
+- *EDNA* – a software module for data analysis.
+- *MXCUBE* – a beamline control system that interacts with ISPyB.
+- *ISPYB Logistic* – a logistics module for tracking shipments and samples.
+
+Docker Containers (marked with docker logos):
+- *EXI* – a web interface for ISPyB.
+- *ISPYB* – the core ISPyB application that interacts with external services.
+- *DOOR2ISPYB* – a module that transfers data from DOOR to ISPyB.
+- *Observability* – monitoring logs and application performance.
+- *phpMyAdmin* – a web-based database management tool.
+- *ISPYB DB* - the main database storing data. Periodically dumps data into ISPYB DB storage.
+
+Networking & Security:
+- *NGINX* – a reverse proxy that routes web traffic.
+- *Firewall* provides security and access control.
+
+## Getting data from User portal
 
 ## [ISPYB VM Production setup]()
 * [Virtual Machine setup]()
