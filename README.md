@@ -1,5 +1,39 @@
+#
 # ISPyB Project
+**ISPyB** (Information System for Protein Crystallography Beamlines) is a laboratory information management system (LIMS) designed specifically for synchrotron facilities. 
 
+It was originally developed to manage the data workflow and experimental processes for *macromolecular crystallography* (**MX**) experiments at synchrotrons. Over time, ISPyB has been extended to support additional experimental techniques, such as *small-angle X-ray scattering* (**SAXS**) and *cryo-electron microscopy* (**cryo-EM**).
+
+The software provides users with a centralized system to monitor and retrieve their experimental data and results and offers administrators tools for data organization and operational oversight.
+
+## Key Features of ISPyB
+ISPyB serves as a platform for managing the experimental life cycle at synchrotron beamlines and integrates:
+- Proposal and session management: tracks scientific proposals and their associated experiments, links proposals to experimental sessions, samples, and results for seamless data association.
+- Sample Management: allows to register samples, including detailed metadata (chemical composition, preparation methods, barcoding).
+- Container Tracking: monitors sample containers (e.g., pucks) and ensure they are properly tracked through the experiment lifecycle.
+- Experimental Data Collection Management: stores metadata about experimental conditions (beamline settings, experimental parameters).
+- User-Friendly Web Interface: has EXI web-based portal for users to
+  - view, download, and manage their experimental data;
+  - monitor beamline activity during their sessions;
+  - access post-experiment results and reports.
+- Security and User Management: has role-based access control and manages user accounts and permissions.
+
+## Tech Stack of ISPyB project
+
+![](documentation/images/ISPYB_techstack.svg)
+
+## High overview of ISPyB Deployment
+
+![](documentation/images/ISPYB_deployment.svg)
+
+
+## [ISPYB VM Production setup]()
+* [Virtual Machine setup]()
+* [Docker containers' creation]()
+* [Observability for ISPyB]()
+* [Security and nginx]()
+
+## ISPYB Development setup
 1. [Installing](#installing)
 2. [Database creation and update](#database-creation-and-update)
 3. [Database schema](#database-schema)
