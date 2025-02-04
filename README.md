@@ -5,7 +5,7 @@
 It was originally developed to manage the data workflow and experimental processes for *macromolecular crystallography* (**MX**) experiments at synchrotrons. Over time, ISPyB has been extended to support additional experimental techniques, such as *small-angle X-ray scattering* (**SAXS**) and *cryo-electron microscopy* (**cryo-EM**).
 
 The software provides users with a centralized system to monitor and retrieve their experimental data and results and offers administrators tools for data organization and operational oversight.
-
+#
 ## Key Features of ISPyB
 ISPyB serves as a platform for managing the experimental life cycle at synchrotron beamlines and integrates:
 - Proposal and session management: tracks scientific proposals and their associated experiments, links proposals to experimental sessions, samples, and results for seamless data association.
@@ -48,6 +48,7 @@ Networking & Security:
 - *NGINX* – a reverse proxy that routes web traffic.
 - *Firewall* provides security and access control.
 
+#
 ## User portal and ISPyB
 Before using ISPyB's full functionality, the database needs to be filled with some initial information from the User Portal. This includes data like *proposal names and IDs*, *experiment IDs and names* associated with each proposal, *lab contacts* and *proposal leaders details*. This initial setup ensures that ISPyB is correctly configured and ready to support your experiments.
 
@@ -57,13 +58,15 @@ Since we use the **DOOR** User Portal, we’ve created **DOOR2ISPYB** - module t
 
 The main goal of this module is to link and match the data from the User Portal with the relevant tables in the ISPyB database.
 
-## [ISPYB VM Production setup]()
+#
+## [ISPyB VM Production setup]()
 * [Virtual Machine setup]()
 * [Docker containers' creation]()
 * [Observability for ISPyB]()
 * [Security and nginx]()
 
-## ISPYB Development setup
+#
+## ISPyB Development setup
 1. [Installing](#installing)
 2. [Database creation and update](#database-creation-and-update)
 3. [Database schema](#database-schema)
