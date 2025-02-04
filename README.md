@@ -48,7 +48,14 @@ Networking & Security:
 - *NGINX* – a reverse proxy that routes web traffic.
 - *Firewall* provides security and access control.
 
-## Getting data from User portal
+## User portal and ISPyB
+Before using ISPyB's full functionality, the database needs to be filled with some initial information from the User Portal. This includes data like *proposal names and IDs*, *experiment IDs and names* associated with each proposal, *lab contacts* and *proposal leaders details*. This initial setup ensures that ISPyB is correctly configured and ready to support your experiments.
+
+To retrieve data from the User Portal, a dedicated module needs to be developed based on the specific portal you're using.
+
+Since we use the **DOOR** User Portal, we’ve created **DOOR2ISPYB** - module that transfers data from DOOR to the ISPyB database.
+
+The main goal of this module is to link and match the data from the User Portal with the relevant tables in the ISPyB database.
 
 ## [ISPYB VM Production setup]()
 * [Virtual Machine setup]()
