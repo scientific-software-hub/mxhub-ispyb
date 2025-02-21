@@ -1,11 +1,7 @@
 # Start with a base image containing Java runtime 21
-FROM eclipse-temurin:21-jre-alpine
-
-# Install necessary packages for downloading and managing Tomcat
-RUN apt-get update && apt-get install -y wget tar
-
+FROM eclipse-temurin:21-jre
 # Define environment variables for Tomcat version and installation directory
-ENV TOMCAT_VERSION 10.0.0-M3
+ENV TOMCAT_VERSION 10.0.0
 ENV TOMCAT_JAKARTA_PROFILE plume
 ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
@@ -13,8 +9,11 @@ ENV PATH $CATALINA_HOME/bin:$PATH
 # Environment variable to set the timezone for the containers
 ENV TZ=Europe/Berlin
 
+# Install necessary packages for downloading and managing Tomcat
+RUN apt-get update && apt-get install -y wget tar passwd
+
 # Create a non-root user for Tomcat
-RUN addgroup -S tomcat && adduser -S tomcat -G tomcat
+RUN addgroup --system tomcat && adduser --system --group tomcat
 
 # Download and install Tomcat
 RUN wget https://dlcdn.apache.org/tomee/tomee-$TOMCAT_VERSION/apache-tomee-$TOMCAT_VERSION-$TOMCAT_JAKARTA_PROFILE.tar.gz -O /tmp/tomcat.tar.gz \
@@ -24,17 +23,6 @@ RUN wget https://dlcdn.apache.org/tomee/tomee-$TOMCAT_VERSION/apache-tomee-$TOMC
     && rm $CATALINA_HOME/lib/eclipselink* \
     && rm $CATALINA_HOME/lib/openejb-core-eclipselink* \
     && chmod +x $CATALINA_HOME/bin/catalina.sh
-
-RUN apt-get remove --purge wget tar
-
-# Change ownership to non-root user
-RUN chown -R tomcat:tomcat $CATALINA_HOME \
-    && chmod -R 444 $CATALINA_HOME/webapps \
-    && chmod -R 444 $CATALINA_HOME/conf \
-    && chmod -R 444 /etc/ispyb/pdf
-
-# Switch to non-root user
-USER tomcat
 
 # Copy the EAR file from the builder stage to the Tomcat webapps directory
 COPY --chown=tomcat:tomcat ispyb-ear/target/ispyb.ear $CATALINA_HOME/webapps/
@@ -51,6 +39,15 @@ COPY --chown=tomcat:tomcat configuration/tomee/logging.properties $CATALINA_HOME
 
 # Copy JDBC driver to the Tomcat lib directory
 COPY --chown=tomcat:tomcat configuration/mariadb/mariadb-java-client-3.3.3.jar $CATALINA_HOME/lib/
+
+# Change ownership to non-root user
+RUN chown -R tomcat:tomcat $CATALINA_HOME \
+    && chmod -R 644 $CATALINA_HOME/webapps \
+    && chmod -R 644 $CATALINA_HOME/conf \
+    && chmod -R 644 /etc/ispyb/pdf
+
+# Switch to non-root user
+USER tomcat
 
 # Expose the port Tomcat is running on
 EXPOSE 8080
