@@ -41,10 +41,7 @@ COPY --chown=tomcat:tomcat configuration/tomee/logging.properties $CATALINA_HOME
 COPY --chown=tomcat:tomcat configuration/mariadb/mariadb-java-client-3.3.3.jar $CATALINA_HOME/lib/
 
 # Change ownership to non-root user
-RUN chown -R tomcat:tomcat $CATALINA_HOME \
-    && chmod -R 644 $CATALINA_HOME/webapps \
-    && chmod -R 644 $CATALINA_HOME/conf \
-    && chmod -R 644 /etc/ispyb/pdf
+RUN chown -R tomcat:tomcat $CATALINA_HOME
 
 # Switch to non-root user
 USER tomcat
