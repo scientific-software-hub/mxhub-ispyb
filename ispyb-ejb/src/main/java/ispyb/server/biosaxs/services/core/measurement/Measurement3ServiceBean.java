@@ -384,7 +384,7 @@ public class Measurement3ServiceBean implements Measurement3Service, Measurement
 	}
 
 	private Macromolecule3VO findMacromoleculeBySpecimenId(int specimenId){
-		String query = "SELECT specimen FROM Specimen3VO specimen LEFT JOIN specimen.macromolecule3VO where specimen.specimenId = :specimenId";
+		String query = "SELECT DISTINCT(specimen) FROM Specimen3VO specimen LEFT JOIN specimen.macromolecule3VO where specimen.specimenId = :specimenId";
 		Query EJBQuery = this.entityManager.createQuery(query, Macromolecule3VO.class)
 				.setParameter("specimenId", specimenId);
 		Specimen3VO specimen3VO = (Specimen3VO) EJBQuery.getSingleResult();	

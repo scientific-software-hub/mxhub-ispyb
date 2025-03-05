@@ -139,7 +139,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	@WebMethod
 	public Proposal3VO findWithParticipantsByPk(final Integer pk) throws Exception {
 
-		Query query = entityManager.createQuery("SELECT vo FROM Proposal3VO vo " +
+		Query query = entityManager.createQuery("SELECT DISTINCT(vo) FROM Proposal3VO vo " +
 						"LEFT JOIN FETCH vo.participants WHERE vo.proposalId = :pk", Proposal3VO.class)
 				.setParameter("pk", pk);
 		Proposal3VO result = (Proposal3VO) query.getSingleResult();
@@ -161,7 +161,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	public Proposal3VO findByPk(final Integer pk, final boolean fetchSessions, final boolean fetchProteins,
 			final boolean fetchShippings) throws Exception {
 
-		String qlString = "SELECT vo FROM Proposal3VO vo  "
+		String qlString = "SELECT DISTINCT(vo) FROM Proposal3VO vo  "
 				+ (fetchSessions ? " LEFT JOIN FETCH vo.sessionVOs " : "")
 				+ (fetchShippings ? " LEFT JOIN FETCH vo.shippingVOs " : "")
 				+ (fetchProteins ? " LEFT JOIN FETCH vo.proteinVOs " : "")

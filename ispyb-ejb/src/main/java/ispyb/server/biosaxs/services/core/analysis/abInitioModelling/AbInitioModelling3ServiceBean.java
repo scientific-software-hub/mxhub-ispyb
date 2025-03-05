@@ -65,7 +65,7 @@ public class AbInitioModelling3ServiceBean implements AbInitioModelling3Service,
 	
 	@Override
 	public ModelList3VO getModelListById(int modelListId) {
-		String query = "SELECT modelList FROM ModelList3VO modelList WHERE modelList.modelListId = :modelListId" ;
+		String query = "SELECT DISTINCT(modelList) FROM ModelList3VO modelList WHERE modelList.modelListId = :modelListId" ;
 		Query EJBQuery = this.entityManager.createQuery(query, ModelList3VO.class)
 				.setParameter("modelListId", modelListId);
 		return (ModelList3VO) EJBQuery.getSingleResult();	
@@ -328,7 +328,7 @@ public class AbInitioModelling3ServiceBean implements AbInitioModelling3Service,
 
 	@Override
 	public Model3VO getModelById(int modelId) {
-		String query = "SELECT model FROM Model3VO model WHERE model.modelId = :modelId";
+		String query = "SELECT DISTINCT(model) FROM Model3VO model WHERE model.modelId = :modelId";
 		Query EJBQuery = this.entityManager.createQuery(query, Model3VO.class)
 				.setParameter("modelId", modelId);
 		return (Model3VO)EJBQuery.getSingleResult();

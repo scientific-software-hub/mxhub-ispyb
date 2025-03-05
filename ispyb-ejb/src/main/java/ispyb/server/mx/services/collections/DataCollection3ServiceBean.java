@@ -152,7 +152,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			String qlString = "SELECT vo from DataCollection3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from DataCollection3VO vo "
 					+ (withImage ? "left join fetch vo.imageVOs " : "")
 					+ (withAutoProcIntegration ? "left join fetch vo.autoProcIntegrationVOs " : "") + "where vo.dataCollectionId = :pk";
 			return (DataCollection3VO) entityManager.createQuery(qlString)
@@ -180,7 +180,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
 		try {
-			String qlString = "SELECT vo from DataCollection3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from DataCollection3VO vo "
 					+ (withImage ? "left join fetch vo.imageVOs " : "")
 					+ (withAutoProcIntegration ? "left join fetch vo.autoProcIntegrationVOs " : "") + "where vo.dataCollectionId = :pk";
 			DataCollection3VO found = (DataCollection3VO) entityManager.createQuery(qlString)

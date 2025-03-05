@@ -142,7 +142,7 @@ public class Screening3ServiceBean implements Screening3Service, Screening3Servi
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from Screening3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from Screening3VO vo "
 					+ (fetchScreeningRank ? "left join fetch vo.screeningRankVOs " : "")
 					+ (fetchScreeningOutput ? "left join fetch vo.screeningOutputVOs " : "")
 					+ "where vo.screeningId = :pk";

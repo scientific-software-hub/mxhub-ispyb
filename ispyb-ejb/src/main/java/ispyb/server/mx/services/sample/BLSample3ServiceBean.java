@@ -135,7 +135,7 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 	public BLSample3VO findByPk(final Integer pk, final boolean withEnergyScan, final boolean withSubSamples, final boolean withSampleImages) throws Exception {
 	
 		try {
-			String qlString = "SELECT vo from BLSample3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from BLSample3VO vo "
 					+ (withEnergyScan ? "left join fetch vo.energyScanVOs " : "")
 					+ (withSubSamples ? "left join fetch vo.blSubSampleVOs " : "")
 					+ (withSampleImages ? "left join fetch vo.blsampleImageVOs " : "")
@@ -719,7 +719,7 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 	public BLSampleWS3VO findForWSByPk(final Integer pk, final boolean withEnergyScan, final boolean withSubSamples, final boolean withSampleImages) throws Exception {
 	
 		try {
-			String qlString = "SELECT vo from BLSample3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from BLSample3VO vo "
 					+ (withEnergyScan ? "left join fetch vo.energyScanVOs " : "")
 					+ (withSubSamples ? "left join fetch vo.blSubSampleVOs " : "")
 					+ (withSampleImages ? "left join fetch vo.blsampleImageVOs " : "")

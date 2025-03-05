@@ -148,7 +148,7 @@ public class Protein3ServiceBean extends WsServiceBean implements Protein3Servic
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			String qlString = "SELECT vo from Protein3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from Protein3VO vo "
 					+ (withLink1 ? " left join fetch vo.crystalVOs " : "")
 					+ " where vo.proteinId = :pk";
 			return entityManager.createQuery(qlString, Protein3VO.class)

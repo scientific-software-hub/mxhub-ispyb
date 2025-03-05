@@ -148,7 +148,7 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
 		try {
-			return entityManager.createQuery("select DISTINCT vo from Container3VO vo "
+			return entityManager.createQuery("select DISTINCT(vo) from Container3VO vo "
 							//	+ (fetchSamples ? "left join fetch vo.sampleVOs " : "")
 							+ (fetchSamples ? "	LEFT JOIN FETCH vo.sampleVOs LEFT JOIN vo.sampleVOs sa " +
 							"LEFT JOIN FETCH sa.blSubSampleVOs " +

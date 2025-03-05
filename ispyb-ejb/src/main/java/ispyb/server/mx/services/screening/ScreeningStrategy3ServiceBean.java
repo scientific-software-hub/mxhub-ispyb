@@ -140,7 +140,7 @@ public class ScreeningStrategy3ServiceBean implements ScreeningStrategy3Service,
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from ScreeningStrategy3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from ScreeningStrategy3VO vo "
 					+ (withScreeningStrategyWedge ? "left join fetch vo.screeningStrategyWedgeVOs " : "")
 					+ "where vo.screeningStrategyId = :pk";
 			return entityManager.createQuery(qlString, ScreeningStrategy3VO.class)

@@ -176,7 +176,7 @@ public class Shipping3ServiceBean implements Shipping3Service, Shipping3ServiceL
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
 		try {
-			String qlString = "SELECT vo FROM Shipping3VO vo "
+			String qlString = "SELECT DISTINCT(vo) FROM Shipping3VO vo "
 						+ (withDewars ? "LEFT JOIN FETCH vo.dewarVOs LEFT JOIN vo.dewarVOs dewars ": "")
 						+ (withDewars && withcontainers ? "LEFT JOIN FETCH dewars.containerVOs LEFT JOIN dewars.containerVOs co " : "")
 						+ (withDewars && withcontainers && withSamples ? "LEFT JOIN FETCH co.sampleVOs LEFT JOIN co.sampleVOs sa LEFT JOIN FETCH sa.blsampleImageVOs " : "")
@@ -642,7 +642,7 @@ public class Shipping3ServiceBean implements Shipping3Service, Shipping3ServiceL
 		// to the one checking the needed access rights
 		// autService.checkUserRightToChangeAdminData();
 		try {
-				String pk1 = "SELECT vo FROM Shipping3VO vo "
+				String pk1 = "SELECT DISTINCT(vo) FROM Shipping3VO vo "
 							+ (withDewars ? "LEFT JOIN FETCH vo.dewarVOs LEFT JOIN vo.dewarVOs dewars " : "")
 							+ (withDewars && withSession ? "LEFT JOIN FETCH dewars.sessionVO " : "")
 							+ "WHERE vo.shippingId = :pk";

@@ -115,7 +115,7 @@ public class Menu3ServiceBean implements Menu3Service,
 		checkCreateChangeRemoveAccess();
 		try {
 			entityManager = entitymanagerFactory.createEntityManager();
-			return (Menu3VO) entityManager.createQuery("select vo from Menu3VO vo "
+			return (Menu3VO) entityManager.createQuery("select distinct(vo) from Menu3VO vo "
 							+ (withMenuGroup ? "left join fetch vo.menuGroupVOs " : "")
 							+ "where vo.menuId = :pk")
 					.setParameter("pk", pk)

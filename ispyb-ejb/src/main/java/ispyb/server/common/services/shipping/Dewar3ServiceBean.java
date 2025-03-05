@@ -133,7 +133,7 @@ public class Dewar3ServiceBean implements Dewar3Service, Dewar3ServiceLocal {
 		
 		checkCreateChangeRemoveAccess();
 		try {
-			return entityManager.createQuery("select vo from Dewar3VO vo "
+			return entityManager.createQuery("select distinct(vo) from Dewar3VO vo "
 							+ (withContainers ? "left join fetch vo.containerVOs " : "")
 					+ (withDewarTransportHistory ? "left join fetch vo.dewarTransportHistoryVOs " : "")
 					+ "where vo.dewarId = :pk", Dewar3VO.class)
@@ -149,7 +149,7 @@ public class Dewar3ServiceBean implements Dewar3Service, Dewar3ServiceLocal {
 		
 		checkCreateChangeRemoveAccess();
 		try {
-			return entityManager.createQuery("SELECT vo from Dewar3VO vo "
+			return entityManager.createQuery("SELECT DISTINCT(vo) from Dewar3VO vo "
 							+ (withContainers ? "left join fetch vo.containerVOs left join vo.containerVOs co" : "")
 							+ (withDewarTransportHistory ? "left join fetch vo.dewarTransportHistoryVOs " : "")
 							+ (withSamples ? "left join fetch co.sampleVOs " : "")

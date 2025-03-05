@@ -140,7 +140,7 @@ public class ScreeningOutput3ServiceBean implements ScreeningOutput3Service, Scr
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from ScreeningOutput3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from ScreeningOutput3VO vo "
 					+ (withScreeningStrategy ? "left join fetch vo.screeningStrategyVOs " : "")
 					+ (withScreeningOutpuLattice ? "left join fetch vo.screeningOutputLatticeVOs " : "")
 					+ "where vo.screeningOutputId = :pk";

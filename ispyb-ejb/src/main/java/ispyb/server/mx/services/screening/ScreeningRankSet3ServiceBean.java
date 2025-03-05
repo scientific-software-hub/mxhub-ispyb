@@ -140,7 +140,7 @@ public class ScreeningRankSet3ServiceBean implements ScreeningRankSet3Service, S
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from ScreeningRankSet3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from ScreeningRankSet3VO vo "
 					+ (withScreeningRank ? "left join fetch vo.screeningRankVOs " : "")
 					+ "where vo.screeningRankSetId = :pk";
 			return entityManager.createQuery(qlString, ScreeningRankSet3VO.class)

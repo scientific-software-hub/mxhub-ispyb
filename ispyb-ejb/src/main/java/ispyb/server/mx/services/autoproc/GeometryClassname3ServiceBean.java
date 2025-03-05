@@ -106,7 +106,7 @@ public class GeometryClassname3ServiceBean implements GeometryClassname3Service,
 		//autService.checkUserRightToChangeAdminData();
 		try {
 			return entityManager
-					.createQuery("SELECT vo from GeometryClassname3VO vo "
+					.createQuery("SELECT DISTINCT(vo) from GeometryClassname3VO vo "
 							+ (fetchSpaceGroups ? "left join fetch vo.spaceGroupVOs " : "")
 							+ "where vo.geometryClassnameId = :pk", GeometryClassname3VO.class)
 					.setParameter("pk", pk)

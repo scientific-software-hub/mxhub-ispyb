@@ -124,7 +124,7 @@ public class Image3ServiceBean implements Image3Service,
 		//autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try{
-			String qlString = "SELECT vo from Image3VO vo " + "where vo.imageId = :pk";
+			String qlString = "SELECT vo from Image3VO vo where vo.imageId = :pk";
 			return entityManager.createQuery(qlString, Image3VO.class)
 					.setParameter("pk", pk)
 					.getSingleResult();

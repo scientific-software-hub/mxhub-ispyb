@@ -116,7 +116,7 @@ public class AutoProcProgram3ServiceBean implements AutoProcProgram3Service,
 		//AuthorizationServiceLocal autService = (AuthorizationServiceLocal) ServiceLocator.getInstance().getService(AuthorizationServiceLocalHome.class);			// TODO change method to the one checking the needed access rights
 		//autService.checkUserRightToChangeAdminData();
 		try{
-			String qlString = "SELECT vo from AutoProcProgram3VO vo "
+			String qlString = "SELECT DISTINCT(vo) from AutoProcProgram3VO vo "
 					+ (withAttachment ? "left join fetch vo.attachmentVOs " : "")
 					+ "where vo.autoProcProgramId = :pk";
 			return entityManager.createQuery(qlString, AutoProcProgram3VO.class)

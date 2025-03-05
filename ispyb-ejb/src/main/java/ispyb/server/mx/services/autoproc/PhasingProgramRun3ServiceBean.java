@@ -114,7 +114,7 @@ public class PhasingProgramRun3ServiceBean implements PhasingProgramRun3Service,
 		// TODO Edit this business code
 		try {
 			return (PhasingProgramRun3VO) entityManager
-					.createQuery("SELECT vo from PhasingProgramRun3VO vo "
+					.createQuery("SELECT DISTINCT(vo) from PhasingProgramRun3VO vo "
 							+ (withAttachment ? "left join fetch vo.attachmentVOs " : "")
 							+ "where vo.phasingProgramRunId = :phasingProgramRunId")
 					.setParameter("phasingProgramRunId", pk).getSingleResult();

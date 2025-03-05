@@ -150,7 +150,7 @@ public class DataCollectionGroup3ServiceBean implements DataCollectionGroup3Serv
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			return (DataCollectionGroup3VO) entityManager.createQuery("SELECT vo from DataCollectionGroup3VO vo "
+			return (DataCollectionGroup3VO) entityManager.createQuery("SELECT DISTINCT(vo) from DataCollectionGroup3VO vo "
 							+ (withDataCollection ? "left join fetch vo.dataCollectionVOs " : "")
 							+ (withScreening ? "left join fetch vo.screeningVOs " : "")
 							+ "where vo.dataCollectionGroupId = :pk")
@@ -178,7 +178,7 @@ public class DataCollectionGroup3ServiceBean implements DataCollectionGroup3Serv
 		// autService.checkUserRightToChangeAdminData();
 		// TODO Edit this business code
 		try {
-			DataCollectionGroup3VO found = (DataCollectionGroup3VO) entityManager.createQuery("SELECT vo from DataCollectionGroup3VO vo "
+			DataCollectionGroup3VO found = (DataCollectionGroup3VO) entityManager.createQuery("SELECT DISTINCT(vo) from DataCollectionGroup3VO vo "
 							+ (withDataCollection ? "left join fetch vo.dataCollectionVOs " : "")
 							+ (withScreening ? "left join fetch vo.screeningVOs " : "")
 							+ "where vo.dataCollectionGroupId = :pk")
