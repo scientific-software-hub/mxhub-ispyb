@@ -15,6 +15,13 @@ RUN apt-get update && apt-get install -y wget tar passwd
 # Create a non-root user for Tomcat
 RUN addgroup --system tomcat && adduser --system --group tomcat
 
+ARG FSDATA_GID
+# Add tomcat user to fsdata group with FSDATA_GID as group id
+RUN addgroup --gid ${FSDATA_GID} fsdata
+RUN usermod --groups fsdata tomcat
+
+
+
 # Download and install Tomcat
 RUN wget https://dlcdn.apache.org/tomee/tomee-$TOMCAT_VERSION/apache-tomee-$TOMCAT_VERSION-$TOMCAT_JAKARTA_PROFILE.tar.gz -O /tmp/tomcat.tar.gz \
     && tar -xvf /tmp/tomcat.tar.gz -C /usr/local \
