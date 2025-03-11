@@ -79,6 +79,10 @@ public class SecurityInterceptor implements ContainerRequestFilter {
                 return;
             }
             if (login.isUser() || login.isIndustrial()) {
+                boolean hasProposalParamInUrl = requestContext.getUriInfo().getPathParameters().containsKey("proposal");
+                if (!hasProposalParamInUrl){
+                    return;
+                }
                 String proposalname = requestContext.getUriInfo().getPathParameters().get("proposal").get(0);
                 if (!login.getAuthorized().toUpperCase().contains(proposalname.toUpperCase())) {
                     logger.info(String.format("Proposal %s not allowed for %s", proposalname, login.getUsername()));
