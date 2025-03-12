@@ -2,6 +2,7 @@ package ispyb.ws.rest.security;
 
 import ispyb.server.common.util.LoggerFormatter;
 import ispyb.server.common.vos.login.Login3VO;
+import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 import ispyb.ws.rest.security.login.*;
 
@@ -103,7 +104,14 @@ public class AuthenticationRestWebService extends RestWebService {
 				login3vo.setRoles(roles.toString());
 				login3vo.setSiteId(siteId);
 				/** Retrieving the proposals attached to a User **/
-				List<String> proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login);
+				List<String> proposalsAuthorized = new ArrayList<String>();
+				proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login);
+				if (proposalsAuthorized.isEmpty()){
+					List<Session3VO> ss = getSession3Service().findSessionsByLoginName(login);
+					for (Session3VO s :ss){
+						proposalsAuthorized.add(s.getProposalCodeAndId());
+					}
+				}
 				login3vo.setAuthorized(proposalsAuthorized.toString());
 							
 				/** Calculating expiration time **/

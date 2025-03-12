@@ -6,12 +6,7 @@ import ispyb.server.common.vos.login.Login3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.rest.RestWebService;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
+import java.util.*;
 
 import jakarta.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -69,6 +64,14 @@ public class SessionRestWebService extends RestWebService {
 			for (Map<String, Object> proposal : proposals) {			
 				logger.info("Getting sessions from proposal " + proposal.get("Proposal_proposalId"));
 				sessions.addAll(getSessionService().getSessionViewByProposalId(((Long)proposal.get("Proposal_proposalId")).intValue()));
+			}
+			if (proposals.isEmpty()){
+				List<Session3VO> ss = getSessionsFromToken(token);
+				for (Session3VO s :ss){
+					int proposalId = s.getProposalVOId();
+					sessions.addAll(getSessionService().getSessionViewByProposalId(proposalId));
+					//TODO check that amount of ss == amount of sessions (proposal may contain more sessions that user is assigned to)
+				}
 			}
 			this.logFinish(methodName, id, logger);
 			return this.sendResponse(sessions);

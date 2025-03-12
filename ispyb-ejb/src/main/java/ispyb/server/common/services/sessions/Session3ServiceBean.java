@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import ispyb.server.common.vos.proposals.Person3VO;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import jakarta.annotation.Resource;
 import jakarta.ejb.*;
@@ -248,6 +249,26 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		List<Session3VO> sessions = new ArrayList<Session3VO>();
 		sessions.addAll(this.findFiltered(proposalId, null, beamlineName, null, date, date, false, null));
 		sessions.addAll(this.findFiltered(proposalId, null, beamlineName, null, date, date, true, null));
+		return sessions;
+	}
+
+	public List<Session3VO> findSessionsByLoginName(String loginName) {
+		String queryPerson = "SELECT person FROM Person3VO person WHERE person.login=:loginName";
+		Query EJBQueryPerson = this.entityManager.createQuery(queryPerson, Session3VO.class);
+		EJBQueryPerson.setParameter("loginName", loginName);
+		List<Person3VO> persons = EJBQueryPerson.getResultList();
+		List<Session3VO> sessions = new ArrayList<Session3VO>();
+		if (persons != null) {
+			if (persons.size() > 0) {
+				for (Person3VO person3vo : persons) {
+					if (person3vo.getSessionVOs() != null) {
+						if (person3vo.getSessionVOs().size() > 0) {
+							sessions.addAll(person3vo.getSessionVOs());
+						}
+					}
+				}
+			}
+		}
 		return sessions;
 	}
 	

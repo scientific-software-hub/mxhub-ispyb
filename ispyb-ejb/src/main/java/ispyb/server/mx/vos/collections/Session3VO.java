@@ -432,6 +432,10 @@ public class Session3VO extends ISPyBValueObject implements Cloneable {
 		return proposalVO == null ? null : proposalVO.getProposalId();
 	}
 
+	public String getProposalCodeAndId(){
+		return proposalVO == null ? null : proposalVO.getProposalCode().toLowerCase()+proposalVO.getProposalId();
+	}
+
 	public Set<DataCollectionGroup3VO> getDataCollectionGroupVOs() {
 		return dataCollectionGroupVOs;
 	}

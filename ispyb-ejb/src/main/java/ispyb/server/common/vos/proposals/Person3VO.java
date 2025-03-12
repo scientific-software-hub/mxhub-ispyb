@@ -23,6 +23,7 @@ import ispyb.server.common.vos.ISPyBValueObject;
 
 import java.util.Set;
 
+import ispyb.server.mx.vos.collections.Session3VO;
 import jakarta.persistence.*;
 
 import org.apache.log4j.Logger;
@@ -85,6 +86,10 @@ public class Person3VO extends ISPyBValueObject implements Cloneable {
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "ProposalHasPerson", joinColumns = { @JoinColumn(name = "personId", referencedColumnName = "personId") }, inverseJoinColumns = { @JoinColumn(name = "proposalId", referencedColumnName = "proposalId") })
 	private Set<Proposal3VO> proposalVOs;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "Session_has_Person", joinColumns = { @JoinColumn(name = "personId", referencedColumnName = "personId") }, inverseJoinColumns = { @JoinColumn(name = "sessionId", referencedColumnName = "sessionId") })
+	protected Set<Session3VO> sessionVOs;
 
 	@Column(name = "externalId")
 	protected String externalId;
@@ -252,6 +257,10 @@ public class Person3VO extends ISPyBValueObject implements Cloneable {
 
 	public void setProposalVOs(Set<Proposal3VO> proposalVOs) {
 		this.proposalVOs = proposalVOs;
+	}
+
+	public Set<Session3VO> getSessionVOs() {
+		return sessionVOs;
 	}
 
 	public Set<Proposal3VO> getProposalDirectVOs() {

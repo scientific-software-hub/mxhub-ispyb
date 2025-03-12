@@ -201,6 +201,6 @@ public interface Session3Service {
 
 	public Session3VO findByAutoProcProgramId(int autoProcProgramId);
 
-	
+	public List<Session3VO> findSessionsByLoginName(String loginName);
 
 }
