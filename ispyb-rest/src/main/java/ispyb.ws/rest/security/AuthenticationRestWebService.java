@@ -9,13 +9,7 @@ import ispyb.ws.rest.security.login.*;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Formatter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.FormParam;
@@ -104,13 +98,10 @@ public class AuthenticationRestWebService extends RestWebService {
 				login3vo.setRoles(roles.toString());
 				login3vo.setSiteId(siteId);
 				/** Retrieving the proposals attached to a User **/
-				List<String> proposalsAuthorized = new ArrayList<String>();
-				proposalsAuthorized =  this.getProposal3Service().findProposalNamesByLoginName(login);
-				if (proposalsAuthorized.isEmpty()){
-					List<Session3VO> ss = getSession3Service().findSessionsByLoginName(login);
-					for (Session3VO s :ss){
-						proposalsAuthorized.add(s.getProposalCodeAndId());
-					}
+				Set<String> proposalsAuthorized = new HashSet<String>();
+				Set<Session3VO> ss = getSession3Service().findSessionsByLoginName(login);
+				for (Session3VO s :ss){
+					proposalsAuthorized.add(s.getProposalCodeAndId());
 				}
 				login3vo.setAuthorized(proposalsAuthorized.toString());
 							

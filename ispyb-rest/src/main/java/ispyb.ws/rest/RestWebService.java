@@ -3,13 +3,12 @@ package ispyb.ws.rest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ispyb.server.common.vos.login.Login3VO;
 import ispyb.server.common.vos.proposals.Person3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 import ispyb.ws.ParentWebService;
-
-import jakarta.ws.rs.Path;
 
 public class RestWebService extends ParentWebService {
 	protected long now;
@@ -47,7 +46,7 @@ public class RestWebService extends ParentWebService {
 		return personId;
 	}
 
-	protected List<Session3VO> getSessionsFromToken (String token) throws Exception {
+	protected Set<Session3VO> getSessionsFromToken (String token) throws Exception {
 		Login3VO login3VO = this.getLogin3Service().findByToken(token);
 		if (login3VO != null && login3VO.isValid()){
 			return this.getSession3Service().findSessionsByLoginName(login3VO.getUsername());

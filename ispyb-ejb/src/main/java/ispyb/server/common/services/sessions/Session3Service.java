@@ -24,6 +24,7 @@ import ispyb.server.mx.vos.collections.SessionWS3VO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import jakarta.ejb.Remote;
 
@@ -201,6 +202,6 @@ public interface Session3Service {
 
 	public Session3VO findByAutoProcProgramId(int autoProcProgramId);
 
-	public List<Session3VO> findSessionsByLoginName(String loginName);
+	public Set<Session3VO> findSessionsByLoginName(String loginName);
 
 }

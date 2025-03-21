@@ -59,19 +59,10 @@ public class SessionRestWebService extends RestWebService {
 		String methodName = "getSessionList";
 		long id = this.logInit(methodName, logger, token);
 		try {
-			List<Map<String, Object>> proposals = this.getProposalsFromToken(token);
 			List<Map<String, Object>> sessions = new ArrayList<Map<String,Object>>();
-			for (Map<String, Object> proposal : proposals) {			
-				logger.info("Getting sessions from proposal " + proposal.get("Proposal_proposalId"));
-				sessions.addAll(getSessionService().getSessionViewByProposalId(((Long)proposal.get("Proposal_proposalId")).intValue()));
-			}
-			if (proposals.isEmpty()){
-				List<Session3VO> ss = getSessionsFromToken(token);
-				for (Session3VO s :ss){
-					int proposalId = s.getProposalVOId();
-					sessions.addAll(getSessionService().getSessionViewByProposalId(proposalId));
-					//TODO check that amount of ss == amount of sessions (proposal may contain more sessions that user is assigned to)
-				}
+			Set<Session3VO> ss = getSessionsFromToken(token);
+			for (Session3VO s :ss){
+				sessions.addAll(getSessionService().getSessionViewBySessionId(s.getProposalVOId(), s.getSessionId()));
 			}
 			this.logFinish(methodName, id, logger);
 			return this.sendResponse(sessions);

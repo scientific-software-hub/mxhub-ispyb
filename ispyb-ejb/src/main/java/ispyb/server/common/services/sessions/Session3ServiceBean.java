@@ -24,10 +24,7 @@ import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import ispyb.server.common.vos.proposals.Person3VO;
@@ -35,10 +32,7 @@ import ispyb.server.common.vos.proposals.Proposal3VO;
 import jakarta.annotation.Resource;
 import jakarta.ejb.*;
 import jakarta.jws.WebMethod;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
 
 import jakarta.persistence.criteria.*;
 import org.apache.http.HttpResponse;
@@ -252,24 +246,16 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		return sessions;
 	}
 
-	public List<Session3VO> findSessionsByLoginName(String loginName) {
-		String queryPerson = "SELECT person FROM Person3VO person WHERE person.login=:loginName";
-		Query EJBQueryPerson = this.entityManager.createQuery(queryPerson, Session3VO.class);
-		EJBQueryPerson.setParameter("loginName", loginName);
-		List<Person3VO> persons = EJBQueryPerson.getResultList();
-		List<Session3VO> sessions = new ArrayList<Session3VO>();
-		if (persons != null) {
-			if (persons.size() > 0) {
-				for (Person3VO person3vo : persons) {
-					if (person3vo.getSessionVOs() != null) {
-						if (person3vo.getSessionVOs().size() > 0) {
-							sessions.addAll(person3vo.getSessionVOs());
-						}
-					}
-				}
-			}
+	public Set<Session3VO> findSessionsByLoginName(String loginName) {
+		String queryPersonString = "SELECT DISTINCT person FROM Person3VO person WHERE person.login=:loginName";
+		TypedQuery<Person3VO> queryPerson = this.entityManager.createQuery(queryPersonString, Person3VO.class);
+		queryPerson.setParameter("loginName", loginName);
+		try {
+			Person3VO person = queryPerson.getSingleResult();
+			return person.getSessionVOs();
+		} catch (Exception e) {
+			throw new RuntimeException(e);//TODO should we return empty set here?
 		}
-		return sessions;
 	}
 	
 	@SuppressWarnings("unchecked")
