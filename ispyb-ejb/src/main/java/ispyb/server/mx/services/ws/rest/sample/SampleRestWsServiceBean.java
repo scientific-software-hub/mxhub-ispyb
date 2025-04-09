@@ -53,18 +53,12 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 	
 	@Override
 	public List<Map<String, Object>> getSamplesBySessionId(int proposalId,int sessionId) {
-		//TODO v_mx_sample.DataCollectionGroup_sessionId
-		String session = "select *, (SELECT \n" +
-				"            MAX(`DataCollectionGroup`.`dataCollectionGroupId`)\n" +
-				"        FROM\n" +
-				"            `DataCollectionGroup`\n" +
-				"        WHERE\n" +
-				"            (`DataCollectionGroup`.`blSampleId` = `v_mx_sample`.`BLSample_blSampleId`)) AS `DataCollectionGroup_dataCollectionGroupId`"
+		String session = "select *"
 				+ " from v_mx_sample"
-				+ " where v_mx_sample.DataCollectionGroup_sessionId = ?1 and v_mx_sample.Protein_proposalId = ?2";
+				+ " where v_mx_sample.sessionId = ?2 and v_mx_sample.Protein_proposalId = ?1";
 		Query query = this.entityManager.createNativeQuery(session, Map.class)
-				.setParameter(2, proposalId)
-				.setParameter(1, sessionId);
+				.setParameter(1, proposalId)
+				.setParameter(2, sessionId);
 		List<Map<String, Object>> aliasToValueMapList = query.getResultList();
 		return aliasToValueMapList;
 	}
