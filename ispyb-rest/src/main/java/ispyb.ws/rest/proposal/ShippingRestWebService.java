@@ -166,6 +166,42 @@ public class ShippingRestWebService extends MXRestWebService {
 
 	}
 
+	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+	@GET
+	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/sessionId")
+	@Produces({ "application/json" })
+	public Response getSessionIdFromShippingId(@PathParam("token") String token, @PathParam("proposal") String proposal,
+								@PathParam("shippingId") Integer shippingId) throws Exception {
+
+		long id = this.logInit("getSessionFromShippingId", logger, token, proposal, shippingId);
+		try {
+			int result = this.getShipping3Service().getSessionIdFromShippingId(shippingId);
+			this.logFinish("getSessionFromShippingId", id, logger);
+			return sendResponse(result);
+		} catch (Exception e) {
+			return this.logError("getSessionFromShippingId", e, id, logger);
+		}
+	}
+
+	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+	@GET
+	@Path("{token}/proposal/{proposal}/shipping/{shippingId}/shipmentIds")
+	@Produces({ "application/json" })
+	public Response getAllShipmentIdsForSessionByShippingId(@PathParam("token") String token, @PathParam("proposal") String proposal,
+														  @PathParam("shippingId") Integer shippingId) throws Exception {
+
+		long id = this.logInit("getAllShipmentIdsForSessionByShippingId", logger, token, proposal, shippingId);
+		try {
+			List<Integer> result = this.getShipping3Service().getAllShipmentIdsForSessionByShippingId(shippingId);
+			this.logFinish("getAllShipmentIdsForSessionByShippingId", id, logger);
+			return sendResponse(result);
+		} catch (Exception e) {
+			return this.logError("getAllShipmentIdsForSessionByShippingId", e, id, logger);
+		}
+	}
+
+
+
 	/*@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/shipping/find/")

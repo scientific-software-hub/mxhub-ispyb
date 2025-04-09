@@ -233,6 +233,29 @@ public class Shipping3ServiceBean implements Shipping3Service, Shipping3ServiceL
 		return aliasToValueMapList;
 	}
 
+	public Integer getSessionIdFromShippingId(final Integer shippingId) throws Exception {
+		try {
+			String mySQLQuery = "select sessionId from ShippingHasSession where ShippingHasSession.shippingId = ?1";
+			return (Integer) entityManager.createNativeQuery(mySQLQuery, Integer.class)
+					.setParameter(1, shippingId)
+					.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
+	public List<Integer> getAllShipmentIdsForSessionByShippingId(final Integer shippingId) throws Exception {
+		try {
+			Integer sessionId = getSessionIdFromShippingId(shippingId);
+			String mySQLQuery = "select * from ShippingHasSession where ShippingHasSession.sessionId = ?1";
+			return   entityManager.createNativeQuery(mySQLQuery, Integer.class)
+					.setParameter(1, sessionId)
+					.getResultList();
+		} catch (NoResultException e) {
+			return null;
+		}
+	}
+
 	/**
 	 * Find all Shipping3s and set linked value objects if necessary
 	 * 		// Generic HQL request to find all instances of Shipping3

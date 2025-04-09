@@ -143,4 +143,8 @@ public interface Shipping3Service {
 
 	public List<Map<String, Object>> getShippingByProposalId(Integer proposalId) throws Exception;
 
+	public Integer getSessionIdFromShippingId(final Integer shippingId) throws Exception;
+
+	public List<Integer> getAllShipmentIdsForSessionByShippingId(final Integer shippingId) throws Exception;
+
 }
