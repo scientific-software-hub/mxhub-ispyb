@@ -37,7 +37,7 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 
 	@Override
 	public List<Map<String, Object>> getSamplesByProposalId(int proposalId) {
-		String session = "select *, (SELECT \n" +
+		String session = "select distinct *, (SELECT \n" +
 				"            MAX(`DataCollectionGroup`.`dataCollectionGroupId`)\n" +
 				"        FROM\n" +
 				"            `DataCollectionGroup`\n" +
@@ -53,7 +53,7 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 	
 	@Override
 	public List<Map<String, Object>> getSamplesBySessionId(int proposalId,int sessionId) {
-		String session = "select *"
+		String session = "select distinct *"
 				+ " from v_mx_sample"
 				+ " where v_mx_sample.sessionId = ?2 and v_mx_sample.Protein_proposalId = ?1";
 		Query query = this.entityManager.createNativeQuery(session, Map.class)
@@ -65,7 +65,7 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 	
 	@Override
 	public List<Map<String, Object>> getSamplesByContainerId(int proposalId,int containerId) {
-		String session = "select *, (SELECT \n" +
+		String session = "select distinct *, (SELECT \n" +
 				"            MAX(`DataCollectionGroup`.`dataCollectionGroupId`)\n" +
 				"        FROM\n" +
 				"            `DataCollectionGroup`\n" +
@@ -82,7 +82,7 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 
 	@Override
 	public List<Map<String, Object>> getSamplesByShipmentId(int proposalId,int shippingId) {
-		String session = "select *, (SELECT \n" +
+		String session = "select distinct *, (SELECT \n" +
 				"            MAX(`DataCollectionGroup`.`dataCollectionGroupId`)\n" +
 				"        FROM\n" +
 				"            `DataCollectionGroup`\n" +
@@ -100,7 +100,7 @@ public class SampleRestWsServiceBean implements SampleRestWsService, SampleRestW
 	
 	@Override
 	public List<Map<String, Object>> getSamplesByDewarId(int proposalId, int dewarId) {
-		String session = "select *, (SELECT \n" +
+		String session = "select distinct *, (SELECT \n" +
 				"            MAX(`DataCollectionGroup`.`dataCollectionGroupId`)\n" +
 				"        FROM\n" +
 				"            `DataCollectionGroup`\n" +
