@@ -60,6 +60,9 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 	
 	@EJB
 	private Shipping3Service shipment3Service;
+
+	@EJB
+	private Dewar3Service dewar3Service;
 	
 
 	public Container3ServiceBean() {
@@ -469,7 +472,7 @@ public class Container3ServiceBean implements Container3Service, Container3Servi
 						newDewar.setType(dewar3vo.getType());
 						/** Creating dewar **/
 						LOG.info(String.format("Creating dewar with code=%s. code=%s type=%s id=%s", newDewar.getCode(), newDewar.getCode(), newDewar.getType(), newDewar.getDewarId()));
-						newDewar = this.entityManager.merge(newDewar);
+						newDewar = this.dewar3Service.create(newDewar);
 						LOG.info(String.format("Created dewar with code=%s. code=%s type=%s id=%s", newDewar.getCode(), newDewar.getCode(), newDewar.getType(), newDewar.getDewarId()));
 						
 						
