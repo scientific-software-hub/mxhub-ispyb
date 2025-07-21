@@ -1579,26 +1579,23 @@ public class ToolsForCollectionWebService {
 		}
 	}
 
-	public static Integer updateSession(Session3VO vo) throws Exception {
+	public static void updateSession(Session3VO vo) throws Exception {
 		try {
 			LOG.debug("updateSession");
 			// if vo is null we return null
 			if (vo == null)
-				return null;
+				return;
 
 			Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 			Session3VO sessionValue = null;
 			Session3Service sessionService = (Session3Service) ejb3ServiceLocator.getLocalService(Session3Service.class);
 			Timestamp currentTimeStamp = StringUtils.getCurrentTimeStamp();
-			Timestamp lastUpdate = new Timestamp(vo.getLastUpdate().getTime());
-			if (currentTimeStamp.after(lastUpdate)) {
+			if (vo.getLastUpdate() == null
+					|| currentTimeStamp.after(new Timestamp(vo.getLastUpdate().getTime()))) {
 				vo.setLastUpdate(currentTimeStamp);
 				sessionValue = sessionService.update(vo);
 				LOG.debug("Session updated " + sessionValue.getSessionId());
-				return sessionValue.getSessionId();
 			}
-
-			return null;
 		} catch (Exception e) {
 			LOG.error("WS ERROR: updateSession - " + StringUtils.getCurrentDate() + " - " + vo.toWSString());
 			throw e;
