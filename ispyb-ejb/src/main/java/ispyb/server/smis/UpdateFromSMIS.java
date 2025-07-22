@@ -43,7 +43,6 @@ import ispyb.server.common.services.proposals.LabContact3Service;
 import ispyb.server.common.services.proposals.Laboratory3Service;
 import ispyb.server.common.services.proposals.Person3Service;
 import ispyb.server.common.services.proposals.Proposal3Service;
-import ispyb.server.common.services.proposals.ProposalHasPerson3Service;
 import ispyb.server.common.services.sessions.Session3Service;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.admin.AdminVar3VO;
@@ -51,7 +50,6 @@ import ispyb.server.common.vos.proposals.LabContact3VO;
 import ispyb.server.common.vos.proposals.Laboratory3VO;
 import ispyb.server.common.vos.proposals.Person3VO;
 import ispyb.server.common.vos.proposals.Proposal3VO;
-import ispyb.server.common.vos.proposals.ProposalHasPerson3VO;
 import ispyb.server.mx.services.collections.BeamLineSetup3Service;
 import ispyb.server.mx.services.sample.Crystal3Service;
 import ispyb.server.mx.services.sample.Protein3Service;
@@ -69,7 +67,6 @@ public class UpdateFromSMIS {
 	private static final Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
 
 	private static Proposal3Service proposal;
-	private static ProposalHasPerson3Service proposalHasPerson;
 	private static Laboratory3Service lab;
 	private static Person3Service person;
 	private static Session3Service session;
@@ -110,7 +107,6 @@ public class UpdateFromSMIS {
 	private static void initServices() throws Exception {
 
 		proposal = (Proposal3Service) ejb3ServiceLocator.getLocalService(Proposal3Service.class);
-		proposalHasPerson = (ProposalHasPerson3Service) ejb3ServiceLocator.getLocalService(ProposalHasPerson3Service.class);
 		lab = (Laboratory3Service) ejb3ServiceLocator.getLocalService(Laboratory3Service.class);
 		person = (Person3Service) ejb3ServiceLocator.getLocalService(Person3Service.class);
 		session = (Session3Service) ejb3ServiceLocator.getLocalService(Session3Service.class);
@@ -361,7 +357,6 @@ public class UpdateFromSMIS {
 		if (labContacts != null && labContacts.length > 0) {
 
 			LOG.info("Loading labcontacts ... ");
-			Set<Integer> proposalHasPersonIds = new HashSet<Integer>();
 
 			for (int i = 0; i < labContacts.length; i++) {
 				
@@ -401,22 +396,7 @@ public class UpdateFromSMIS {
 				} else {
 					currentPerson = person.findByLogin(labContacts[i].getBllogin());
 				}
-									
-				if (currentPerson != null) {
-					LOG.debug("currentPerson Id : " + currentPerson.getPersonId() + " inside ISPyB db");
-					
-					// fill the ProposalHasPerson table
-					List<ProposalHasPerson3VO> phpList = proposalHasPerson.findByProposalAndPersonPk(proposalId, currentPerson.getPersonId());
-					if (phpList != null && !phpList.isEmpty() ){
-						proposalHasPersonIds.add(phpList.get(0).getProposalHasPersonId());
-						LOG.debug("Link between proposal and person already exist");
-					} else {
-						ProposalHasPerson3VO php = proposalHasPerson.create(proposalId, currentPerson.getPersonId() ) ;
-						proposalHasPersonIds.add(php.getProposalHasPersonId());
-						LOG.debug("Link between proposal and person added: " + proposalId + " " + currentPerson.getPersonId());
-					}					
-				}
-												
+
 				// fill the laboratory
 				Laboratory3VO currentLabo = ScientistsFromSMIS.extractLaboratoryInfo(labContacts[i]);
 				LOG.debug("current labo is : " + currentLabo.getAddress());
@@ -476,16 +456,6 @@ public class UpdateFromSMIS {
 							+ " inside ISPyB db");
 				} 					
 			}
-			// clean the ProposalHasPerson : remove entries no more present
-			List<ProposalHasPerson3VO> existingPhpList = proposalHasPerson.findByProposalPk(proposalId);			
-			for (Iterator<ProposalHasPerson3VO> iterator = existingPhpList.iterator(); iterator.hasNext();) {
-				ProposalHasPerson3VO proposalHasPerson3VO = (ProposalHasPerson3VO) iterator.next();
-				
-				if (!proposalHasPersonIds.contains(proposalHasPerson3VO.getProposalHasPersonId()) ) {
-					proposalHasPerson.deleteByPk(proposalHasPerson3VO.getProposalHasPersonId());
-					LOG.debug("removed existing link ProposalHasPerson : "+ proposalId + " " + proposalHasPerson3VO.getPersonId());
-				}
-			}			
 		}
 	}
 

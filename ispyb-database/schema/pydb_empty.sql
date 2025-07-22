@@ -3,12 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Jul 26, 2024 at 02:06 PM
+-- Generation Time: Jul 22, 2025 at 07:53 PM
 -- Server version: 11.3.2-MariaDB-1:11.3.2+maria~ubu2204
 -- PHP Version: 8.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -762,7 +761,7 @@ CREATE TABLE `BLSession` (
   `databackupFrance` float DEFAULT NULL COMMENT 'data backup and express delivery France',
   `databackupEurope` float DEFAULT NULL COMMENT 'data backup and express delivery Europe',
   `operatorSiteNumber` varchar(10) DEFAULT NULL COMMENT 'matricule site',
-  `lastUpdate` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT 'last update timestamp: by default the end of the session, the last collect...',
+  `lastUpdate` timestamp NOT NULL DEFAULT current_timestamp() COMMENT 'last update timestamp: by default the end of the session, the last collect...',
   `protectedData` varchar(1024) DEFAULT NULL COMMENT 'indicates if the data are protected or not',
   `externalId` binary(16) DEFAULT NULL,
   `nbReimbDewars` int(10) DEFAULT NULL,
@@ -2774,7 +2773,6 @@ CREATE TABLE `Proposal` (
 --
 
 CREATE TABLE `ProposalHasPerson` (
-  `proposalHasPersonId` int(10) UNSIGNED NOT NULL,
   `proposalId` int(10) UNSIGNED NOT NULL,
   `personId` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
@@ -6401,7 +6399,8 @@ ALTER TABLE `Proposal`
 -- Indexes for table `ProposalHasPerson`
 --
 ALTER TABLE `ProposalHasPerson`
-  ADD PRIMARY KEY (`proposalHasPersonId`),
+  ADD PRIMARY KEY (`proposalId`,`personId`),
+  ADD UNIQUE KEY `uq_proposal_person` (`proposalId`,`personId`),
   ADD KEY `fk_ProposalHasPerson_Proposal` (`proposalId`),
   ADD KEY `fk_ProposalHasPerson_Personal` (`personId`);
 
@@ -7692,12 +7691,6 @@ ALTER TABLE `Project_has_User`
 --
 ALTER TABLE `Proposal`
   MODIFY `proposalId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `ProposalHasPerson`
---
-ALTER TABLE `ProposalHasPerson`
-  MODIFY `proposalHasPersonId` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `Protein`
