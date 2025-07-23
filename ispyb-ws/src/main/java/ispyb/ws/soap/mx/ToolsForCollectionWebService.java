@@ -21,7 +21,6 @@ package ispyb.ws.soap.mx;
 
 import java.lang.reflect.Modifier;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -40,25 +39,16 @@ import org.apache.log4j.Logger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import ispyb.common.util.Constants;
-import ispyb.common.util.SendMailUtils;
 import ispyb.common.util.StringUtils;
-import ispyb.common.util.beamlines.ESRFBeamlineEnum;
 import ispyb.server.biosaxs.services.core.structure.Structure3Service;
 import ispyb.server.biosaxs.vos.assembly.Structure3VO;
-import ispyb.server.common.services.proposals.LabContact3Service;
-import ispyb.server.common.services.proposals.Person3Service;
 import ispyb.server.common.services.proposals.Proposal3Service;
 import ispyb.server.common.services.robot.RobotAction3Service;
 import ispyb.server.common.services.sessions.Session3Service;
-import ispyb.server.common.services.shipping.Dewar3Service;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
-import ispyb.server.common.vos.proposals.LabContact3VO;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.server.common.vos.robot.RobotAction3VO;
 import ispyb.server.common.vos.robot.RobotActionWS3VO;
-import ispyb.server.common.vos.shipping.Dewar3VO;
-import ispyb.server.common.vos.shipping.Shipping3VO;
 import ispyb.server.mx.services.collections.BeamLineSetup3Service;
 import ispyb.server.mx.services.collections.DataCollection3Service;
 import ispyb.server.mx.services.collections.DataCollectionGroup3Service;
@@ -105,7 +95,6 @@ import ispyb.server.mx.vos.sample.BLSample3VO;
 import ispyb.server.mx.vos.sample.BLSampleWS3VO;
 import ispyb.server.mx.vos.sample.BLSubSample3VO;
 import ispyb.server.mx.vos.screening.ScreeningStrategySubWedge3VO;
-import ispyb.server.smis.UpdateFromSMIS;
 
 /**
  * Web services for Collection
