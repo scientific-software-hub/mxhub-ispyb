@@ -1,7 +1,7 @@
 # Start with a base image containing Java runtime 21
 FROM eclipse-temurin:21-jre
 # Define environment variables for Tomcat version and installation directory
-ENV TOMCAT_VERSION 10.0.0
+ENV TOMCAT_VERSION 10.1.0
 ENV TOMCAT_JAKARTA_PROFILE plume
 ENV CATALINA_HOME /usr/local/tomcat
 ENV PATH $CATALINA_HOME/bin:$PATH
