@@ -24,7 +24,6 @@ import org.apache.cxf.annotations.GZIP;
 import org.apache.log4j.Logger;
 
 import ispyb.common.util.Constants;
-import ispyb.common.util.SendMailUtils;
 import ispyb.common.util.export.ExiPdfRtfExporter;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
@@ -575,7 +574,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 					}
 
 					if (baos != null) {
-						SendMailUtils.sendMail(from, to, cc, bcc, subject, body, attachName, baos, mimeType, true);
+//						SendMailUtils.sendMail(from, to, cc, bcc, subject, body, attachName, baos, mimeType, true);
 						this.logFinish(methodName, start, logger);						
 					}	
 			}
