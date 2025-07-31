@@ -48,8 +48,8 @@ public interface DewarAPIService {
 	 * @return
 	 * 
 	 */
-	public boolean addDewarLocation(String dewarBarCode, String username, Date dateTime, String location,
-			String courierName, String trackingNumber);
+	public void addDewarLocation(String dewarBarCode, String username, Date dateTime, String location,
+			String courierName, String trackingNumber) throws Exception;
 
 	/**
 	 * Get possible dewar locations values from DewarLocationList table
@@ -72,14 +72,12 @@ public interface DewarAPIService {
 	/**
 	 * Update Dewar table (dewarStatus, storageLocation, trackingNumberFromESRF) Update Shipping table (shippingStatus,
 	 * return Courier, dateOfShippingToUser) Add entry in DewarTransportHistory table
-	 * 
+	 *
 	 * @param dewarBarCode
 	 * @param location
 	 * @param courierName
 	 * @param TrackingNumber
-	 * @return
-	 * 
 	 */
-	public boolean updateDewar(String dewarBarCode, String location, String courierName, String TrackingNumber);
+	public void updateDewar(String dewarBarCode, String location, String courierName, String TrackingNumber) throws Exception;
 
 }

@@ -98,8 +98,8 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 	 * @return
 	 * 
 	 */
-	public boolean addDewarLocation(String dewarBarCode, String username, Date dateTime, String location, String courierName,
-			String trackingNumber) {
+	public void addDewarLocation(String dewarBarCode, String username, Date dateTime, String location, String courierName,
+			String trackingNumber) throws Exception {
 
 		try {
 			// Write data into DB
@@ -117,13 +117,9 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 			vo.setUserId(username);
 			event.create(vo);
 		} catch (Exception e) {
-			LOG.debug("Dewar Tracking (addDewarLocation): cannot insert dewar event for barcode '" + dewarBarCode + "'");
-			e.printStackTrace();
-			;
-			return false;
+			LOG.error("Dewar Tracking (addDewarLocation): cannot insert dewar event for barcode '" + dewarBarCode + "'", e);
+			throw e;
 		}
-
-		return true;
 	}
 
 	/**
@@ -202,8 +198,9 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 			// Get shipping info
 			try {
 				Shipping3VO shippings = shippingService.findByPk(shippingId, false);
+				dewarAPI.setShippingVO(shippings);
 				dewarAPI.setShippingName(shippings.getShippingName());
-				
+
 				proposalId = shippings.getProposalVOId();
 				LabContact3VO labContacts1 = shippings.getSendingLabContactVO();
 				Person3VO persons1 = labContacts1.getPersonVO();
@@ -283,15 +280,13 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 	/**
 	 * Update Dewar table (dewarStatus, storageLocation, trackingNumberFromESRF) Update Shipping table (shippingStatus, return Courier,
 	 * dateOfShippingToUser) Add entry in DewarTransportHistory table
-	 * 
+	 *
 	 * @param dewarBarCode
 	 * @param location
 	 * @param courierName
 	 * @param TrackingNumber
-	 * @return
-	 * 
 	 */
-	public boolean updateDewar(String dewarBarCode, String location, String courierName, String TrackingNumber) {
+	public void updateDewar(String dewarBarCode, String location, String courierName, String TrackingNumber) throws Exception {
 
 		LOG.debug("Dewar Tracking (updateDewar): updating info for dewar barcode '" + dewarBarCode + "'");
 
@@ -322,7 +317,7 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 				shippingId = dewar.getShippingVOId();
 			} else {
 				LOG.debug("Dewar Tracking (updateDewar): cannot find dewar '" + dewarBarCode + "'");
-				return false;
+				throw new IllegalArgumentException("Dewar '" + dewarBarCode + "' is not a valid dewar");
 			}
 
 			// Update Dewar table (dewarStatus, storageLocation, trackingNumberFromESRF)
@@ -353,7 +348,7 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 				// shippingFull.setEventsNumber(shippingFull.getEventsNumber() + 1);
 			} else {
 				LOG.debug("Dewar Tracking (updateDewar): cannot find shipping for dewar '" + dewarBarCode + "'");
-				return false;
+				throw new IllegalArgumentException("Dewar '" + dewarBarCode + "' has non-existing shippingId = '" + shippingId + "'");
 			}
 
 			// Update Container status (avoid to have containers in processing mode in MxCube)
@@ -375,12 +370,8 @@ public class DewarAPIServiceBean implements DewarAPIService, DewarAPIServiceLoca
 
 		} catch (Exception e) {
 			LOG.debug("Dewar Tracking (updateDewar): cannot update dewar '" + dewarBarCode + "'");
-			e.printStackTrace();
-			;
-			return false;
+			throw e;
 		}
-
-		return true;
 	}
 
 	/**
