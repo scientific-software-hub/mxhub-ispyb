@@ -120,7 +120,8 @@ public class AuthenticationRestWebService extends RestWebService {
 				throw new Exception("User is not allowed");
 			}
 		} catch (Exception e) {
-			return this.logError(methodName, e, id, logger, LoggerFormatter.Package.ISPyB_API_LOGIN_ERROR);
+			this.logError(methodName, e, id, logger, LoggerFormatter.Package.ISPyB_API_LOGIN_ERROR);
+			return Response.status(Response.Status.UNAUTHORIZED).build();
 		}
 	}
 
