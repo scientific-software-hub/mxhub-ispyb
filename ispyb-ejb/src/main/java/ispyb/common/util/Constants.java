@@ -362,7 +362,7 @@ public final class Constants {
 
 	public static final String SHIPPING_STATUS_SENT_TO_USER = "sent to User";
 
-	public static final String SHIPPING_STATUS_READY_TO_GO = "ready to go";
+	public static final String SHIPPING_STATUS_READY_TO_GO = "label printed";
 
 	public static final String DEWAR_STATUS_AT_FACILITY = "at " + getProperty("ISPyB.site");
 
