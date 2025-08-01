@@ -5,6 +5,8 @@ import ispyb.common.util.Constants;
 import ispyb.common.util.PDFFormFiller;
 import ispyb.server.biosaxs.vos.dataAcquisition.StockSolution3VO;
 import ispyb.server.biosaxs.vos.dataAcquisition.plate.Sampleplate3VO;
+import ispyb.server.common.services.shipping.DewarAPIService;
+import ispyb.server.common.services.ws.rest.shipment.ShipmentRestWsService;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.proposals.LabContact3VO;
 import ispyb.server.common.vos.proposals.Laboratory3VO;
@@ -26,15 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import jakarta.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
-import jakarta.ws.rs.FormParam;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
 
@@ -320,33 +319,79 @@ public class DewarRestWebService extends RestWebService {
 
 	@RolesAllowed({"Manager", "Localcontact" })
 	@POST
-	@Path("{token}/dewar/updateStatus")
+	@Path("{token}/dewar/location")
 	@Produces({ "application/json" })
-	public Response updateStatus(
+	public Response updateLocation(
 			@PathParam("token") String token,
 			@FormParam("location") String location,
 			@FormParam("barCode") String barCode,
 			@FormParam("username") String username)
 			throws Exception {
 
-		long start = this.logInit("updateStatus", logger, token, location,
+		long start = this.logInit("location", logger, token, location,
 				barCode, username);
 
-		try {
+
 			Timestamp dateTime = getDateTime();
+
+			DewarAPIService dewarAPIService = getDewarAPIService();
+
+			var dewar = dewarAPIService.fetchDewar(barCode);
+			if(dewar == null) {
+				return Response.status(Response.Status.NOT_FOUND).build();
+			}
+		try {
 			// Add dewar event in table
-			getDewarAPIService().addDewarLocation(barCode, username, dateTime, location, "", "");
+			dewarAPIService.addDewarLocation(barCode, username, dateTime, location, "", "");
+
 
 			// Update dewar info (Dewar, Shipping, DewarTransportHistory)
-			if (!getDewarAPIService().updateDewar(barCode, location, "", "")) {
-				throw new Exception("Cannot update the dewar status");
-			}
-			this.logFinish("updateStatus", start, logger);
+			dewarAPIService.updateDewar(barCode, location, "", "");
 
-			return this.sendResponse(Status.OK);
+			return Response.ok().build();
 		} catch (Exception e) {
-			this.logError("updateStatus", e, start, logger);
-			return this.sendResponse(Response.Status.NOT_FOUND);
+			this.logError("location", e, start, logger);
+			return Response.serverError().build();
+		} finally {
+			this.logFinish("location", start, logger);
+		}
+	}
+
+	@RolesAllowed({"Manager", "Localcontact" })
+	@GET
+	@Path("{token}/dewar/{barCode}/history")
+	@Produces({ "application/json" })
+	public Response getHistoryByBarCode(
+			@PathParam("token") String token,
+			@PathParam("barCode") String barCode)
+			throws Exception {
+
+		long start = this.logInit("history", logger, token, barCode);
+
+
+		DewarAPIService dewarAPIService = getDewarAPIService();
+
+		var dewar = dewarAPIService.fetchDewar(barCode);
+		if(dewar == null) {
+			return Response.status(Response.Status.NOT_FOUND).build();
+		}
+		try {
+			var shippingService = (ShipmentRestWsService) Ejb3ServiceLocator.getInstance().getLocalService(ShipmentRestWsService.class);
+
+			var result = shippingService.getShipmentHistoryByShipmentId(this.getProposalId(dewar.getProposalCode() + dewar.getProposalNumber()), dewar.getShippingVOId()).stream()
+					.map(stringObjectMap -> new Object(){
+						public String destination = stringObjectMap.get("Dewar_dewarStatus").toString();
+						public String barcode = stringObjectMap.get("Dewar_barCode").toString();
+						public String storageLocation = stringObjectMap.get("DewarTransportHistory_storageLocation").toString();
+						public String date = stringObjectMap.get("DewarTransportHistory_arrivalDate").toString();
+					})
+					.collect(Collectors.toList());
+			return Response.ok().entity(result).build();
+		} catch (Exception e) {
+			this.logError("history", e, start, logger);
+			return Response.serverError().build();
+		} finally {
+			this.logFinish("history", start, logger);
 		}
 	}
 
