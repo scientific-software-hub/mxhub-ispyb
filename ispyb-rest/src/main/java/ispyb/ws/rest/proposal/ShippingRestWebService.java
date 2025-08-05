@@ -3,11 +3,15 @@ package ispyb.ws.rest.proposal;
 import generated.ws.smis.ProposalParticipantInfoLightVO;
 import ispyb.common.util.Constants;
 import ispyb.common.util.StringUtils;
+import ispyb.server.common.services.shipping.DewarTransportHistory3Service;
+import ispyb.server.common.services.shipping.Shipping3Service;
+import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.common.vos.proposals.LabContact3VO;
 import ispyb.server.common.vos.proposals.Person3VO;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.server.common.vos.shipping.Container3VO;
 import ispyb.server.common.vos.shipping.Dewar3VO;
+import ispyb.server.common.vos.shipping.DewarTransportHistory3VO;
 import ispyb.server.common.vos.shipping.Shipping3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.sample.BLSample3VO;
@@ -233,10 +237,13 @@ public class ShippingRestWebService extends MXRestWebService {
 
 		long id = this.logInit("setShippingStatus", logger, token, proposal, shippingId);
 		try {
-			Shipping3VO result = this.getShipping3Service().findByPk(shippingId, true,true, false);
+			Shipping3Service shipping3Service = this.getShipping3Service();
+			DewarTransportHistory3Service dewarTransportHistoryService = (DewarTransportHistory3Service) Ejb3ServiceLocator.getInstance()
+					.getLocalService(DewarTransportHistory3Service.class);
+			Shipping3VO result = shipping3Service.findByPk(shippingId, true,true, false);
 			logger.info("Updating shipping status " + result.getShippingId() + " from " + result.getShippingStatus() + " to " + status);
 			result.setShippingStatus(status);
-			this.getShipping3Service().update(result);
+			shipping3Service.update(result);
 			/**
 			 * Issue 69 status of shipment also should update dewars status
 			 * https://github.com/ispyb/ISPyB/issues/69
@@ -244,6 +251,14 @@ public class ShippingRestWebService extends MXRestWebService {
 			for (Dewar3VO dewar : result.getDewars()) {
 				logger.info("\t Updating dewar status " + dewar.getDewarId() + " from " + dewar.getDewarStatus() + " to " + status);
 				dewar.setDewarStatus(status);
+
+				// Add entry in DewarTransportHistory table
+				DewarTransportHistory3VO newHistory = new DewarTransportHistory3VO();
+				newHistory.setDewarStatus(status);
+				newHistory.setStorageLocation("");
+				newHistory.setArrivalDate(new Date());
+				newHistory.setDewarVO(dewar);
+				dewarTransportHistoryService.create(newHistory);
 				
 				this.getDewar3Service().update(dewar);
 				for (Container3VO container : dewar.getContainerVOs()) {
