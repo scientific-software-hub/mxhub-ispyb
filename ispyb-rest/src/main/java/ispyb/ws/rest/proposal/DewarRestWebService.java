@@ -380,7 +380,7 @@ public class DewarRestWebService extends RestWebService {
 
 			var result = shippingService.getShipmentHistoryByShipmentId(this.getProposalId(dewar.getProposalCode() + dewar.getProposalNumber()), dewar.getShippingVOId()).stream()
 					.map(stringObjectMap -> new Object(){
-						public String destination = stringObjectMap.get("Dewar_dewarStatus").toString();
+						public String destination = stringObjectMap.get("DewarTransportHistory_dewarStatus").toString();
 						public String barcode = stringObjectMap.get("Dewar_barCode").toString();
 						public String storageLocation = stringObjectMap.get("DewarTransportHistory_storageLocation").toString();
 						public String date = stringObjectMap.get("DewarTransportHistory_arrivalDate").toString();
