@@ -60,8 +60,6 @@ public class SendMailUtils {
 		String host = Constants.getProperty("mail.smtp.host");  // SMTP server
 		String port = Constants.getProperty("mail.smtp.port");
 		String fromEmail = Constants.getProperty("mail.from");  // Sender email
-		String mailServerUsername = Constants.getProperty("mail.from.username");
-		String mailServerPassword = Constants.getProperty("mail.from.password");
 
 		String recipientEmailLOCAL = "olga.merkulova@desy.de";
 
@@ -69,28 +67,11 @@ public class SendMailUtils {
 		Properties props = new Properties();//=System.getProperties();
 		props.put("mail.smtp.host", host);
 		props.put("mail.smtp.port", port);
-		props.put("mail.smtp.auth", "true");
-		props.put("mail.smtp.socketFactory.port", port); //SSL Port
-		props.put("mail.smtp.socketFactory.class",
-				"javax.net.ssl.SSLSocketFactory"); //SSL Factory Class
-		props.put("mail.smtp.ssl.enable", "true");
-		props.put("mail.smtp.ssl.trust", host);
-		props.put("mail.smtp.starttls.enable", "true");
-		props.put("mail.smtp.connectiontimeout", "3000");
-		props.put("mail.smtp.timeout", "3000");
+		props.put("mail.smtp.ssl.enable", "false");
 
-		Authenticator auth = new Authenticator() {
-			//override the getPasswordAuthentication method
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(fromEmail, mailServerPassword);
-			}
-		};
+
 		// Create a session with authentication
-		Session session = Session.getInstance(props, new Authenticator() {
-			public PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(mailServerUsername, mailServerPassword);
-			}
-		});
+		Session session = Session.getInstance(props);
 		session.setDebug(true);
 		try {
 			// Create the email message
@@ -102,12 +83,11 @@ public class SendMailUtils {
 
 			// Send the email
 			Transport.send(message);
-			System.out.println("!!!!!!!!!!!!");
-			logger.info("Notification email sent successfully!");
+			logger.info("SendMailUtils: Notification email sent successfully!");
 
 		} catch (MessagingException e) {
 
-			logger.error("Failed to send email.", e);
+			logger.error("SendMailUtils: Failed to send email.", e);
 		}
 
 		return Response.ok().build();
