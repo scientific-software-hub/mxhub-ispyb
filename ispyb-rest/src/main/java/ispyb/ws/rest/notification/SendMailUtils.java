@@ -112,7 +112,7 @@ public class SendMailUtils {
 	 *            the e-mail address to be parsed
 	 * @return true if the e-mail address is valid, false otherwise
 	 */
-	final public boolean isValidEmail(String emailAddress) {
+	public boolean isValidEmail(String emailAddress) {
 		if (emailAddress == null || emailAddress.length() < 3  || emailAddress.indexOf("@") < 0 || emailAddress.indexOf(".") < 0)
 			return false;
 		try {

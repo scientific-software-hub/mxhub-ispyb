@@ -36,7 +36,7 @@ public final class Constants {
 	private static Properties mProp = PropertyLoader.loadProperties(System.getProperty(Constants.ISPYB_PROPERTIES, CLASSPATH_ISPYB_PROPERTIES));
 
 	public enum SITE {
-		DESY, DESY_LOCAL
+		DESY, LOCAL
 	}
 
 	/*
@@ -91,7 +91,7 @@ public final class Constants {
 
 	public static final String SITE_DESY = "DESY";
 
-	public static final String SITE_LOCAL = "DESY_LOCAL";
+	public static final String SITE_LOCAL = "LOCAL";
 
 	public static final boolean SITE_IS_LOCAL() {
 		return getProperty(SITE_PROPERTY).equals(SITE_LOCAL);
@@ -101,7 +101,7 @@ public final class Constants {
 		if (SITE_IS_DESY()) {
 			return SITE.DESY;
 		}
-		return SITE.DESY_LOCAL;
+		return SITE.LOCAL;
 	}
 
 	public static final boolean SITE_IS_DESY() {
