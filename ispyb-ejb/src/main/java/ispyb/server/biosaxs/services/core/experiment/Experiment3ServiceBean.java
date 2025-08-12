@@ -175,11 +175,35 @@ public class Experiment3ServiceBean  extends WsServiceBean implements Experiment
 
 	@Override
 	public Experiment3VO findByMeasurementId(int measurementId){
-		String ejbQLQuery = getQueryByScope(ExperimentScope.MEDIUM)
-				+ " WHERE specimens.measurementId = :measurementId";
-		TypedQuery<Experiment3VO> query = entityManager.createQuery(ejbQLQuery, Experiment3VO.class)
-				.setParameter("measurementId", measurementId);
-		return query.getSingleResult();
+//		String ejbQLQuery = getQueryByScope(ExperimentScope.MEDIUM)
+//				+ " WHERE specimens.measurementId = :measurementId";
+
+		String sqlQLQuery = 
+		  	"""
+			SELECT DISTINCT
+		   		experiment.experimentId,
+		   		specimen.specimenId, specimen.bufferId, specimen.code, specimen.comments, specimen.concentration, specimen.experimentId, specimen.safetyLevelId, specimen.stockSolutionId, specimen.volume,
+		   		macromolecule.macromoleculeId, macromolecule.acronym, macromolecule.comments, macromolecule.contactsDescriptionFilePath, macromolecule.creationDate, macromolecule.electronDensity, macromolecule.extintionCoefficient, macromolecule.molecularMass, macromolecule.name, macromolecule.proposalId, macromolecule.refractiveIndex, macromolecule.safetyLevelId, macromolecule.sequence, macromolecule.solventViscosity, macromolecule.symmetry,
+		   		samplePlatePosition.samplePlatePositionId, samplePlatePosition.columnNumber, samplePlatePosition.rowNumber, samplePlatePosition.samplePlateId, samplePlatePosition.volume,
+		   		measurement.specimenId, measurement.code, measurement.comments, measurement.exposureTemperature, measurement.extraFlowTime, measurement.flow, measurement.imageDirectory, measurement.measurementId, measurement.pathToH5, measurement.priorityLevelId, measurement.transmission, measurement.viscosity, measurement.volumeToLoad, measurement.waitTime,
+		   		run.runId, run.beamCenterX, run.beamCenterY, run.creationDate, run.energy, run.exposureTemperature, run.normalization, run.pixelSizeX, run.pixelSizeY, run.radiationAbsolute, run.radiationRelative, run.spectrophotometer, run.storageTemperature, run.timeEnd, run.timePerFrame, run.timeStart, run.transmission
+	   		FROM
+		   		Experiment experiment
+		   		LEFT JOIN Specimen specimen ON experiment.experimentId = specimen.experimentId
+		   		LEFT JOIN Macromolecule macromolecule ON specimen.macromoleculeId = macromolecule.macromoleculeId
+		   		LEFT JOIN SamplePlatePosition samplePlatePosition ON specimen.samplePlatePositionId = samplePlatePosition.samplePlatePositionId
+		   		LEFT JOIN Measurement measurement ON specimen.specimenId = measurement.specimenId
+		   		LEFT JOIN Run run ON measurement.runId = run.runId
+	   		WHERE
+		   		measurement.measurementId = ?1
+	   		ORDER BY
+		   		experiment.experimentId ASC, specimen.specimenId ASC
+		  	""";
+
+		return (Experiment3VO) entityManager.createNativeQuery(sqlQLQuery, Experiment3VO.class)
+//				.setParameter("measurementId", measurementId);
+				.setParameter(1, measurementId)
+				.getSingleResult();
 	}
 	
 	
