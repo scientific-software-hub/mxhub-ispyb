@@ -210,8 +210,9 @@ public class DataCollectionRestWebService extends MXRestWebService {
 			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
 
 			for (Integer id : ids) {
-				dataCollections.addAll(this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionId(
-						this.getProposalId(proposal), id));
+				dataCollections.addAll(
+						this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionId(
+							this.getProposalId(proposal), id));
 			}
 			this.logFinish(methodName, start, logger);
 			return this.sendResponse(dataCollections, false);

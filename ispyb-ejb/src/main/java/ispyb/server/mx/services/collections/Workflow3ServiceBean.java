@@ -125,11 +125,8 @@ public class Workflow3ServiceBean implements Workflow3Service,
 
 		// TODO Edit this business code
 		try {
-			String qlString = "SELECT Workflow3VO FROM Workflow3VO vo WHERE vo.workflowId = :pk";
 			return entityManager
-					.createQuery(qlString, Workflow3VO.class)
-					.setParameter("pk", pk)
-					.getSingleResult();
+					.find(Workflow3VO.class, pk);
 		} catch (NoResultException e) {
 			return null;
 		}
