@@ -45,7 +45,8 @@ public class SendMailUtils {
 	private final Logger logger = Logger.getLogger(SendMailUtils.class);
 
 	private final String fromEmail = Constants.getProperty("mail.from");
-	private final String toEmailFallback = Constants.getProperty("mail.to");
+	private final String toEmailBeamline = Constants.getProperty("mail.to.beamline"); //when PRODUCTION, use this mail
+	private final String toEmailLocalTesting = Constants.getProperty("mail.to.LocalTesting"); //when TESTING, use this mail
 	private final Properties smtpConfig;
 	{
 		// SMTP Server Configuration
@@ -73,9 +74,9 @@ public class SendMailUtils {
 	@Path("/{token}/send")
 	@Produces({ "application/json" })
 	public Response send(@PathParam("token") String token,
-										@FormParam("recipientEmail") String recipientEmail,
-										@FormParam("subject") String subject,
-										@FormParam("msgBody") String body) throws Exception {
+										@FormParam("recipientEmail") String recipientEmail, //LabContact email address
+										@FormParam("subject") String subject, //Subj of email
+										@FormParam("msgBody") String body) throws Exception { //Body of email
 		var login = login3Service.findByToken(token);
 		var person = person3Service.findByLogin(login.getUsername());
 
@@ -86,12 +87,13 @@ public class SendMailUtils {
 			// Create the email message
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(fromEmail));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmailBeamline));
+
 			if(isValidEmail(recipientEmail))
-				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
-			else
-				message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmailFallback));
-			if(isValidEmail(person.getEmailAddress()))
-				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(person.getEmailAddress()));
+				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(recipientEmail));//change to "toEmailLocalTesting" for TESTING
+			//if you want to send a confirmation email to user (who sends the shipment) in CC
+//			if(isValidEmail(person.getEmailAddress()))
+//				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(person.getEmailAddress()));//change to "toEmailLocalTesting" for TESTING
 			message.setSubject(subject);
 			message.setText(body);
 
