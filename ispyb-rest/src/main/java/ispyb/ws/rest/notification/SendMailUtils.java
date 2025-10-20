@@ -89,8 +89,8 @@ public class SendMailUtils {
 			message.setFrom(new InternetAddress(fromEmail));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmailBeamline));
 
-			if(isValidEmail(recipientEmail))
-				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(recipientEmail));//change to "toEmailLocalTesting" for TESTING
+//			if(isValidEmail(recipientEmail))
+//				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(recipientEmail));//change to "toEmailLocalTesting" for TESTING
 			//if you want to send a confirmation email to user (who sends the shipment) in CC
 //			if(isValidEmail(person.getEmailAddress()))
 //				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(person.getEmailAddress()));//change to "toEmailLocalTesting" for TESTING
