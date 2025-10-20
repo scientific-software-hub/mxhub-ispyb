@@ -87,6 +87,7 @@ public class SendMailUtils {
 			// Create the email message
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(fromEmail));
+			logger.info("SendMailUtils: Sending email notification to Beamline");
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmailBeamline));
 
 //			if(isValidEmail(recipientEmail))
