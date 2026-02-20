@@ -1,8 +1,5 @@
 -- Minimal fixture data for BLSample3ServiceBeanTest
--- Depends on: test-data-proposals.sql (Proposal 20010001) and test-data-shipping.sql (Container 13)
-
-INSERT INTO Protein (proteinId, proposalId, name, acronym)
-  VALUES (1, 20010001, 'Test Protein', 'TST');
+-- Depends on: test-data-proteins.sql (Protein id=1) and test-data-shipping.sql (Container id=13)
 
 INSERT INTO Crystal (crystalId, proteinId, name, spaceGroup)
   VALUES (1, 1, 'Test Crystal', 'P212121');

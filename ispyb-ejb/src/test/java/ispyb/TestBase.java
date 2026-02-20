@@ -31,7 +31,9 @@ public class TestBase {
             // Per-test-class fixture data (ordered by FK dependency)
             .withFileSystemBind(path("test-data-proposals.sql"), "/docker-entrypoint-initdb.d/02-proposals.sql", BindMode.READ_ONLY)
             .withFileSystemBind(path("test-data-shipping.sql"),  "/docker-entrypoint-initdb.d/03-shipping.sql",  BindMode.READ_ONLY)
-            .withFileSystemBind(path("test-data-blsample.sql"),  "/docker-entrypoint-initdb.d/04-blsample.sql",  BindMode.READ_ONLY);
+            .withFileSystemBind(path("test-data-proteins.sql"),  "/docker-entrypoint-initdb.d/04-proteins.sql",  BindMode.READ_ONLY)
+            .withFileSystemBind(path("test-data-blsample.sql"),  "/docker-entrypoint-initdb.d/05-blsample.sql",  BindMode.READ_ONLY)
+            .withFileSystemBind(path("test-data-sessions.sql"),  "/docker-entrypoint-initdb.d/06-sessions.sql",  BindMode.READ_ONLY);
 
     private static String path(String filename) {
         return new File(SCHEMA_DIR, filename).getAbsolutePath();
