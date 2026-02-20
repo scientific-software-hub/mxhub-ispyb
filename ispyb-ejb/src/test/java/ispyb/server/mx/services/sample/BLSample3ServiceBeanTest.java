@@ -3,16 +3,15 @@ package ispyb.server.mx.services.sample;
 import ispyb.TestBase;
 import ispyb.common.util.Constants;
 import jakarta.inject.Inject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BLSample3ServiceBeanTest extends TestBase {
 
     @Inject BLSample3Service service;
 
-@Ignore
     @Test
     public void findForWSSampleInfoLight() throws Exception {
         var result = service.findForWSSampleInfoLight(20010001, null, "P11", Constants.PROCESSING_STATUS);

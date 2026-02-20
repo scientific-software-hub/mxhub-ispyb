@@ -1,10 +1,10 @@
 package ispyb;
 
 import jakarta.ejb.embeddable.EJBContainer;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.Properties;
 
@@ -12,7 +12,7 @@ public class TestBase {
 
     protected static EJBContainer ejbContainer;
 
-    @BeforeClass
+    @BeforeAll
     public static void beforeClass() {
         Properties properties = new Properties();
 //        properties.put("jdbc/ispyb", "new://Resource?type=DataSource");
@@ -24,19 +24,19 @@ public class TestBase {
         ejbContainer = EJBContainer.createEJBContainer(properties);
     }
 
-    @AfterClass
+    @AfterAll
     public static void afterClass() {
         if(ejbContainer != null)
             ejbContainer.close();
     }
 
-    @Before
+    @BeforeEach
     public void before() throws Exception {
         ejbContainer.getContext().bind("inject", this);
 
     }
 
-    @After
+    @AfterEach
     public void after() throws Exception {
         ejbContainer.getContext().unbind("inject");
     }
