@@ -17,6 +17,13 @@ public class DataCollection3ServiceBeanTest extends TestBase {
     }
 
     @Test
+    public void findAll() throws Exception {
+        var result = service.findAll();
+        assertNotNull(result);
+        assertFalse(result.isEmpty());
+    }
+
+    @Test
     public void findByProposalId() throws Exception {
         var result = service.findByProposalId(8425);
         assertNotNull(result);
