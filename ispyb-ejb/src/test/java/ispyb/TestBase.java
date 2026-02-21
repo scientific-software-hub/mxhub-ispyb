@@ -33,7 +33,8 @@ public class TestBase {
             .withFileSystemBind(path("test-data-shipping.sql"),  "/docker-entrypoint-initdb.d/03-shipping.sql",  BindMode.READ_ONLY)
             .withFileSystemBind(path("test-data-proteins.sql"),  "/docker-entrypoint-initdb.d/04-proteins.sql",  BindMode.READ_ONLY)
             .withFileSystemBind(path("test-data-blsample.sql"),  "/docker-entrypoint-initdb.d/05-blsample.sql",  BindMode.READ_ONLY)
-            .withFileSystemBind(path("test-data-sessions.sql"),  "/docker-entrypoint-initdb.d/06-sessions.sql",  BindMode.READ_ONLY);
+            .withFileSystemBind(path("test-data-sessions.sql"),     "/docker-entrypoint-initdb.d/06-sessions.sql",     BindMode.READ_ONLY)
+            .withFileSystemBind(path("test-data-collections.sql"),  "/docker-entrypoint-initdb.d/07-collections.sql",  BindMode.READ_ONLY);
 
     private static String path(String filename) {
         return new File(SCHEMA_DIR, filename).getAbsolutePath();
