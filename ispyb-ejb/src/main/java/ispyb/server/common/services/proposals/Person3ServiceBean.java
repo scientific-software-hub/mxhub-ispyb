@@ -246,7 +246,7 @@ public class Person3ServiceBean implements Person3Service, Person3ServiceLocal {
 	@SuppressWarnings("unchecked")	
 	public Person3VO findBySiteId(String siteId) {
 		try {
-			return entityManager.createQuery("from Person3VO vo where vo.siteId = :siteId order by vo.personId desc", Person3VO.class)
+			return entityManager.createQuery("SELECT vo FROM Person3VO vo WHERE vo.siteId = :siteId ORDER BY vo.personId DESC", Person3VO.class)
 					.setParameter("siteId", siteId)
 					.getSingleResult();
 		} catch (NoResultException e) {

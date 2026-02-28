@@ -30,6 +30,14 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
+            <!-- Surefire 3.x discovers JUnit 5 tests automatically when
+                 junit-jupiter-engine is on the classpath; the vintage-engine
+                 keeps any remaining JUnit 4 tests running alongside them. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+            </plugin>
             <plugin>
                 <groupId>org.apache.openjpa</groupId>
                 <artifactId>openjpa-maven-plugin</artifactId>
@@ -51,9 +59,25 @@
         </plugins>
     </build>
     <dependencies>
+        <!-- JUnit 4 kept so BLSample3VOTest (EJB3Test) still compiles and the
+             vintage-engine can pick it up -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- JUnit 5 Jupiter API + Engine (new tests use this) -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Runs any surviving JUnit 4 tests under the JUnit 5 platform -->
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.11.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -66,6 +90,13 @@
             <groupId>org.mariadb.jdbc</groupId>
             <artifactId>mariadb-java-client</artifactId>
             <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- Testcontainers MariaDB — provides a self-contained DB for tests -->
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mariadb</artifactId>
+            <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
         <dependency>
