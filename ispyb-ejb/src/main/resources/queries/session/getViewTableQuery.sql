@@ -11,5 +11,7 @@ select *,
 (select count(*) from Experiment exp3 where v_session.sessionId = exp3.sessionId and exp3.experimentType='CALIBRATION') as calibrationCount,
 (select experimentType from DataCollectionGroup where DataCollectionGroup.dataCollectionGroupId = (select max(dataCollectionGroupId) from DataCollectionGroup dg2 where  dg2.sessionId = v_session.sessionId))  as lastExperimentDataCollectionGroup,
 (select startTime from DataCollectionGroup where DataCollectionGroup.dataCollectionGroupId = (select min(dataCollectionGroupId) from DataCollectionGroup dg2 where  dg2.sessionId = v_session.sessionId))  as firstStartTimeDataCollectionGroup,
-(select endTime from DataCollectionGroup where DataCollectionGroup.dataCollectionGroupId = (select max(dataCollectionGroupId) from DataCollectionGroup dg2 where  dg2.sessionId = v_session.sessionId))  as lastEndTimeDataCollectionGroup
+(select endTime from DataCollectionGroup where DataCollectionGroup.dataCollectionGroupId = (select max(dataCollectionGroupId) from DataCollectionGroup dg2 where  dg2.sessionId = v_session.sessionId))  as lastEndTimeDataCollectionGroup,
+(select TIMESTAMPDIFF(SECOND, MIN(dcg.startTime), MAX(dcg.endTime)) from DataCollectionGroup dcg where dcg.sessionId = v_session.sessionId)
+- COALESCE((select SUM(TIMESTAMPDIFF(SECOND, prev.endTime, curr.startTime)) from DataCollectionGroup curr join DataCollectionGroup prev on prev.dataCollectionGroupId = (select MAX(p.dataCollectionGroupId) from DataCollectionGroup p where p.sessionId = curr.sessionId and p.dataCollectionGroupId < curr.dataCollectionGroupId) where curr.sessionId = v_session.sessionId and TIMESTAMPDIFF(SECOND, prev.endTime, curr.startTime) > 900), 0) as netDataCollectionTimeInSeconds
 from v_session
