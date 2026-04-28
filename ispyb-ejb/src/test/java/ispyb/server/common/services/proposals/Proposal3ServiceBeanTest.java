@@ -2,20 +2,15 @@ package ispyb.server.common.services.proposals;
 
 import ispyb.TestBase;
 import ispyb.server.common.vos.proposals.Proposal3VO;
-import jakarta.ejb.embeddable.EJBContainer;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.Persistence;
-import org.junit.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@Ignore("requires db with data")
 public class Proposal3ServiceBeanTest extends TestBase {
 
     @Inject private Proposal3Service proposalService;
@@ -45,6 +40,7 @@ public class Proposal3ServiceBeanTest extends TestBase {
         assertEquals(1, result.size());
     }
 
+    @Disabled("Proposal3ServiceBean is BMT and updateProposalFromIds never starts a UserTransaction; executeUpdate() requires an active JTA tx")
     @Test public void testUpdateProposalFromIds() throws Exception {
         var result = proposalService.updateProposalFromIds(8426, 8425);
         assertNotNull(result);
