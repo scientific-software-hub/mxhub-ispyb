@@ -569,14 +569,16 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 	
 	@Override
 	public Session3VO findByAutoProcProgramId(int autoProcProgramId) {
-		String query = "select s.* from BLSession s, "
-				+ " DataCollectionGroup g, DataCollection c, AutoProcIntegration api, AutoProcProgram autoprocProgram "
-				+ " where s.sessionId = g.sessionId and  g.dataCollectionGroupId = c.dataCollectionGroupId and autoprocProgram.autoProcProgramId = api.autoProcProgramId"
-				+ " and c.dataCollectionId = api.dataCollectionId and autoprocProgram.autoProcProgramId = ?1 ";
 		try {
-			return (Session3VO) this.entityManager.createNativeQuery(query, Session3VO.class)
-					.setParameter(1, autoProcProgramId)
-					.getResultList();
+			return (Session3VO) this.entityManager.createQuery(
+							"SELECT DISTINCT s FROM Session3VO s"
+									+ " JOIN s.dataCollectionGroupVOs g"
+									+ " JOIN g.dataCollectionVOs c"
+									+ " JOIN c.autoProcIntegrationVOs api"
+									+ " JOIN api.autoProcProgramVO prog"
+									+ " WHERE prog.autoProcProgramId = :autoProcProgramId")
+					.setParameter("autoProcProgramId", autoProcProgramId)
+					.getSingleResult();
 		} catch (NoResultException e) {
 			return null;
 		}
