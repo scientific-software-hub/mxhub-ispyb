@@ -552,14 +552,16 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 	
 	@SuppressWarnings("unchecked")
 	public Session3VO findByAutoProcProgramAttachmentId(final Integer autoProcProgramAttachmentId) throws Exception {
-		String query = "select s.* from BLSession s, "
-				+ " DataCollectionGroup g, DataCollection c, AutoProcIntegration api, AutoProcProgram autoprocProgram, AutoProcProgramAttachment autoProcProgramAttachment"
-				+ " where s.sessionId = g.sessionId and  g.dataCollectionGroupId = c.dataCollectionGroupId and autoprocProgram.autoProcProgramId = api.autoProcProgramId"
-				+ " and c.dataCollectionId = api.dataCollectionId and autoprocProgram.autoProcProgramId = autoProcProgramAttachment.autoProcProgramId "
-				+ " and autoProcProgramAttachment.autoProcProgramAttachmentId = ?1";
 		try {
-			return (Session3VO) this.entityManager.createNativeQuery(query, Session3VO.class)
-						.setParameter(1, autoProcProgramAttachmentId)
+			return (Session3VO) this.entityManager.createQuery(
+							"SELECT DISTINCT s FROM Session3VO s"
+									+ " JOIN s.dataCollectionGroupVOs g"
+									+ " JOIN g.dataCollectionVOs c"
+									+ " JOIN c.autoProcIntegrationVOs api"
+									+ " JOIN api.autoProcProgramVO prog"
+									+ " JOIN prog.attachmentVOs att"
+									+ " WHERE att.autoProcProgramAttachmentId = :id")
+					.setParameter("id", autoProcProgramAttachmentId)
 					.getSingleResult();
 		} catch (NoResultException e) {
 			return null;

@@ -9,11 +9,9 @@ import ispyb.server.mx.vos.autoproc.AutoProcProgram3VO;
 import ispyb.server.mx.vos.autoproc.AutoProcProgramAttachment3VO;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import ispyb.server.mx.vos.collections.Session3VO;
 import jakarta.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
 import jakarta.ws.rs.GET;
@@ -339,7 +337,8 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 	}
 	
 	private boolean checkProposalByAutoProcProgramAttachmentId(int proposalId, int autoProcProgramAttachmentId) throws NamingException, Exception{
-		return this.getSession3Service().findByAutoProcProgramAttachmentId(autoProcProgramAttachmentId).getProposalVOId().equals(proposalId);
+		Session3VO session = this.getSession3Service().findByAutoProcProgramAttachmentId(autoProcProgramAttachmentId);
+		return session != null && Objects.equals(session.getProposalVOId(), proposalId);
 	}
 	
 	@RolesAllowed({ "User", "Manager", "Industrial", "Localcontact" })
