@@ -134,20 +134,17 @@ public class AutoProcProgramAttachment3ServiceBean implements AutoProcProgramAtt
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
 	public List<AutoProcProgramAttachment3VO> findXScale(final Integer autoProcProgramId) throws Exception {
-		
-		String query = "SELECT * " +
-				"FROM AutoProcProgramAttachment  " +
-				"WHERE  autoProcProgramId = ?1 AND " +
-				"fileName like '%XSCALE%' ";
-		try{
-			
-			List<AutoProcProgramAttachment3VO> listVOs = this.entityManager.createNativeQuery(query, AutoProcProgramAttachment3VO.class)
-					.setParameter(1, autoProcProgramId)
+		try {
+			String ql = "SELECT vo FROM AutoProcProgramAttachment3VO vo " +
+					"WHERE vo.autoProcProgramVO.autoProcProgramId = :programId " +
+					"AND (vo.fileName LIKE :xscale OR vo.fileName LIKE :autoproc)";
+			return entityManager.createQuery(ql, AutoProcProgramAttachment3VO.class)
+					.setParameter("programId", autoProcProgramId)
+					.setParameter("xscale",   "%XSCALE%")
+					.setParameter("autoproc", "%autoPROC%.log")
 					.getResultList();
-			return listVOs;
-		}catch(Exception e){
+		} catch (Exception e) {
 			return null;
 		}
 	}

@@ -36,10 +36,11 @@ public class AutoProcProgramaAttachmentFileReader {
 			xscaleFile = (fileName != null && fileName.toLowerCase().endsWith("xscale.lp"));
 			truncateLog = (fileName != null && fileName.toLowerCase().endsWith(".log") && fileName.toLowerCase().contains("truncate"));
 			noanomAimlessLog = (fileName != null && fileName.toLowerCase().endsWith(".log") && fileName.toLowerCase().contains("aimless"));
+			boolean autoProcLog = (fileName != null && fileName.toLowerCase().endsWith(".log") && fileName.toLowerCase().contains("autoproc"));
 
 //			System.out.println(xscaleFile);
 //			System.out.println(truncateLog);
-			if (xscaleFile || truncateLog || noanomAimlessLog) {
+			if (xscaleFile || truncateLog || noanomAimlessLog || autoProcLog) {
 				// parse the file
 				String sourceFileName = PathUtils.FitPathToOS(attachment.getFilePath() + "/" + fileName);
 				BufferedReader inFile = null;
@@ -70,32 +71,34 @@ public class AutoProcProgramaAttachmentFileReader {
 							if (line.contains("SUBSET OF INTENSITY DATA WITH SIGNAL/NOISE")) {
 								startToRead = true;
 							} else if (startToRead) {
-								if (!line.contains("RESOLUTION") && !line.isEmpty() && !line.contains("LIMIT")) {
-									String[] values = line.split(" ");
-									String[] val = new String[14];
-									int i = 0;
-									for (int k = 0; k < values.length; k++) {
-										if (i <= 13 && !values[k].isEmpty()) {
-											val[i] = values[k];
-											if (values[k].endsWith("%") || values[k].endsWith("*"))
-												val[i] = values[k].substring(0, values[k].length() - 1);
-											i++;
-										}
-									}
-									try {
-//										AutoProcessingData d = new AutoProcessingData(attachment.getAutoProcProgramAttachmentId(),
-										AutoProcessingData d = new AutoProcessingData(attachment.getFileName(),
-												Double.parseDouble(val[0]), Double.parseDouble(val[4]), Double.parseDouble(val[5]),
-												Double.parseDouble(val[8]), Double.parseDouble(val[10]), Double.parseDouble(val[12]),
-												Integer.parseInt(val[11]), fileName, attachment.getAutoProcProgramVO().getAutoProcProgramId());
-										listAutoProcessingData.add(d);
-									} catch (Exception e) {
-
-									}
+								CorrectLpRow row = CorrectLpRow.parse(line);
+								if (row != null) {
+									listAutoProcessingData.add(new AutoProcessingData(attachment.getAutoProcProgramAttachmentId().toString(),
+											row.resolutionLimit, row.completeness, row.rFactorObserved,
+											row.iSigma, row.cc2, row.sigAno, row.anomalCorr,
+											fileName, attachment.getAutoProcProgramVOId()));
 								}
 							}
 							if (line.contains("STATISTICS OF INPUT DATA SET")) {
 								startToRead = false;
+							}
+						} else if (autoProcLog) {
+							// autoPROC embeds two CORRECT.LP-format tables (post-refinement and
+							// final processing) with an identical header line.  Reset the list each
+							// time the header is seen so the LAST table (= final processing) wins.
+							if (line.contains("RESOLUTION") && line.contains("NUMBER OF REFLECTIONS")
+									&& line.contains("COMPLETENESS")) {
+								startToRead = true;
+								listAutoProcessingData.clear();
+							}
+							if (startToRead) {
+								CorrectLpRow row = CorrectLpRow.parse(line);
+								if (row != null) {
+									listAutoProcessingData.add(new AutoProcessingData(attachment.getAutoProcProgramAttachmentId().toString(),
+											row.resolutionLimit, row.completeness, row.rFactorObserved,
+											row.iSigma, row.cc2, row.sigAno, row.anomalCorr,
+											fileName, attachment.getAutoProcProgramVOId()));
+								}
 							}
 						} else if (truncateLog) {
 							if (line.contains("$TABLE: Wilson Plot")) {
@@ -282,5 +285,60 @@ public class AutoProcProgramaAttachmentFileReader {
 		o.put("autoProcessingData", listAutoProcessingData);
 		o.put("noanomAimlessLog", noanomAimlessLog);
 		return o;
+	}
+
+	/**
+	 * Parses one data row from a CORRECT.LP / XDS CORRECT statistics table.
+	 * Both standalone XSCALE.LP files and the autoPROC.log embedded table use
+	 * this identical column layout:
+	 *
+	 * [0]  resolutionLimit   [1] nObs   [2] nUnique  [3] nPossible
+	 * [4]  completeness%     [5] rFactorObserved%     [6] rFactorExpected%
+	 * [7]  nCompared         [8] iSigma [9] rMeas%
+	 * [10] cc2%              [11] anomalCorr (integer, may be negative)
+	 * [12] sigAno            [13] nAno
+	 */
+	static class CorrectLpRow {
+		final double resolutionLimit;
+		final double completeness;
+		final double rFactorObserved;
+		final double iSigma;
+		final double cc2;
+		final double sigAno;
+		final int anomalCorr;
+
+		private CorrectLpRow(double resolutionLimit, double completeness, double rFactorObserved,
+				double iSigma, double cc2, double sigAno, int anomalCorr) {
+			this.resolutionLimit = resolutionLimit;
+			this.completeness    = completeness;
+			this.rFactorObserved = rFactorObserved;
+			this.iSigma          = iSigma;
+			this.cc2             = cc2;
+			this.sigAno          = sigAno;
+			this.anomalCorr      = anomalCorr;
+		}
+
+		/** Returns null for header lines, the "total" row, or any non-data text. */
+		static CorrectLpRow parse(String line) {
+			String[] t = line.trim().split("\\s+");
+			if (t.length < 13) return null;
+			for (int k = 0; k < t.length; k++) {
+				if (t[k].endsWith("%") || t[k].endsWith("*"))
+					t[k] = t[k].substring(0, t[k].length() - 1);
+			}
+			try {
+				return new CorrectLpRow(
+						Double.parseDouble(t[0]),   // resolutionLimit
+						Double.parseDouble(t[4]),   // completeness
+						Double.parseDouble(t[5]),   // rFactorObserved
+						Double.parseDouble(t[8]),   // iSigma
+						Double.parseDouble(t[10]),  // cc2
+						Double.parseDouble(t[12]),  // sigAno
+						Integer.parseInt(t[11])     // anomalCorr
+				);
+			} catch (NumberFormatException e) {
+				return null;
+			}
+		}
 	}
 }
