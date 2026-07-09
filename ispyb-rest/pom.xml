@@ -32,6 +32,45 @@
             <artifactId>mockito-core</artifactId>
             <scope>test</scope>
         </dependency>
+        <!-- Shared Testcontainers + tomee-embedded integration-test harness
+             (TestBase), published as a test-jar by ispyb-ejb3. -->
+        <dependency>
+            <groupId>ispyb</groupId>
+            <artifactId>ispyb-ejb3</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
+            <version>5.11.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.tomee</groupId>
+            <artifactId>tomee-embedded</artifactId>
+            <version>10.0.0-M2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>3.3.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>mariadb</artifactId>
+            <version>1.20.4</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
@@ -103,6 +142,15 @@
             <groupId>org.apache.openjpa</groupId>
             <artifactId>openjpa</artifactId>
             <scope>provided</scope>
+            <exclusions>
+                <!-- Its commons-pool2:2.9.0 shadows the 2.12.0 tomee-embedded's
+                     commons-dbcp2 needs on the test classpath (same conflict
+                     ispyb-ejb3's openjpa dependency already excludes). -->
+                <exclusion>
+                    <groupId>org.apache.commons</groupId>
+                    <artifactId>commons-pool2</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
 
@@ -136,6 +184,15 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${version.compiler.plugin}</version>
+            </plugin>
+            <!-- Surefire 3.x discovers JUnit 5 tests automatically when
+                 junit-jupiter-engine is on the classpath; the vintage-engine
+                 keeps the existing JUnit 4 unit tests running alongside them.
+                 Version pinned to match ispyb-ejb3's. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
             </plugin>
         </plugins>
     </build>
