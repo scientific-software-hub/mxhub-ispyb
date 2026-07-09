@@ -9,6 +9,7 @@ import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionGroupR
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
+import java.io.StringWriter;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +25,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Exercises the same chain the REST endpoint does — real EJB query against
  * {@code v_datacollection_summary} ({@link DataCollectionGroupRestWsService})
  * → {@link DataCollectionReportBuilder} → {@link DataCollectionReportCsvSerializer}
- * — without going through JAX-RS/HTTP (no such test infra exists here).
+ * — without going through JAX-RS/HTTP (no such test infra exists here). For
+ * the same reason, the streamed {@code StreamingOutput} path the endpoint now
+ * uses (see {@link #reportCsv_session1_streamingPathMatchesEagerPath}) is
+ * verified by driving {@link DataCollectionReportBuilder#buildRowUnchecked}
+ * and {@link DataCollectionReportCsvSerializer#writeCsv} directly against the
+ * same real query results, rather than through JAX-RS.
  * <p>
  * This is the piece the unit tests ({@code AutoProcBestResultExtractorTest},
  * {@code DataCollectionReportBuilderTest}) cannot cover: the real query's
@@ -67,5 +73,37 @@ public class DataCollectionReportCsvTest extends TestBase {
 		assertEquals(2, lines.length, "expected a header line plus exactly one data row");
 		assertTrue(lines[1].contains("P 41 21 2"), "data row should contain the processed space group: " + lines[1]);
 		assertTrue(lines[1].contains("1.56"), "data row should contain the processed resolution: " + lines[1]);
+	}
+
+	/**
+	 * Same query results as above, but driven through the lazy, per-row
+	 * streaming path ({@code DataCollectionReportBuilder#buildRowUnchecked} +
+	 * {@code DataCollectionReportCsvSerializer#writeCsv}) that
+	 * {@code getDataCollectionsReportBySessionIdCSV} now uses via
+	 * {@code StreamingOutput} instead of collecting a
+	 * {@code List<DataCollectionReportRow>} and a full CSV {@code String}
+	 * up front. Asserts byte-for-byte parity with the eager
+	 * {@link DataCollectionReportBuilder#build(List, SpaceGroup3Service)} /
+	 * {@link DataCollectionReportCsvSerializer#toCsv(List)} path against the
+	 * same real, DB-backed data — the streaming refactor must not change
+	 * what's produced, only when/how it's written.
+	 */
+	@Test
+	public void reportCsv_session1_streamingPathMatchesEagerPath() throws Exception {
+		List<Map<String, Object>> dataCollections = dataCollectionGroupRestWsService
+				.getViewDataCollectionBySessionIdHavingImages(8425, 1);
+		assertFalse(dataCollections.isEmpty(), "expected at least one seeded data collection row");
+
+		DataCollectionReportBuilder builder = new DataCollectionReportBuilder();
+
+		List<DataCollectionReportRow> eagerRows = builder.build(dataCollections, spaceGroup3Service);
+		String eagerCsv = new DataCollectionReportCsvSerializer().toCsv(eagerRows);
+
+		Map<String, Integer> spgMap = builder.spaceGroupMap(spaceGroup3Service);
+		StringWriter streamedOut = new StringWriter();
+		new DataCollectionReportCsvSerializer().writeCsv(streamedOut,
+				dataCollections.stream().map(row -> builder.buildRowUnchecked(row, spgMap)));
+
+		assertEquals(eagerCsv, streamedOut.toString());
 	}
 }

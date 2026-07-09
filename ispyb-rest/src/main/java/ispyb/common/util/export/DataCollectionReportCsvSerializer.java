@@ -20,7 +20,9 @@ package ispyb.common.util.export;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UncheckedIOException;
+import java.io.Writer;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.supercsv.io.CsvListWriter;
 import org.supercsv.io.ICsvListWriter;
@@ -29,13 +31,19 @@ import org.supercsv.prefs.CsvPreference;
 import ispyb.common.util.export.dto.DataCollectionReportRow;
 
 /**
- * Serializes {@link DataCollectionReportRow} rows into a CSV string, using
- * the super-csv library already declared for {@code ispyb-rest}
+ * Serializes {@link DataCollectionReportRow} rows into CSV, using the
+ * super-csv library already declared for {@code ispyb-rest}
  * (see {@code ispyb.ws.rest.mx.MXStatsRestWebService.parseListToCSV}).
  * <p>
  * Owns the column order/headers requested by the client and the empty
  * "Observed Resolution" column, which is filled in manually after export and
  * therefore has no place on the DTO.
+ * <p>
+ * {@link #writeCsv(Writer, Stream)} writes incrementally row-by-row so a
+ * caller can stream a large export straight to an HTTP response without
+ * materializing the whole document; {@link #toCsv(List)} is a convenience
+ * wrapper over it for callers (and tests) that want the full CSV as a
+ * {@code String}.
  */
 public class DataCollectionReportCsvSerializer {
 
@@ -53,20 +61,32 @@ public class DataCollectionReportCsvSerializer {
 
 	public String toCsv(List<DataCollectionReportRow> rows) throws IOException {
 		StringWriter output = new StringWriter();
-		ICsvListWriter csvWriter = null;
+		writeCsv(output, rows.stream());
+		return output.toString();
+	}
+
+	/**
+	 * Writes the header and one CSV row per element of {@code rows} directly
+	 * to {@code out}, flushing as it goes so the caller can stream bytes to
+	 * an HTTP response as they're produced rather than buffering the full
+	 * CSV in memory first. Does not close {@code out} — lifecycle belongs to
+	 * the caller (e.g. the {@code StreamingOutput} wrapping the response
+	 * stream).
+	 */
+	public void writeCsv(Writer out, Stream<DataCollectionReportRow> rows) throws IOException {
+		ICsvListWriter csvWriter = new CsvListWriter(out, CsvPreference.STANDARD_PREFERENCE);
 		try {
-			csvWriter = new CsvListWriter(output, CsvPreference.STANDARD_PREFERENCE);
 			csvWriter.writeHeader(HEADERS);
 			final ICsvListWriter writer = csvWriter;
 			rows.forEach(row -> writeRow(writer, row));
+			csvWriter.flush();
 		} catch (UncheckedIOException e) {
 			throw e.getCause();
-		} finally {
-			if (csvWriter != null) {
-				csvWriter.close();
-			}
 		}
-		return output.toString();
+		// Deliberately not closing csvWriter/out here: super-csv's
+		// CsvListWriter#close would close the underlying Writer too, but
+		// that Writer may wrap the live HTTP response OutputStream, whose
+		// lifecycle is owned by the StreamingOutput caller.
 	}
 
 	/**
@@ -74,7 +94,7 @@ public class DataCollectionReportCsvSerializer {
 	 * which can't propagate through {@link List#forEach}; wrap it in
 	 * {@link UncheckedIOException} and unwrap it in {@link #toCsv}.
 	 */
-	private void writeRow(ICsvListWriter csvWriter, DataCollectionReportRow row) {
+	private void writeRow(ICsvListWriter csvWriter, DataCollectionReportRow row)  {
 		try {
 			csvWriter.write(
 					row.proteinAcronym(),

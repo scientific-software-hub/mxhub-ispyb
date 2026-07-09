@@ -48,6 +48,7 @@ import javax.naming.NamingException;
 
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
+import jakarta.ws.rs.core.StreamingOutput;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
@@ -110,6 +111,19 @@ public  class ParentWebService {
 	 */
 	protected Response downloadFile(byte[] bs, String fileName) {
 		ResponseBuilder response = Response.ok((Object) bs);
+		response.header("Content-Disposition", "attachment; filename=" + fileName);
+		return response.header("Access-Control-Allow-Origin", "*").build();
+	}
+
+	/**
+	 * Same intent as {@link #downloadFile(byte[], String)} but for exports too
+	 * large to buffer fully in memory first: {@code out} is invoked directly
+	 * against the live HTTP response stream by the JAX-RS runtime, so bytes
+	 * flow to the client as they're produced instead of the whole document
+	 * being built up-front as a {@code byte[]}.
+	 */
+	protected Response downloadStream(StreamingOutput out, String fileName, String mediaType) {
+		ResponseBuilder response = Response.ok(out, mediaType);
 		response.header("Content-Disposition", "attachment; filename=" + fileName);
 		return response.header("Access-Control-Allow-Origin", "*").build();
 	}

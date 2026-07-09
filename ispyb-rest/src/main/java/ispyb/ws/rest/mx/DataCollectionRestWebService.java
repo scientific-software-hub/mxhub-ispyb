@@ -2,6 +2,9 @@ package ispyb.ws.rest.mx;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -9,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import jakarta.annotation.security.RolesAllowed;
 import javax.naming.NamingException;
@@ -20,6 +24,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 
 import org.apache.cxf.annotations.GZIP;
 import org.apache.log4j.Logger;
@@ -263,18 +268,40 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, sessionId);
 		try {
 			Integer id = Integer.parseInt(sessionId);
+			// Runs once, eagerly: v_datacollection_summary is an aggregating
+			// (GROUP_CONCAT + GROUP BY + ORDER BY) view, so the DB must compute
+			// the whole result set before row 1 is available regardless of how
+			// the response is produced. What we stream below is everything
+			// downstream of this query - row-DTO building and CSV
+			// serialization - so the response body is written to the client
+			// incrementally instead of being fully buffered in memory first.
 			List<Map<String, Object>> dataCollections = this.getWebServiceDataCollectionGroup3Service()
 					.getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
 
-			List<DataCollectionReportRow> rows = new DataCollectionReportBuilder().build(dataCollections, this.getSpaceGroup3Service());
-			byte[] byteToExport = new DataCollectionReportCsvSerializer().toCsv(rows).getBytes(StandardCharsets.UTF_8);
+			DataCollectionReportBuilder builder = new DataCollectionReportBuilder();
+			Map<String, Integer> spgMap = builder.spaceGroupMap(this.getSpaceGroup3Service());
+			DataCollectionReportCsvSerializer serializer = new DataCollectionReportCsvSerializer();
+
+			StreamingOutput streamingOutput = output -> {
+				try (Writer writer = new OutputStreamWriter(output, StandardCharsets.UTF_8)) {
+					Stream<DataCollectionReportRow> rows = dataCollections.stream()
+							.map(row -> builder.buildRowUnchecked(row, spgMap));
+					serializer.writeCsv(writer, rows);
+				} catch (DataCollectionReportBuilder.RowBuildException e) {
+					// Surfaces as a truncated download rather than an error
+					// response, since the 200 + headers are already committed
+					// by the time this runs - see handoff/plan notes.
+					logger.error("Failed to build CSV row for session " + sessionId, e.getCause());
+					throw new IOException("Failed to build CSV row for session " + sessionId, e.getCause());
+				}
+			};
 
 			this.logFinish(methodName, start, logger);
 			Session3VO ses = this.getSession3Service().findByPk(id, false, false, false);
-			if (ses != null)
-				return this.downloadFile(byteToExport, "Report_" + proposal + "_" + ses.getBeamlineName() + "_" + ses.getStartDate() + ".csv");
-			else
-				return this.downloadFile(byteToExport, "No_session.csv");
+			String fileName = ses != null
+					? "Report_" + proposal + "_" + ses.getBeamlineName() + "_" + ses.getStartDate() + ".csv"
+					: "No_session.csv";
+			return this.downloadStream(streamingOutput, fileName, "text/csv");
 
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);

@@ -57,7 +57,16 @@ public class DataCollectionReportBuilder {
 	 *                          fetch services itself.
 	 */
 	public List<DataCollectionReportRow> build(List<Map<String, Object>> dataCollections, SpaceGroup3Service spaceGroupService) throws Exception {
-		return build(dataCollections, autoProcBestResultExtractor.buildSpaceGroupNumberMap(spaceGroupService));
+		return build(dataCollections, spaceGroupMap(spaceGroupService));
+	}
+
+	/**
+	 * Builds the space-group-number lookup once, so a caller that wants to
+	 * map many rows lazily (e.g. via {@code Stream.map(row -> buildRow(row, spgMap))}
+	 * for a streamed CSV export) doesn't recompute it per row.
+	 */
+	public Map<String, Integer> spaceGroupMap(SpaceGroup3Service spaceGroupService) throws Exception {
+		return autoProcBestResultExtractor.buildSpaceGroupNumberMap(spaceGroupService);
 	}
 
 	/**
@@ -78,24 +87,33 @@ public class DataCollectionReportBuilder {
 					.map(dataCollectionMapItem -> buildRowUnchecked(dataCollectionMapItem, spgMap))
 					.collect(Collectors.toList());
 		} catch (RowBuildException e) {
-			throw e.cause;
+			throw (Exception) e.getCause();
 		}
 	}
 
 	/**
-	 * {@link Collectors#toList()} can't propagate the checked {@link Exception}
-	 * thrown by {@link #buildRow}, so wrap it in this unchecked carrier and
-	 * unwrap it in {@link #build}.
+	 * Unchecked carrier for the checked {@link Exception} that {@link #buildRow}
+	 * declares, so it can cross lambda boundaries (e.g. {@link java.util.stream.Stream#map})
+	 * where checked exceptions aren't allowed — used internally by {@link #build}
+	 * and available to callers building their own lazy row stream (see
+	 * {@link #buildRowUnchecked}) for a streamed export, so they can catch and
+	 * unwrap it at their own error-handling boundary (e.g. converting to
+	 * {@code IOException} inside a JAX-RS {@code StreamingOutput}).
 	 */
-	private static final class RowBuildException extends RuntimeException {
-		private final Exception cause;
-
+	public static final class RowBuildException extends RuntimeException {
 		private RowBuildException(Exception cause) {
-			this.cause = cause;
+			super(cause);
 		}
 	}
 
-	private DataCollectionReportRow buildRowUnchecked(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) {
+	/**
+	 * Same as {@link #buildRow} but wraps the checked {@link Exception} in the
+	 * unchecked {@link RowBuildException} so it can be used directly as a
+	 * {@code Stream.map} mapper — e.g. {@code dataCollections.stream().map(m ->
+	 * builder.buildRowUnchecked(m, spgMap))} for a lazily-built, streamed CSV
+	 * export. Public for that reuse; {@link #build} also uses it internally.
+	 */
+	public DataCollectionReportRow buildRowUnchecked(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) {
 		try {
 			return buildRow(dataCollectionMapItem, spgMap);
 		} catch (Exception e) {
@@ -103,7 +121,14 @@ public class DataCollectionReportBuilder {
 		}
 	}
 
-	private DataCollectionReportRow buildRow(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) throws Exception {
+	/**
+	 * Builds a single {@link DataCollectionReportRow} from one raw view row.
+	 * Public so a streaming caller can map a {@code Stream<Map<String, Object>>}
+	 * lazily (one row built and serialized at a time) instead of collecting
+	 * the whole {@code List<DataCollectionReportRow>} up front via
+	 * {@link #build(List, Map)}.
+	 */
+	public DataCollectionReportRow buildRow(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) throws Exception {
 
 		String[] bestAutoproc = autoProcBestResultExtractor.extractBestAutoproc(dataCollectionMapItem, spgMap);
 
