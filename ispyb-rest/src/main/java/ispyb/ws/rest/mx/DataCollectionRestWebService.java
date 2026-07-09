@@ -2,6 +2,7 @@ package ispyb.ws.rest.mx;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -24,7 +25,10 @@ import org.apache.cxf.annotations.GZIP;
 import org.apache.log4j.Logger;
 
 import ispyb.common.util.Constants;
+import ispyb.common.util.export.DataCollectionReportBuilder;
+import ispyb.common.util.export.DataCollectionReportCsvSerializer;
 import ispyb.common.util.export.ExiPdfRtfExporter;
+import ispyb.common.util.export.dto.DataCollectionReportRow;
 import ispyb.server.common.vos.proposals.Proposal3VO;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
@@ -241,12 +245,42 @@ public class DataCollectionRestWebService extends MXRestWebService {
 				return this.downloadFile(byteToExport, "Report_" + proposal + "_"+ ses.getBeamlineName()+ "_" + ses.getStartDate() + ".pdf");
 			else
 				return this.downloadFile(byteToExport, "No_session.pdf");
-						
+
 		} catch (Exception e) {
 			return this.logError(methodName, e, start, logger);
 		}
 	}
-	
+
+	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
+	@GET
+	@Path("{token}/proposal/{proposal}/mx/datacollection/session/{sessionId}/report/csv")
+	@Produces({ "text/csv" })
+	public Response getDataCollectionsReportBySessionIdCSV(@PathParam("token") String token,
+			@PathParam("proposal") String proposal,
+			@PathParam("sessionId") String sessionId) throws NamingException {
+
+		String methodName = "getDataCollectionReportyBySessionIdCsv";
+		long start = this.logInit(methodName, logger, token, proposal, sessionId);
+		try {
+			Integer id = Integer.parseInt(sessionId);
+			List<Map<String, Object>> dataCollections = this.getWebServiceDataCollectionGroup3Service()
+					.getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
+
+			List<DataCollectionReportRow> rows = new DataCollectionReportBuilder().build(dataCollections, this.getSpaceGroup3Service());
+			byte[] byteToExport = new DataCollectionReportCsvSerializer().toCsv(rows).getBytes(StandardCharsets.UTF_8);
+
+			this.logFinish(methodName, start, logger);
+			Session3VO ses = this.getSession3Service().findByPk(id, false, false, false);
+			if (ses != null)
+				return this.downloadFile(byteToExport, "Report_" + proposal + "_" + ses.getBeamlineName() + "_" + ses.getStartDate() + ".csv");
+			else
+				return this.downloadFile(byteToExport, "No_session.csv");
+
+		} catch (Exception e) {
+			return this.logError(methodName, e, start, logger);
+		}
+	}
+
 	@RolesAllowed({"User", "Manager", "Industrial", "Localcontact"})
 	@GET
 	@Path("{token}/proposal/{proposal}/mx/datacollection/filterParam/{filterParam}/report/pdf")

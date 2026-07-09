@@ -26,14 +26,11 @@ import java.net.MalformedURLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -61,7 +58,6 @@ import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
 import ispyb.server.mx.services.collections.DataCollection3Service;
 import ispyb.server.mx.services.collections.Image3Service;
 import ispyb.server.mx.services.collections.IspybCrystalClass3Service;
-import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
 import ispyb.server.mx.vos.collections.IspybCrystalClass3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 
@@ -237,6 +233,8 @@ public class ExiPdfRtfExporter {
 	private SpaceGroup3Service spacegroupService;
 	
 	private Map <String, Integer> spgMap = new HashMap <String, Integer> ();
+
+	private final AutoProcBestResultExtractor autoProcBestResultExtractor = new AutoProcBestResultExtractor();
 		
 	public ExiPdfRtfExporter(int proposalId, String proposalDesc, Integer sessionId,
 			List<Map<String, Object>> dataCollections, List<Map<String, Object>> energyScans, List<Map<String, Object>> xrfSpectrums, Integer nbRowsMax) throws Exception {
@@ -282,13 +280,8 @@ public class ExiPdfRtfExporter {
 				.getLocalService(SpaceGroup3Service.class);
 		
 		slv = sessionService.findByPk(sessionId, false/*withDataCollectionGroup*/, false/*withEnergyScan*/, false/*withXFESpectrum*/);
-		
-		List<SpaceGroup3VO> spaceGroups = spacegroupService.findAll();
-		
-		for (Iterator<SpaceGroup3VO> iterator = spaceGroups.iterator(); iterator.hasNext();) {
-			SpaceGroup3VO spg = (SpaceGroup3VO) iterator.next();
-			spgMap.put(spg.getSpaceGroupName(), spg.getSpaceGroupNumber());
-		}
+
+		spgMap = autoProcBestResultExtractor.buildSpaceGroupNumberMap(spacegroupService);
 	}
 
 	/**
@@ -1541,139 +1534,9 @@ public class ExiPdfRtfExporter {
 	}
 
 	private String[] extractBestAutoproc(Map<String, Object> dataCollectionMapItem) throws Exception {
-
-		String [] bestRmerge = null;
-		String listString = (String)dataCollectionMapItem.get("completenessList");
-		
-		if (dataCollectionMapItem.get("completenessList") != null && !listString.isEmpty() && dataCollectionMapItem.get("AutoProc_spaceGroups") != null) {	
-						
-			listString.trim();
-			List<String> completenessList = new ArrayList<String>(Arrays.asList((listString.split(","))));
-			LOG.debug("completenessList = " + completenessList.toString());	
-			List<String> spaceGroupsList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("AutoProc_spaceGroups")).trim().split(",")));
-			LOG.debug("spaceGroupsList = " + spaceGroupsList.size() + spaceGroupsList.toString());	
-			List<String> resolutionsLimitLowList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("resolutionsLimitLow")).trim().split(",")));
-			LOG.debug("resolutionsLimitLowList = " + resolutionsLimitLowList.size() + resolutionsLimitLowList.toString());	
-			List<String> resolutionsLimitHighList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("resolutionsLimitHigh")).trim().split(",")));
-			LOG.debug("resolutionsLimitHighList = " + resolutionsLimitHighList.toString());				
-			List<String> rmergesList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("rMerges")).trim().split(",")));
-			LOG.debug("rmergesList = " + rmergesList.size() + rmergesList.toString() );	
-			List<String> scalingStatisticsTypesList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("scalingStatisticsTypes")).trim().split(",")));
-			LOG.debug("scalingStatisticsTypesList = " + scalingStatisticsTypesList.size() + scalingStatisticsTypesList.toString());	
-			List<String> anomalousList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_anomalous")).trim().split(",")));
-			LOG.debug("anomalousList = " + anomalousList.size() + anomalousList.toString());	
-			
-			bestRmerge = new String[18];
-			int i = 0;
-			Double rmergeMin = 1000.000;
-			int indexRmergeMin = 0;
-			Set<Integer> indexSet = new HashSet<Integer>();
-			
-			for (Iterator<String> iterator = scalingStatisticsTypesList.iterator(); iterator.hasNext();) {
-				String type = (String) iterator.next();
-				// select also no anom 		
-				if (type.contains("innerShell") && (new Integer(anomalousList.get(i).trim())).intValue() < 1 
-						&& (rmergesList.size() >= i)) {
-					double rm = new Double(rmergesList.get(i)).doubleValue();
-					LOG.debug("rm = " + rm);
-					if (rm > 0 && rm < MIN_RMERGE) {
-						indexSet.add(i);
-						LOG.debug("index kept: " + i);
-					} else if (rm > 0 && rm < rmergeMin) {
-						rmergeMin = rm;
-						indexRmergeMin = i;						
-					}
-				}
-				i=i+1;
-			}
-			
-			// select higher symmetry for rMerge < 10	
-			if (!indexSet.isEmpty()) {
-				String spgTemp;
-				int spgNb = 0;		
-				double rMergeMin = 10;
-				
-				for (Iterator<Integer> iterator = indexSet.iterator(); iterator.hasNext();) {
-					Integer index = (Integer) iterator.next();
-					spgTemp = spaceGroupsList.get(index).trim();
-					double rMergeMinTemp = new Double(rmergesList.get(index)).doubleValue();
-					LOG.debug("index : " + index + " spgtemp: " + spgTemp);
-					
-					if (spgMap.get(spgTemp)!= null && spgNb == spgMap.get(spgTemp).intValue()) {
-						if (rMergeMinTemp < rMergeMin) {
-							rMergeMin = rMergeMinTemp;
-							spgNb = spgMap.get(spgTemp).intValue();
-							LOG.debug("index : " + index + " spgNb: " + spgMap.get(spgTemp));
-							indexRmergeMin = index;
-						}
-					}							
-					else if (spgMap.get(spgTemp)!= null && spgNb < spgMap.get(spgTemp).intValue() ) {					
-						
-						spgNb = spgMap.get(spgTemp).intValue();
-						rMergeMin = new Double(rmergesList.get(index)).doubleValue();
-						LOG.debug("index : " + index + " spgNb: " + spgMap.get(spgTemp));
-						indexRmergeMin = index;
-					}
-				}				
-			}
-			
-			bestRmerge[0] = spaceGroupsList.get(indexRmergeMin);
-			bestRmerge[1] = rmergesList.get(indexRmergeMin);
-			bestRmerge[2]= completenessList.get(indexRmergeMin);
-			bestRmerge[3] = getDecimalFormat(resolutionsLimitLowList.get(indexRmergeMin), df2) + "/" 
-			+ getDecimalFormat(resolutionsLimitHighList.get(indexRmergeMin), df2);
-			
-			List<String> tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_a")).trim().split(",")));
-			bestRmerge[4] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_b")).trim().split(",")));
-			bestRmerge[5] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_c")).trim().split(",")));
-			bestRmerge[6] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_alpha")).trim().split(",")));
-			bestRmerge[7] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_beta")).trim().split(",")));
-			bestRmerge[8] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String)dataCollectionMapItem.get("Autoprocessing_cell_gamma")).trim().split(",")));
-			bestRmerge[9] = tmpList.get(indexRmergeMin);
-			
-			//outer
-			int outerIndex = -1;
-			if (scalingStatisticsTypesList.get(indexRmergeMin+1).contains("outerShell") ){
-				outerIndex = indexRmergeMin+1;
-			} else if (indexRmergeMin+2 <  scalingStatisticsTypesList.size() && scalingStatisticsTypesList.get(indexRmergeMin+2).contains("outerShell") ){
-				outerIndex = indexRmergeMin+2;	
-			}
-			if (outerIndex > -1) {
-				bestRmerge[10] = spaceGroupsList.get(outerIndex);
-				bestRmerge[11] = rmergesList.get(outerIndex);
-				bestRmerge[12]= completenessList.get(outerIndex);
-				bestRmerge[13] = getDecimalFormat(resolutionsLimitLowList.get(outerIndex), df2) + "/" 
-				+ getDecimalFormat(resolutionsLimitHighList.get(outerIndex), df2);
-			}
-		
-			//overall
-			int overallIndex=-1;
-			if (indexRmergeMin-1 >= 0 && scalingStatisticsTypesList.get(indexRmergeMin-1).contains("overall")) {
-				overallIndex = indexRmergeMin-1;
-			} else if (indexRmergeMin-2 >= 0 && scalingStatisticsTypesList.get(indexRmergeMin-2).contains("overall")) {
-				overallIndex = indexRmergeMin-2;
-			} else if (indexRmergeMin+2 <  scalingStatisticsTypesList.size() && scalingStatisticsTypesList.get(indexRmergeMin+2).contains("overall")) {
-				overallIndex = indexRmergeMin+2;
-			} else if (indexRmergeMin+3 <  scalingStatisticsTypesList.size() && scalingStatisticsTypesList.get(indexRmergeMin+3).contains("overall")) {
-					overallIndex = indexRmergeMin+3;
-			}
-				
-			if (overallIndex > -1) {
-				bestRmerge[14] = spaceGroupsList.get(overallIndex);
-				bestRmerge[15] = rmergesList.get(overallIndex);
-				bestRmerge[16]= completenessList.get(overallIndex);
-				bestRmerge[17] = getDecimalFormat(resolutionsLimitLowList.get(overallIndex), df2) + "/" 
-				+ getDecimalFormat(resolutionsLimitHighList.get(overallIndex), df2);
-			}						
-			LOG.info("bestRmerge = "  + bestRmerge[0] + "- " + bestRmerge[1]+ "- " + bestRmerge[2]+ "- " + bestRmerge[3]);	
-		}
-		
-		return bestRmerge;		
+		// Selection logic lives in AutoProcBestResultExtractor so it can be
+		// shared with the CSV report builder; behavior is unchanged.
+		return autoProcBestResultExtractor.extractBestAutoproc(dataCollectionMapItem, spgMap);
 	}
 	
 	private Chunk getCompletenessChunk(String completeness) {
