@@ -13,6 +13,20 @@ import java.util.Properties;
 
 public class TestBase {
 
+    static {
+        // OpenEJB/tomee-embedded redeploys the application (and its bundled
+        // log4j2.xml) into a fresh classloader per EJBContainer boot. log4j2's
+        // ClassLoaderContextSelector then builds a new LoggerContext/Interpolator
+        // for that classloader, and Interpolator's Class.asSubclass(StrLookup)
+        // check fails across the classloader boundary — a real but harmless
+        // classloader-identity quirk (application logging is unaffected; only
+        // log4j2's own internal self-diagnostics hit this). Silencing log4j2's
+        // StatusLogger (its self-diagnostic channel, printed straight to
+        // stderr outside the normal appender pipeline) is the documented way
+        // to suppress that noise without touching classloading behavior.
+        System.setProperty("log4j2.statusLoggerLevel", "OFF");
+    }
+
     // Resolve ispyb-database/schema/ relative to the multi-module project root.
     // maven.multiModuleProjectDirectory is set by Maven; fall back to ".." when
     // running tests directly from the ispyb-ejb directory (e.g. from an IDE).
