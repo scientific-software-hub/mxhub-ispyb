@@ -532,18 +532,17 @@ public class BLSample3ServiceBean implements BLSample3Service, BLSample3ServiceL
 
 	private DiffractionPlanWS3VO getDiffractionPlan(SampleInfo sampleInfo) {
 		try {
-			Ejb3ServiceLocator ejb3ServiceLocator = Ejb3ServiceLocator.getInstance();
-			DiffractionPlan3Service diffractionPlanService = (DiffractionPlan3Service) ejb3ServiceLocator
-					.getLocalService(DiffractionPlan3Service.class);
 			DiffractionPlan3VO diffractionPlan = new DiffractionPlan3VO();
-			if (sampleInfo.blDiffractionPlanId!= null) {
-				diffractionPlan = diffractionPlanService.findByPk(sampleInfo.blDiffractionPlanId, false, false);
-			} else if (sampleInfo.crystalDiffractionPlanId != null)
-				diffractionPlan = diffractionPlanService.findByPk(sampleInfo.crystalDiffractionPlanId, false, false);
-			Double minimalResolution = diffractionPlan.getMinimalResolution();
-			sampleInfo.minimalResolution = minimalResolution;
-			String experimentType = diffractionPlan.getExperimentKind();
-			sampleInfo.experimentType = experimentType;
+			Integer planId = sampleInfo.blDiffractionPlanId != null
+					? sampleInfo.blDiffractionPlanId
+					: sampleInfo.crystalDiffractionPlanId;
+			if (planId != null) {
+				DiffractionPlan3Service diffractionPlanService = (DiffractionPlan3Service)
+						Ejb3ServiceLocator.getInstance().getLocalService(DiffractionPlan3Service.class);
+				diffractionPlan = diffractionPlanService.findByPk(planId, false, false);
+			}
+			sampleInfo.minimalResolution = diffractionPlan.getMinimalResolution();
+			sampleInfo.experimentType = diffractionPlan.getExperimentKind();
 			return new DiffractionPlanWS3VO(diffractionPlan);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

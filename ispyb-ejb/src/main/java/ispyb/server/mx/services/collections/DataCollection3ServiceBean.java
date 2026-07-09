@@ -256,7 +256,7 @@ public class DataCollection3ServiceBean implements DataCollection3Service, DataC
 	@SuppressWarnings("unchecked")
 	public List<DataCollection3VO> findAll() throws Exception {
 
-		List<DataCollection3VO> foundEntities = entityManager.createQuery("from DataCollection3VO vo ").getResultList();
+		List<DataCollection3VO> foundEntities = entityManager.createQuery("SELECT vo FROM DataCollection3VO vo", DataCollection3VO.class).getResultList();
 		return foundEntities;
 	}
 

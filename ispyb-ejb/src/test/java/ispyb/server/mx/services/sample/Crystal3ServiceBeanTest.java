@@ -2,19 +2,19 @@ package ispyb.server.mx.services.sample;
 
 import ispyb.TestBase;
 import jakarta.inject.Inject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@Ignore
 public class Crystal3ServiceBeanTest extends TestBase {
 
     @Inject private Crystal3Service service;
 
     @Test
     public void findByProteinId() throws Exception {
-        var result = service.findByProteinId(376497);
+        // Crystal id=1 belongs to Protein id=1
+        var result = service.findByProteinId(1);
         assertNotNull(result);
+        assertFalse(result.isEmpty());
     }
 }

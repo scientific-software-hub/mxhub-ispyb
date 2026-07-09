@@ -263,7 +263,7 @@ public class Proposal3ServiceBean implements Proposal3Service, Proposal3ServiceL
 	@WebMethod
 	public List<Proposal3VO> findAll(final boolean detachLight) throws Exception {
 
-		Query query = entityManager.createQuery("from Proposal3VO vo ");
+		Query query = entityManager.createQuery("SELECT vo FROM Proposal3VO vo");
 		List<Proposal3VO> vos;
 		List<Proposal3VO> foundEntities = query.getResultList();
 		if (detachLight)

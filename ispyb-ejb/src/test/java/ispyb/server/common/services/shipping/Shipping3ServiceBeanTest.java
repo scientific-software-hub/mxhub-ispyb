@@ -2,11 +2,10 @@ package ispyb.server.common.services.shipping;
 
 import ispyb.TestBase;
 import jakarta.inject.Inject;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
-@Ignore
+import static org.junit.jupiter.api.Assertions.*;
+
 public class Shipping3ServiceBeanTest extends TestBase {
 
     @Inject
