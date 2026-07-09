@@ -71,6 +71,21 @@
             <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
+        <!-- io.jhdf:jhdf (a provided-scope dep of ispyb-ejb3) pulls
+             slf4j-api:1.7.36 at a shallower depth than the 2.x line
+             testcontainers/tomee-embedded bring in, so it wins Maven's
+             nearest-wins resolution on the test classpath. The bindings that
+             actually end up present (slf4j-jdk14:2.0.12, jcl-over-slf4j) are
+             2.x artifacts that don't implement 1.x's StaticLoggerBinder
+             lookup, so tests fell back to the NOP logger. Pin slf4j-api to
+             2.0.12 (matching slf4j-jdk14) so the already-present binding
+             actually satisfies the API version resolved for tests. -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>2.0.12</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
             <artifactId>swagger-jaxrs</artifactId>
