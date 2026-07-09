@@ -61,7 +61,6 @@ import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
 import ispyb.server.mx.services.collections.DataCollection3Service;
 import ispyb.server.mx.services.collections.Image3Service;
 import ispyb.server.mx.services.collections.IspybCrystalClass3Service;
-import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionGroupRestWsService;
 import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
 import ispyb.server.mx.vos.collections.IspybCrystalClass3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
