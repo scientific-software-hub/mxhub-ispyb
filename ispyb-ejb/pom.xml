@@ -114,20 +114,6 @@
             <version>1.20.4</version>
             <scope>test</scope>
         </dependency>
-        <!-- io.jhdf pulls slf4j-api:1.7.36; testcontainers/tomee-embedded pull
-             the 2.x line (whose only present binding, slf4j-jdk14, doesn't
-             implement 1.x's StaticLoggerBinder lookup). Same fix as
-             ispyb-rest: pin to 2.0.12 (matching slf4j-jdk14) so tests get a
-             real binding instead of falling back to the NOP logger.
-             Scope "provided" for consistency with how jhdf itself is scoped
-             here, even though no ispyb-ejb main code currently imports
-             org.slf4j directly. -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.12</version>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>jakarta.platform</groupId>
             <artifactId>jakarta.jakartaee-web-api</artifactId>

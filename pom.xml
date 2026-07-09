@@ -97,6 +97,28 @@
 			<artifactId>log4j-1.2-api</artifactId>
 			<version>2.24.2</version>
 		</dependency>
+		<!-- Several dependencies (io.jhdf, testcontainers, tomee-embedded) pull
+		     in different, mutually-incompatible slf4j-api majors (1.7.x vs
+		     2.x), and whichever wins Maven's nearest-wins mediation may not
+		     match whatever slf4j-* binding happens to also be present,
+		     causing "Failed to load class StaticLoggerBinder" / NOP-logger
+		     fallback. Pin both here so every module resolves the exact same
+		     coherent pair project-wide. Version matches what the actual
+		     deployment target (apache-tomee-plume 10.1.4's lib/) ships, and
+		     scope is "provided" since the container supplies both at
+		     runtime; they must not be bundled into the WAR. -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>2.0.17</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-jdk14</artifactId>
+			<version>2.0.17</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
