@@ -79,12 +79,19 @@
              2.x artifacts that don't implement 1.x's StaticLoggerBinder
              lookup, so tests fell back to the NOP logger. Pin slf4j-api to
              2.0.12 (matching slf4j-jdk14) so the already-present binding
-             actually satisfies the API version resolved for tests. -->
+             actually satisfies the API version resolved for tests.
+             Scope must be "provided", not "test": Maven's nearest-wins
+             mediation takes the scope from whichever declaration wins, and
+             main-code classes (e.g. StatsWebService) import org.slf4j
+             directly, relying on it being visible at compile time via
+             ispyb-ejb3's own provided-scope jhdf dependency. A test-scope
+             override here would win the GAV but prune slf4j-api out of the
+             main compile classpath entirely. -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>2.0.12</version>
-            <scope>test</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>io.swagger</groupId>
