@@ -6,6 +6,7 @@ import ispyb.common.util.export.DataCollectionReportCsvSerializer;
 import ispyb.common.util.export.dto.DataCollectionReportRow;
 import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
 import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionGroupRestWsService;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import jakarta.inject.Inject;
 import org.junit.jupiter.api.Test;
 
@@ -53,7 +54,7 @@ public class DataCollectionReportCsvTest extends TestBase {
 	public void reportCsv_session1_containsProcessedSpaceGroupAndResolution() throws Exception {
 		// proposalId=8425, sessionId=1 — seeded by test-data-proposals.sql /
 		// test-data-sessions.sql / test-data-collections.sql / test-data-autoproc.sql
-		List<Map<String, Object>> dataCollections = dataCollectionGroupRestWsService
+		List<DataCollectionSummary> dataCollections = dataCollectionGroupRestWsService
 				.getViewDataCollectionBySessionIdHavingImages(8425, 1);
 
 		assertFalse(dataCollections.isEmpty(), "expected at least one seeded data collection row");
@@ -90,7 +91,7 @@ public class DataCollectionReportCsvTest extends TestBase {
 	 */
 	@Test
 	public void reportCsv_session1_streamingPathMatchesEagerPath() throws Exception {
-		List<Map<String, Object>> dataCollections = dataCollectionGroupRestWsService
+		List<DataCollectionSummary> dataCollections = dataCollectionGroupRestWsService
 				.getViewDataCollectionBySessionIdHavingImages(8425, 1);
 		assertFalse(dataCollections.isEmpty(), "expected at least one seeded data collection row");
 

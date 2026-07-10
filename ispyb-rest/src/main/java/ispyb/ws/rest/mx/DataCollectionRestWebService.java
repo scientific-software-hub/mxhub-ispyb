@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -35,6 +36,7 @@ import ispyb.common.util.export.DataCollectionReportCsvSerializer;
 import ispyb.common.util.export.ExiPdfRtfExporter;
 import ispyb.common.util.export.dto.DataCollectionReportRow;
 import ispyb.server.common.vos.proposals.Proposal3VO;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 
@@ -275,7 +277,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 			// downstream of this query - row-DTO building and CSV
 			// serialization - so the response body is written to the client
 			// incrementally instead of being fully buffered in memory first.
-			List<Map<String, Object>> dataCollections = this.getWebServiceDataCollectionGroup3Service()
+			List<DataCollectionSummary> dataCollections = this.getWebServiceDataCollectionGroup3Service()
 					.getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
 
 			DataCollectionReportBuilder builder = new DataCollectionReportBuilder();
@@ -651,9 +653,13 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		
 		Integer id = new Integer(sessionId);
 		
-		List<Map<String, Object>> dataCollections = 
-				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
-		
+		// ExiPdfRtfExporter (PDF/RTF export, deprecated) still consumes the raw
+		// row shape, so the typed summaries are adapted back to maps here
+		// rather than migrating the exporter itself.
+		List<Map<String, Object>> dataCollections =
+				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id)
+						.stream().map(DataCollectionSummary::asMap).collect(Collectors.toList());
+
 		List<Map<String, Object>> energyScans = this.getWebServiceEnergyScan3Service().getViewBySessionId(this.getProposalId(proposal), id);
 		
 		List<Map<String, Object>> xrfSpectrums = this.getWebServiceXFEFluorescenSpectrum3Service().getViewBySessionId(this.getProposalId(proposal), id);
