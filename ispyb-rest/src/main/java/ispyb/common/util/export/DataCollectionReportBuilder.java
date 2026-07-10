@@ -127,7 +127,7 @@ public class DataCollectionReportBuilder {
 	 */
 	public DataCollectionReportRow buildRow(DataCollectionSummary dataCollectionSummary, Map<String, Integer> spgMap) throws Exception {
 
-		String[] bestAutoproc = autoProcBestResultExtractor.extractBestAutoproc(dataCollectionSummary.asMap(), spgMap);
+		String[] bestAutoproc = autoProcBestResultExtractor.extractBestAutoproc(dataCollectionSummary, spgMap);
 
 		return new DataCollectionReportRow(
 				dataCollectionSummary.proteinAcronym(),

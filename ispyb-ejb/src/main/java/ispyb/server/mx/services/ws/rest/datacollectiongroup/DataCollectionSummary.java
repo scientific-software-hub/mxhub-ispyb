@@ -125,6 +125,65 @@ public class DataCollectionSummary implements Map<String, Object>, Serializable 
 		return value != null ? value.toString() : "";
 	}
 
+	// -- GROUP_CONCAT'd autoprocessing columns, consumed by
+	// AutoProcBestResultExtractor.extractBestAutoproc. Unlike getString()
+	// above, these are deliberately nullable and unsplit/untrimmed: the
+	// extractor's null checks and comma-splitting are behavior-pinned by
+	// AutoProcBestResultExtractorTest, so this is a straight typed pass-through
+	// of the raw GROUP_CONCAT string, not a reinterpretation of it.
+
+	public String completenessList() {
+		return (String) row.get("completenessList");
+	}
+
+	public String autoProcSpaceGroups() {
+		return (String) row.get("AutoProc_spaceGroups");
+	}
+
+	public String resolutionsLimitLow() {
+		return (String) row.get("resolutionsLimitLow");
+	}
+
+	public String resolutionsLimitHigh() {
+		return (String) row.get("resolutionsLimitHigh");
+	}
+
+	public String rMerges() {
+		return (String) row.get("rMerges");
+	}
+
+	public String scalingStatisticsTypes() {
+		return (String) row.get("scalingStatisticsTypes");
+	}
+
+	public String autoprocessingAnomalous() {
+		return (String) row.get("Autoprocessing_anomalous");
+	}
+
+	public String autoprocessingCellA() {
+		return (String) row.get("Autoprocessing_cell_a");
+	}
+
+	public String autoprocessingCellB() {
+		return (String) row.get("Autoprocessing_cell_b");
+	}
+
+	public String autoprocessingCellC() {
+		return (String) row.get("Autoprocessing_cell_c");
+	}
+
+	public String autoprocessingCellAlpha() {
+		return (String) row.get("Autoprocessing_cell_alpha");
+	}
+
+	public String autoprocessingCellBeta() {
+		return (String) row.get("Autoprocessing_cell_beta");
+	}
+
+	public String autoprocessingCellGamma() {
+		return (String) row.get("Autoprocessing_cell_gamma");
+	}
+
 	// -- Map<String, Object>, delegating to the backing row --
 
 	@Override

@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.server.mx.vos.autoproc.SpaceGroup3VO;
 
 /**
@@ -75,7 +76,7 @@ public class AutoProcBestResultExtractor {
 	}
 
 	/**
-	 * @param dataCollectionMapItem one row of {@code v_datacollection_summary}
+	 * @param dataCollectionSummary one row of {@code v_datacollection_summary}
 	 *                              (GROUP_CONCAT'd autoproc columns)
 	 * @param spgMap                space-group-name -&gt; number, see
 	 *                              {@link #buildSpaceGroupNumberMap}
@@ -89,30 +90,30 @@ public class AutoProcBestResultExtractor {
 	 *         </pre>
 	 *         or {@code null} if the row carries no autoprocessing statistics.
 	 */
-	public String[] extractBestAutoproc(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) throws Exception {
+	public String[] extractBestAutoproc(DataCollectionSummary dataCollectionSummary, Map<String, Integer> spgMap) throws Exception {
 
 		DecimalFormat df2 = (DecimalFormat) NumberFormat.getInstance(Locale.US);
 		df2.applyPattern("#####0.00");
 
 		String[] bestRmerge = null;
-		String listString = (String) dataCollectionMapItem.get("completenessList");
+		String listString = dataCollectionSummary.completenessList();
 
-		if (dataCollectionMapItem.get("completenessList") != null && !listString.isEmpty() && dataCollectionMapItem.get("AutoProc_spaceGroups") != null) {
+		if (dataCollectionSummary.completenessList() != null && !listString.isEmpty() && dataCollectionSummary.autoProcSpaceGroups() != null) {
 
 			listString.trim();
 			List<String> completenessList = new ArrayList<String>(Arrays.asList((listString.split(","))));
 			logger.debug("completenessList = " + completenessList.toString());
-			List<String> spaceGroupsList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("AutoProc_spaceGroups")).trim().split(",")));
+			List<String> spaceGroupsList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoProcSpaceGroups().trim().split(",")));
 			logger.debug("spaceGroupsList = " + spaceGroupsList.size() + spaceGroupsList.toString());
-			List<String> resolutionsLimitLowList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("resolutionsLimitLow")).trim().split(",")));
+			List<String> resolutionsLimitLowList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.resolutionsLimitLow().trim().split(",")));
 			logger.debug("resolutionsLimitLowList = " + resolutionsLimitLowList.size() + resolutionsLimitLowList.toString());
-			List<String> resolutionsLimitHighList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("resolutionsLimitHigh")).trim().split(",")));
+			List<String> resolutionsLimitHighList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.resolutionsLimitHigh().trim().split(",")));
 			logger.debug("resolutionsLimitHighList = " + resolutionsLimitHighList.toString());
-			List<String> rmergesList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("rMerges")).trim().split(",")));
+			List<String> rmergesList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.rMerges().trim().split(",")));
 			logger.debug("rmergesList = " + rmergesList.size() + rmergesList.toString());
-			List<String> scalingStatisticsTypesList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("scalingStatisticsTypes")).trim().split(",")));
+			List<String> scalingStatisticsTypesList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.scalingStatisticsTypes().trim().split(",")));
 			logger.debug("scalingStatisticsTypesList = " + scalingStatisticsTypesList.size() + scalingStatisticsTypesList.toString());
-			List<String> anomalousList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_anomalous")).trim().split(",")));
+			List<String> anomalousList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingAnomalous().trim().split(",")));
 			logger.debug("anomalousList = " + anomalousList.size() + anomalousList.toString());
 
 			bestRmerge = new String[18];
@@ -174,17 +175,17 @@ public class AutoProcBestResultExtractor {
 			bestRmerge[3] = getDecimalFormat(resolutionsLimitLowList.get(indexRmergeMin), df2) + "/"
 					+ getDecimalFormat(resolutionsLimitHighList.get(indexRmergeMin), df2);
 
-			List<String> tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_a")).trim().split(",")));
+			List<String> tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellA().trim().split(",")));
 			bestRmerge[4] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_b")).trim().split(",")));
+			tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellB().trim().split(",")));
 			bestRmerge[5] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_c")).trim().split(",")));
+			tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellC().trim().split(",")));
 			bestRmerge[6] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_alpha")).trim().split(",")));
+			tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellAlpha().trim().split(",")));
 			bestRmerge[7] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_beta")).trim().split(",")));
+			tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellBeta().trim().split(",")));
 			bestRmerge[8] = tmpList.get(indexRmergeMin);
-			tmpList = new ArrayList<String>(Arrays.asList(((String) dataCollectionMapItem.get("Autoprocessing_cell_gamma")).trim().split(",")));
+			tmpList = new ArrayList<String>(Arrays.asList(dataCollectionSummary.autoprocessingCellGamma().trim().split(",")));
 			bestRmerge[9] = tmpList.get(indexRmergeMin);
 
 			// outer
