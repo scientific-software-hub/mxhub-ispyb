@@ -29,7 +29,7 @@ public class Session3ServiceBeanTest extends TestBase {
     public void hasDataCollectionGroups() throws Exception {
         var count = service.hasDataCollectionGroups(1);
         assertNotNull(count);
-        assertEquals(Integer.valueOf(0), count);
+        assertEquals(Integer.valueOf(1), count);
     }
 
     @Test

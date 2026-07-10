@@ -195,7 +195,7 @@ public class Session3ServiceBean implements Session3Service, Session3ServiceLoca
 		Query query = entityManager.createNativeQuery("SELECT COUNT(*) FROM DataCollectionGroup WHERE sessionId = ?1 ")
 				.setParameter(1, sessionId);
 		try {
-			BigInteger res = (BigInteger) query.getSingleResult();
+			Long res = (Long) query.getSingleResult();
 
 			return res.intValue();
 		} catch (NoResultException e) {
