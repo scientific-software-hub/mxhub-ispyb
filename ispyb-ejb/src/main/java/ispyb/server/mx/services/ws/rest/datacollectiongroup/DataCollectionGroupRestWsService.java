@@ -31,7 +31,7 @@ public interface DataCollectionGroupRestWsService {
 
 	public List<Map<String,Object>> getViewDataCollectionBySessionId(int proposalId, int sessionId);
 	
-	public List<Map<String, Object>> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId);
+	public List<DataCollectionSummary> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId);
 
 	public List<Map<String, Object>> getViewDataCollectionByProteinAcronym(int proposalId, String proteinAcronym);
 

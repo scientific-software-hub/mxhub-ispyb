@@ -24,6 +24,7 @@ import ispyb.server.mx.services.ws.rest.WsServiceBean;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import jakarta.ejb.Stateless;
 import jakarta.persistence.EntityManager;
@@ -55,7 +56,8 @@ public class DataCollectionGroupRestWsServiceBean extends WsServiceBean implemen
     }
 	
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where DataCollectionGroup_sessionId = ?1 and BLSession_proposalId = ?2 "
 				+ " and DataCollection_numberOfImages is not null "
@@ -63,7 +65,8 @@ public class DataCollectionGroupRestWsServiceBean extends WsServiceBean implemen
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, sessionId)
 				.setParameter(2, proposalId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 	
 	@Override
