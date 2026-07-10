@@ -45,14 +45,16 @@ public class DataCollectionGroupRestWsServiceBean extends WsServiceBean implemen
 	}
 	
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionBySessionId(int proposalId, int sessionId) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionBySessionId(int proposalId, int sessionId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where DataCollectionGroup_sessionId = ?1 and BLSession_proposalId = ?2 "
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId order by DataCollection_startTime desc ";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, sessionId)
 				.setParameter(2, proposalId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 	
 	@Override
@@ -70,69 +72,81 @@ public class DataCollectionGroupRestWsServiceBean extends WsServiceBean implemen
     }
 	
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionByProteinAcronym(int proposalId, String proteinAcronym) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionByProteinAcronym(int proposalId, String proteinAcronym) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where BLSession_proposalId = ?1 and Protein_acronym = ?2"
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, proposalId)
 				.setParameter(2, proteinAcronym);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionBySampleId(int proposalId, int sampleId) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionBySampleId(int proposalId, int sampleId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where BLSession_proposalId = ?1 and DataCollectionGroup_blSampleId = ?2"
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, proposalId)
 				.setParameter(2, sampleId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionBySampleName(int proposalId, String name) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionBySampleName(int proposalId, String name) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where BLSession_proposalId = ?1 and BLSample_name = ?2"
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, proposalId)
 				.setParameter(2, name);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
-	
+
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionByImagePrefix(int proposalId, String prefix) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionByImagePrefix(int proposalId, String prefix) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where BLSession_proposalId = ?1 and DataCollection_imagePrefix = ?2"
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, proposalId)
 				.setParameter(2, prefix);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 
 	@Override
-	public Collection<? extends Map<String, Object>> getViewDataCollectionByDataCollectionId(int proposalId, int dataCollectionId) {
+	@SuppressWarnings("unchecked")
+	public Collection<DataCollectionSummary> getViewDataCollectionByDataCollectionId(int proposalId, int dataCollectionId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where DataCollection_dataCollectionId = ?1 and BLSession_proposalId = ?2 "
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, dataCollectionId)
 				.setParameter(2, proposalId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 
 	@Override
-	public List<Map<String, Object>> getViewDataCollectionByWorkflowId(Integer proposalId, Integer workflowId) {
+	@SuppressWarnings("unchecked")
+	public List<DataCollectionSummary> getViewDataCollectionByWorkflowId(Integer proposalId, Integer workflowId) {
 		String mySQLQuery = getViewTableQuery()
 				+ " where Workflow_workflowId = ?1 and BLSession_proposalId = ?2 "
 				+ " group by v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId, v_datacollection_summary.DataCollectionGroup_dataCollectionGroupId";
 		Query query = this.entityManager.createNativeQuery(mySQLQuery, Map.class)
 				.setParameter(1, workflowId)
 				.setParameter(2, proposalId);
-        return (List<Map<String, Object>>) ((Query) query).getResultList();
+        List<Map<String, Object>> resultList = (List<Map<String, Object>>) ((Query) query).getResultList();
+        return resultList.stream().map(DataCollectionSummary::from).collect(Collectors.toList());
     }
 
 	
