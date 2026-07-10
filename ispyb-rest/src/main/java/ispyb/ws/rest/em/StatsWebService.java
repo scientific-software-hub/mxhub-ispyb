@@ -2,6 +2,7 @@ package ispyb.ws.rest.em;
 
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
 import ispyb.server.em.services.collections.EM3Service;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.ws.rest.RestWebService;
 import ispyb.ws.rest.mx.MXRestWebService;
 
@@ -62,12 +63,12 @@ public class StatsWebService extends MXRestWebService {
 
 		try {
 			List<Integer> ids = this.parseToInteger(sessionIdList);
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
-			
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
+
 			for (int i = 0; i < ids.size(); i++) {
 				int id = ids.get(i);
-				List<Map<String, Object>> listResult = this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionId(this.getProposalId(proposal), id);
-				for (Map<String, Object> result : listResult) {
+				List<DataCollectionSummary> listResult = this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionId(this.getProposalId(proposal), id);
+				for (DataCollectionSummary result : listResult) {
 					int dataCollectionGroupId = (int) result.get("DataCollectionGroup_dataCollectionGroupId");
 					result.put("stats", getEMService().getStatsByDataDataCollectionGroupId(dataCollectionGroupId));
 				}
