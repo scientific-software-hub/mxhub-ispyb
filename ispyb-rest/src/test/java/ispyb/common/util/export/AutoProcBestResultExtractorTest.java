@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
+
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertNull;
 
@@ -54,7 +56,7 @@ public class AutoProcBestResultExtractorTest {
 
 	@Test
 	public void extractBestAutoproc_representativeRow_matchesPdfParityExpectation() throws Exception {
-		String[] bestAutoproc = extractor.extractBestAutoproc(representativeRow(), spgMap());
+		String[] bestAutoproc = extractor.extractBestAutoproc(DataCollectionSummary.from(representativeRow()), spgMap());
 
 		String[] expected = new String[] {
 				// inner (best)
@@ -75,7 +77,7 @@ public class AutoProcBestResultExtractorTest {
 		Map<String, Object> row = new HashMap<>();
 		row.put("completenessList", null);
 
-		assertNull(extractor.extractBestAutoproc(row, spgMap()));
+		assertNull(extractor.extractBestAutoproc(DataCollectionSummary.from(row), spgMap()));
 	}
 
 	@Test
@@ -84,6 +86,6 @@ public class AutoProcBestResultExtractorTest {
 		row.put("completenessList", "");
 		row.put("AutoProc_spaceGroups", SPACE_GROUP);
 
-		assertNull(extractor.extractBestAutoproc(row, spgMap()));
+		assertNull(extractor.extractBestAutoproc(DataCollectionSummary.from(row), spgMap()));
 	}
 }
