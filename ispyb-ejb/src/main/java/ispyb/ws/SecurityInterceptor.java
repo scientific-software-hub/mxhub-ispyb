@@ -1,4 +1,4 @@
-package ispyb.ws.security;
+package ispyb.ws;
 
 import ispyb.server.common.services.login.Login3Service;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
@@ -12,9 +12,7 @@ import java.util.Set;
 import jakarta.annotation.security.DenyAll;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
-
 import javax.naming.NamingException;
-
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ResourceInfo;
 import jakarta.ws.rs.ext.Provider;
@@ -26,7 +24,8 @@ import org.apache.log4j.Logger;
 
 /**
  * This SecurityInterceptor verify the access permissions for a user based on user name and method annotations
- */
+ *
+ * */
 @Provider
 public class SecurityInterceptor implements ContainerRequestFilter {
     private final static Logger logger = Logger.getLogger(SecurityInterceptor.class);
@@ -42,7 +41,7 @@ public class SecurityInterceptor implements ContainerRequestFilter {
         Method method = info.getResourceMethod();
 
         if (method.isAnnotationPresent(PermitAll.class)) {
-            logger.info("PermitAll " + method.getName() + " " + method.getDeclaredAnnotations() + " " + method.getAnnotations() + " " + method.getParameterAnnotations());
+            logger.info("PermitAll " + method.getName() + " "+ method.getDeclaredAnnotations() + " " + method.getAnnotations() + " " + method.getParameterAnnotations());
             return;
         }
 
