@@ -198,7 +198,50 @@ decide what "wider" means.
   this file (Stream API, no deprecated boxed constructors, DTOs) — treat
   "Java 21 idiom" as the default lens rather than restating those rules.
   Still bounded by the prime directive above: apply within the task's blast
-  radius, propose-and-ask beyond it.
+  radius, propose-and-ask beyond it. See "Jakarta EE 10 / TomEE Plume Best
+  Practices" below for the framework-level counterpart to this rule.
+
+## Jakarta EE 10 / TomEE Plume Best Practices
+
+The app runs on Jakarta EE 10 on Apache TomEE Plume 10.1.4 (root `pom.xml`,
+`jakartaee.version=10.0.0`) — the `javax.*` → `jakarta.*` migration is already
+complete (zero residual `javax.*` EE imports anywhere), so treat that as done,
+not an open task. Where a task touches the web/persistence tier, prefer the
+platform's own facilities over ad-hoc code that reinvents them:
+
+- **Bean Validation (`jakarta.validation`) instead of manual null/range
+  checks.** Not a single `@NotNull`/`@Valid`/`@Size`/`@Pattern` annotation
+  exists anywhere in the tree today, despite Bean Validation being part of
+  the Jakarta EE Web Profile TomEE Plume implements. When a task adds or
+  touches a request DTO or JAX-RS resource method parameters, prefer
+  declaring constraints and letting the container validate, rather than
+  hand-writing `if (x == null) throw ...` checks inline. Don't retrofit
+  existing endpoints wholesale for this — adopt it for what you're already
+  touching, ask before a broader sweep.
+- **A single `@Provider ExceptionMapper<T>` instead of per-endpoint
+  try/catch → `Response.status(...)`.** There is no `@Provider
+  ExceptionMapper` anywhere in the codebase; error handling is hand-rolled
+  per method instead — e.g. `DataCollectionRestWebService` alone has 22
+  separate `catch (Exception ...)` blocks, each building its own `Response`,
+  and the same pattern repeats across ~35 REST classes project-wide. A
+  shared `ExceptionMapper` (or a small family of them, one per exception
+  type worth distinguishing) centralizes this into one place. Same gating as
+  everywhere else in this file: introduce it for the resource(s) you're
+  already working on, ask before converting the rest.
+- **CDI, interceptors, and other container facilities over homegrown
+  wiring** — this reinforces, rather than replaces, the CDI/`Ejb3ServiceLocator`
+  rule above. `SecurityInterceptor`
+  (`ispyb-ejb/src/main/java/ispyb/ws/SecurityInterceptor.java`) is the one
+  existing interceptor/`@Provider` in the tree — a positive example of
+  letting the container own cross-cutting logic instead of hand-wiring it.
+- **MicroProfile Config is available but not adopted.** TomEE Plume bundles
+  MicroProfile, yet all configuration still flows through
+  `Constants.getProperty(...)`, backed by a single static
+  `java.util.Properties` loaded once at class-init (`Constants.java`, ~90
+  call sites across the codebase). `@ConfigProperty`-based injection would
+  be more idiomatic, but `Constants` is foundational and referenced
+  everywhere — this is squarely a "propose it, don't just do it" item. Don't
+  attempt this without explicit user sign-off given the blast radius.
 
 ## Persistence & Queries
 
