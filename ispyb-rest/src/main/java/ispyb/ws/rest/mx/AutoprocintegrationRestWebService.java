@@ -2,6 +2,7 @@ package ispyb.ws.rest.mx;
 
 import ispyb.common.util.HashMapToZip;
 import ispyb.server.common.util.ejb.Ejb3ServiceLocator;
+import ispyb.server.mx.services.utils.reader.AttachmentParseResult;
 import ispyb.server.mx.services.utils.reader.AutoProcProgramaAttachmentFileReader;
 import ispyb.server.mx.services.ws.rest.autoprocessingintegration.AutoProcessingIntegrationService;
 import ispyb.server.mx.vos.autoproc.AutoProcIntegration3VO;
@@ -43,15 +44,15 @@ public class AutoprocintegrationRestWebService extends MXRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal);
 		try {
 			List<Integer> ids = this.parseToInteger(autoProcIntegrationListId);
-			HashMap<Integer, List<HashMap<String, Object>>> result = new HashMap<Integer, List<HashMap<String, Object>>>();
+			HashMap<Integer, List<AttachmentParseResult>> result = new HashMap<Integer, List<AttachmentParseResult>>();
 			for (Integer id : ids) {
 				AutoProcIntegration3VO autoProcIntegration3VO = this.getAutoProcIntegration3Service().findByPk(id);
 				List<AutoProcProgramAttachment3VO> xscaleAttachmentList = this.getAutoProcProgramAttachment3Service()
 						.findXScale(autoProcIntegration3VO.getAutoProcProgramVOId());
 
-				List<HashMap<String, Object>> attachmentData = new ArrayList<HashMap<String, Object>>();
+				List<AttachmentParseResult> attachmentData = new ArrayList<AttachmentParseResult>();
 				for (AutoProcProgramAttachment3VO autoProcProgramAttachment3VO : xscaleAttachmentList) {
-					HashMap<String, Object> data = AutoProcProgramaAttachmentFileReader
+					AttachmentParseResult data = AutoProcProgramaAttachmentFileReader
 							.readAttachment(autoProcProgramAttachment3VO);
 					attachmentData.add(data);
 				}
