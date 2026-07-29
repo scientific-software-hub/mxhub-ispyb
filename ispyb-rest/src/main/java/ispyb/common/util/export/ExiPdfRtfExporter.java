@@ -58,8 +58,10 @@ import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
 import ispyb.server.mx.services.collections.DataCollection3Service;
 import ispyb.server.mx.services.collections.Image3Service;
 import ispyb.server.mx.services.collections.IspybCrystalClass3Service;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.server.mx.vos.collections.IspybCrystalClass3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
+
 
 /**
  * allows creation of PDF or RTF report - general report for EXI, available in the
@@ -1535,8 +1537,10 @@ public class ExiPdfRtfExporter {
 
 	private String[] extractBestAutoproc(Map<String, Object> dataCollectionMapItem) throws Exception {
 		// Selection logic lives in AutoProcBestResultExtractor so it can be
-		// shared with the CSV report builder; behavior is unchanged.
-		return autoProcBestResultExtractor.extractBestAutoproc(dataCollectionMapItem, spgMap);
+		// shared with the CSV report builder; behavior is unchanged. This
+		// exporter is deprecated and still deals in raw maps, so wrap into a
+		// DataCollectionSummary here rather than migrating the whole class.
+		return autoProcBestResultExtractor.extractBestAutoproc(DataCollectionSummary.from(dataCollectionMapItem), spgMap);
 	}
 	
 	private Chunk getCompletenessChunk(String completeness) {

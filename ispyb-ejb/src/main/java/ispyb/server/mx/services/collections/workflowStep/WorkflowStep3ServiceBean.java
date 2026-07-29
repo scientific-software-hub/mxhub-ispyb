@@ -20,7 +20,6 @@
 package ispyb.server.mx.services.collections.workflowStep;
 
 import java.util.List;
-import java.util.Map;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Stateless;
@@ -30,6 +29,7 @@ import jakarta.persistence.PersistenceContext;
 
 import ispyb.server.biosaxs.services.core.measurement.Measurement3ServiceLocal;
 import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionGroupRestWsServiceLocal;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.server.mx.vos.collections.Workflow3VO;
 import ispyb.server.mx.vos.collections.WorkflowStep3VO;
 
@@ -62,7 +62,7 @@ public class WorkflowStep3ServiceBean implements WorkflowStep3Service, WorkflowS
 			if (proposalId != null){
 				WorkflowStep3VO wfs =  entityManager.find(WorkflowStep3VO.class, workflowStepId);
 				/** Check that this workflowStepId belongs to such proposal **/
-				List<Map<String, Object>> datacollections = dataCollectionRestWsServiceLocal.getViewDataCollectionByWorkflowId(proposalId, wfs.getWorkflowId());
+				List<DataCollectionSummary> datacollections = dataCollectionRestWsServiceLocal.getViewDataCollectionByWorkflowId(proposalId, wfs.getWorkflowId());
 				if (datacollections.size() > 0){
 					return wfs;
 				}

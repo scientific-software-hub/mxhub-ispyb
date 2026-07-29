@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.security.RolesAllowed;
@@ -35,6 +36,7 @@ import ispyb.common.util.export.DataCollectionReportCsvSerializer;
 import ispyb.common.util.export.ExiPdfRtfExporter;
 import ispyb.common.util.export.dto.DataCollectionReportRow;
 import ispyb.server.common.vos.proposals.Proposal3VO;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 import ispyb.server.mx.vos.collections.DataCollection3VO;
 import ispyb.server.mx.vos.collections.Session3VO;
 
@@ -56,7 +58,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		try {
 			
 			List<Integer> ids = this.parseToInteger(dataCollectionIdList);
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
 
 			for (Integer id : ids) {
 				int propId = this.getProposalId(proposal);
@@ -216,7 +218,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, sessionIdList);
 		try {
 			List<Integer> ids = this.parseToInteger(sessionIdList);
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
 
 			for (Integer id : ids) {
 				dataCollections.addAll(
@@ -275,7 +277,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 			// downstream of this query - row-DTO building and CSV
 			// serialization - so the response body is written to the client
 			// incrementally instead of being fully buffered in memory first.
-			List<Map<String, Object>> dataCollections = this.getWebServiceDataCollectionGroup3Service()
+			List<DataCollectionSummary> dataCollections = this.getWebServiceDataCollectionGroup3Service()
 					.getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
 
 			DataCollectionReportBuilder builder = new DataCollectionReportBuilder();
@@ -486,7 +488,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, workflowstepId);
 		try {
 			List<Integer> ids = this.parseToInteger(workflowstepId);
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
 
 			for (Integer id : ids) {
 				dataCollections.addAll(this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionByWorkflowId(this.getProposalId(proposal), id));
@@ -557,7 +559,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		long start = this.logInit(methodName, logger, token, proposal, proteinAcronyms);
 		try {
 			List<String> acronyms = this.parseToString(proteinAcronyms);
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
 
 			for (String acronym : acronyms) {
 				dataCollections.addAll(this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionByProteinAcronym(
@@ -580,7 +582,7 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		String methodName = "getViewDataCollectionBySampleId";
 		long start = this.logInit(methodName, logger, token, proposal, sampleId);
 		try {
-			List<Map<String, Object>> dataCollections = new ArrayList<Map<String, Object>>();
+			List<DataCollectionSummary> dataCollections = new ArrayList<DataCollectionSummary>();
 
 			dataCollections.addAll(this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySampleId(
 						this.getProposalId(proposal), sampleId));
@@ -651,9 +653,13 @@ public class DataCollectionRestWebService extends MXRestWebService {
 		
 		Integer id = new Integer(sessionId);
 		
-		List<Map<String, Object>> dataCollections = 
-				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id);
-		
+		// ExiPdfRtfExporter (PDF/RTF export, deprecated) still consumes the raw
+		// row shape, so the typed summaries are adapted back to maps here
+		// rather than migrating the exporter itself.
+		List<Map<String, Object>> dataCollections =
+				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySessionIdHavingImages(this.getProposalId(proposal), id)
+						.stream().map(DataCollectionSummary::asMap).collect(Collectors.toList());
+
 		List<Map<String, Object>> energyScans = this.getWebServiceEnergyScan3Service().getViewBySessionId(this.getProposalId(proposal), id);
 		
 		List<Map<String, Object>> xrfSpectrums = this.getWebServiceXFEFluorescenSpectrum3Service().getViewBySessionId(this.getProposalId(proposal), id);
@@ -677,29 +683,35 @@ public class DataCollectionRestWebService extends MXRestWebService {
 	}
 	
 	private byte [] getPdfRtf(String filterParam, String proposal, boolean isRtf, boolean isAnalysis) throws NamingException, Exception {
-		
-		
-		List<Map<String, Object>> dataCollections = 
+
+
+		List<DataCollectionSummary> dataCollectionSummaries =
 				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionByProteinAcronym(this.getProposalId(proposal), filterParam);
-		
-		if (dataCollections == null || dataCollections.isEmpty()) {
-			dataCollections = 
+
+		if (dataCollectionSummaries == null || dataCollectionSummaries.isEmpty()) {
+			dataCollectionSummaries =
 				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionBySampleName(this.getProposalId(proposal), filterParam);
 		}
-		
-		if (dataCollections == null || dataCollections.isEmpty()) {
-			dataCollections = 
+
+		if (dataCollectionSummaries == null || dataCollectionSummaries.isEmpty()) {
+			dataCollectionSummaries =
 				this.getWebServiceDataCollectionGroup3Service().getViewDataCollectionByImagePrefix(this.getProposalId(proposal), filterParam);
 		}
-		
+
+		// ExiPdfRtfExporter (PDF/RTF export, deprecated) still consumes the
+		// raw row shape, so the typed summaries are adapted back to maps
+		// here rather than migrating the exporter itself.
+		List<Map<String, Object>> dataCollections =
+				dataCollectionSummaries.stream().map(DataCollectionSummary::asMap).collect(Collectors.toList());
+
 		List<Map<String, Object>> energyScans = null;
-		
+
 		List<Map<String, Object>> xrfSpectrums = null;
-		
+
 		Integer nbRowsMax = dataCollections.size();
-		
+
 		Integer id = null;
-						 
+
 		ExiPdfRtfExporter pdf = new ExiPdfRtfExporter(this.getProposalId(proposal), proposal, id , filterParam, dataCollections, energyScans, xrfSpectrums, nbRowsMax);
 		byte [] byteToExport;
 		
