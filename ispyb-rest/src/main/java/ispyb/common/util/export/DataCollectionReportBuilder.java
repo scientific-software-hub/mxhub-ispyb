@@ -24,30 +24,27 @@ import java.util.stream.Collectors;
 
 import ispyb.common.util.export.dto.DataCollectionReportRow;
 import ispyb.server.mx.services.autoproc.SpaceGroup3Service;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 
 /**
- * Builds curated {@link DataCollectionReportRow} DTOs out of the raw
- * {@code List<Map<String, Object>>} rows returned by
+ * Builds curated {@link DataCollectionReportRow} DTOs out of the
+ * {@link DataCollectionSummary} rows returned by
  * {@code WebServiceDataCollectionGroup3Service.getViewDataCollectionBySessionIdHavingImages}
- * (the same data source the PDF/RTF exporter uses).
+ * (the same data source the PDF/RTF exporter uses, via its own raw-map path).
  * <p>
  * Unlike {@link ExiPdfRtfExporter}, this builder only surfaces the columns
  * needed for the industrial-client CSV summary; it reuses
  * {@link AutoProcBestResultExtractor} for the "best" autoprocessing result so
  * the Processed Space Group / Processed Resolution values are computed the
  * same way as in the PDF.
- * <p>
- * Note: the raw {@code List<Map<String, Object>>} row shape (untyped view
- * columns like {@code "Protein_acronym"}, {@code "DataCollection_comments"})
- * is itself a candidate for its own DTO; kept out of scope here as a larger,
- * separate refactor since it also underlies {@link ExiPdfRtfExporter}.
  */
 public class DataCollectionReportBuilder {
 
 	private final AutoProcBestResultExtractor autoProcBestResultExtractor = new AutoProcBestResultExtractor();
 
 	/**
-	 * Builds one {@link DataCollectionReportRow} per data-collection-group map.
+	 * Builds one {@link DataCollectionReportRow} per data-collection-group
+	 * summary.
 	 *
 	 * @param dataCollections  rows as returned by
 	 *                         {@code getViewDataCollectionBySessionIdHavingImages}
@@ -56,7 +53,7 @@ public class DataCollectionReportBuilder {
 	 *                          this builder is a plain utility and doesn't
 	 *                          fetch services itself.
 	 */
-	public List<DataCollectionReportRow> build(List<Map<String, Object>> dataCollections, SpaceGroup3Service spaceGroupService) throws Exception {
+	public List<DataCollectionReportRow> build(List<DataCollectionSummary> dataCollections, SpaceGroup3Service spaceGroupService) throws Exception {
 		return build(dataCollections, spaceGroupMap(spaceGroupService));
 	}
 
@@ -76,7 +73,7 @@ public class DataCollectionReportBuilder {
 	 * instead of a real {@code SpaceGroup3Service}, so tests don't need to
 	 * mock one.
 	 */
-	List<DataCollectionReportRow> build(List<Map<String, Object>> dataCollections, Map<String, Integer> spgMap) throws Exception {
+	List<DataCollectionReportRow> build(List<DataCollectionSummary> dataCollections, Map<String, Integer> spgMap) throws Exception {
 
 		if (dataCollections == null) {
 			return Collections.emptyList();
@@ -84,7 +81,7 @@ public class DataCollectionReportBuilder {
 
 		try {
 			return dataCollections.stream()
-					.map(dataCollectionMapItem -> buildRowUnchecked(dataCollectionMapItem, spgMap))
+					.map(dataCollectionSummary -> buildRowUnchecked(dataCollectionSummary, spgMap))
 					.collect(Collectors.toList());
 		} catch (RowBuildException e) {
 			throw (Exception) e.getCause();
@@ -113,34 +110,34 @@ public class DataCollectionReportBuilder {
 	 * builder.buildRowUnchecked(m, spgMap))} for a lazily-built, streamed CSV
 	 * export. Public for that reuse; {@link #build} also uses it internally.
 	 */
-	public DataCollectionReportRow buildRowUnchecked(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) {
+	public DataCollectionReportRow buildRowUnchecked(DataCollectionSummary dataCollectionSummary, Map<String, Integer> spgMap) {
 		try {
-			return buildRow(dataCollectionMapItem, spgMap);
+			return buildRow(dataCollectionSummary, spgMap);
 		} catch (Exception e) {
 			throw new RowBuildException(e);
 		}
 	}
 
 	/**
-	 * Builds a single {@link DataCollectionReportRow} from one raw view row.
-	 * Public so a streaming caller can map a {@code Stream<Map<String, Object>>}
-	 * lazily (one row built and serialized at a time) instead of collecting
-	 * the whole {@code List<DataCollectionReportRow>} up front via
-	 * {@link #build(List, Map)}.
+	 * Builds a single {@link DataCollectionReportRow} from one
+	 * {@link DataCollectionSummary}. Public so a streaming caller can map a
+	 * {@code Stream<DataCollectionSummary>} lazily (one row built and
+	 * serialized at a time) instead of collecting the whole
+	 * {@code List<DataCollectionReportRow>} up front via {@link #build(List, Map)}.
 	 */
-	public DataCollectionReportRow buildRow(Map<String, Object> dataCollectionMapItem, Map<String, Integer> spgMap) throws Exception {
+	public DataCollectionReportRow buildRow(DataCollectionSummary dataCollectionSummary, Map<String, Integer> spgMap) throws Exception {
 
-		String[] bestAutoproc = autoProcBestResultExtractor.extractBestAutoproc(dataCollectionMapItem, spgMap);
+		String[] bestAutoproc = autoProcBestResultExtractor.extractBestAutoproc(dataCollectionSummary, spgMap);
 
 		return new DataCollectionReportRow(
-				getCellParam(dataCollectionMapItem, "Protein_acronym"),
-				getCellParam(dataCollectionMapItem, "BLSample_name"),
-				getCellParam(dataCollectionMapItem, "DataCollectionGroup_experimentType"),
-				getCellParam(dataCollectionMapItem, "DataCollection_comments"),
-				getCellParam(dataCollectionMapItem, "DataCollection_resolution"),
+				dataCollectionSummary.proteinAcronym(),
+				dataCollectionSummary.sampleName(),
+				dataCollectionSummary.experimentType(),
+				dataCollectionSummary.dataCollectionComments(),
+				dataCollectionSummary.dataCollectionResolution(),
 				bestAutoproc != null ? nullToEmpty(bestAutoproc[0]) : "",
 				extractOuterHighResolution(bestAutoproc),
-				getCellParam(dataCollectionMapItem, "DataCollectionGroup_comments"));
+				dataCollectionSummary.dataCollectionGroupComments());
 	}
 
 	/**
@@ -156,15 +153,6 @@ public class DataCollectionReportBuilder {
 		}
 		String[] lowHigh = bestAutoproc[13].split("/");
 		return lowHigh.length == 2 ? lowHigh[1].trim() : "";
-	}
-
-	/**
-	 * Null-safe scalar accessor, mirroring
-	 * {@code ExiPdfRtfExporter.getCellParam(map, param, null)}.
-	 */
-	private String getCellParam(Map<String, Object> dataCollectionMap, String param) {
-		Object value = dataCollectionMap.get(param);
-		return value != null ? value.toString() : "";
 	}
 
 	private String nullToEmpty(String value) {

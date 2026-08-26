@@ -21,7 +21,6 @@ package ispyb.server.mx.services.ws.rest.datacollectiongroup;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import jakarta.ejb.Remote;
 
@@ -29,20 +28,20 @@ import jakarta.ejb.Remote;
 @Remote
 public interface DataCollectionGroupRestWsService {
 
-	public List<Map<String,Object>> getViewDataCollectionBySessionId(int proposalId, int sessionId);
-	
-	public List<Map<String, Object>> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId);
+	public List<DataCollectionSummary> getViewDataCollectionBySessionId(int proposalId, int sessionId);
 
-	public List<Map<String, Object>> getViewDataCollectionByProteinAcronym(int proposalId, String proteinAcronym);
+	public List<DataCollectionSummary> getViewDataCollectionBySessionIdHavingImages(int proposalId, int sessionId);
 
-	public List<Map<String, Object>> getViewDataCollectionBySampleId(int proposalId, int sampleId);
-	
-	public List<Map<String, Object>> getViewDataCollectionBySampleName(int proposalId, String name);
-	
-	public List<Map<String, Object>> getViewDataCollectionByImagePrefix(int proposalId, String prefix);
+	public List<DataCollectionSummary> getViewDataCollectionByProteinAcronym(int proposalId, String proteinAcronym);
 
-	public Collection<? extends Map<String, Object>> getViewDataCollectionByDataCollectionId(int proposalId, int dataCollectionId);
-	
-	public List<Map<String, Object>>  getViewDataCollectionByWorkflowId(Integer proposalId, Integer workflowId);
-	
-} 
+	public List<DataCollectionSummary> getViewDataCollectionBySampleId(int proposalId, int sampleId);
+
+	public List<DataCollectionSummary> getViewDataCollectionBySampleName(int proposalId, String name);
+
+	public List<DataCollectionSummary> getViewDataCollectionByImagePrefix(int proposalId, String prefix);
+
+	public Collection<DataCollectionSummary> getViewDataCollectionByDataCollectionId(int proposalId, int dataCollectionId);
+
+	public List<DataCollectionSummary> getViewDataCollectionByWorkflowId(Integer proposalId, Integer workflowId);
+
+}

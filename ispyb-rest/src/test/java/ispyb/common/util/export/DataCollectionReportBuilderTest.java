@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import ispyb.common.util.export.dto.DataCollectionReportRow;
+import ispyb.server.mx.services.ws.rest.datacollectiongroup.DataCollectionSummary;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +63,7 @@ public class DataCollectionReportBuilderTest {
 
 	@Test
 	public void build_representativeRow_populatesProcessedSpaceGroupAndResolution() throws Exception {
-		List<DataCollectionReportRow> rows = builder.build(Arrays.asList(representativeRow()), spgMap());
+		List<DataCollectionReportRow> rows = builder.build(Arrays.asList(DataCollectionSummary.from(representativeRow())), spgMap());
 
 		assertEquals(1, rows.size());
 		DataCollectionReportRow row = rows.get(0);
@@ -86,7 +87,7 @@ public class DataCollectionReportBuilderTest {
 		row.put("BLSample_name", "s2");
 		row.put("DataCollectionGroup_experimentType", "Characterization");
 
-		List<DataCollectionReportRow> rows = builder.build(Arrays.asList(row), spgMap());
+		List<DataCollectionReportRow> rows = builder.build(Arrays.asList(DataCollectionSummary.from(row)), spgMap());
 
 		assertEquals(1, rows.size());
 		DataCollectionReportRow dto = rows.get(0);
